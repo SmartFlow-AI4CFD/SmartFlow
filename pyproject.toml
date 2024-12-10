@@ -11,7 +11,7 @@ authors = [
 ]
 description = "A ML framework for the SOD2D CFD solver using SmartSim"
 keywords = ["reinforcement learning", "computational fluid dynamics"]
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
   "smartsim==0.7.0",
   "smartredis==0.5.3",

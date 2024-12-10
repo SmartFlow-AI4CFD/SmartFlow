@@ -1,0 +1,84 @@
+{
+   "type":"BluffBodySolverIncompDRL",
+
+   "mesh_h5_file_path":"",
+   "mesh_h5_file_name":"cyl_p4_psenv",
+
+   "results_path":"",
+
+   "results_h5_file_name":"results",
+
+   "save_logFile_first":1,
+   "save_logFile_step":10,
+
+   "save_resultsFile_first":1,
+   "save_resultsFile_step":1000,
+
+   "save_restartFile_first":1,
+   "save_restartFile_step":10000,
+
+   "continue_oldLogs":false,
+
+   "saveAvgFile":false,
+   "loadAvgFile":false,
+
+   "saveSurfaceResults":false,
+
+   "flag_les":0,
+
+   "maxIter":20,
+   "tol":1e-3,
+
+   "cfl_conv":0.2,
+
+   "v0":1.0,
+   "delta":1.0,
+   "rho0":1.0,
+   "Re":100.0,
+   "aoa":0.0,
+
+   "fileControlName":"rectangleControl.txt",
+   "spanLength":4.0,
+   "n_pseudo_envs":10,
+   "alphaActuation":0.0,
+   "Cd_base":1.3475,
+   "alphaReward":0.3,
+
+   "have_witness":true,
+   "witness_inp_file_name":"witness.txt",
+   "witness_h5_file_name":"resultwit.h5",
+   "leapwit":10000001,
+   "leapwitsave":1,
+   "nwit":850,
+   "wit_save": false,
+   "wit_save_u_i":false,
+   "wit_save_pr":false,
+   "wit_save_rho":false,
+   "continue_witness":false,
+
+   "bouCodes":
+   [
+      {"id":1, "bc_type":"bc_type_unsteady_inlet"},
+      {"id":2, "bc_type":"bc_type_unsteady_inlet"},
+      {"id":3, "bc_type":"bc_type_unsteady_inlet"},
+      {"id":4, "bc_type":"bc_type_unsteady_inlet"},
+      {"id":5, "bc_type":"bc_type_unsteady_inlet"},
+      {"id":6, "bc_type":"bc_type_unsteady_inlet"},
+      {"id":7, "bc_type":"bc_type_unsteady_inlet"},
+      {"id":8, "bc_type":"bc_type_unsteady_inlet"},
+      {"id":9, "bc_type":"bc_type_unsteady_inlet"},
+      {"id":10, "bc_type":"bc_type_unsteady_inlet"},
+      {"id":11, "bc_type":"bc_type_far_field"},
+      {"id":12, "bc_type":"bc_type_outlet_incomp"},
+      {"id":13, "bc_type":"bc_type_slip_adiabatic"},
+      {"id":14, "bc_type":"bc_type_slip_adiabatic"},
+   ],
+
+   "buffer":
+   [
+      {"type":"east","min":22.5,"size":5},
+      {"type":"west","min":-7.5,"size":2.5},
+      {"type":"north","min":7.5,"size":2.5},
+      {"type":"south","min":-7.5,"size":2.5},
+   ]
+}

@@ -209,16 +209,16 @@ class SodEnvBase(py_environment.PyEnvironment):
         if self.exp: self._stop_exp()
 
 
-    def start(self, new_ensamble=False, restart_file=0, global_step=0):
+    def start(self, new_ensemble=False, restart_file=0, global_step=0):
         """
         Starts all SOD2D instances with configuration specified in initialization.
         """
-        if not self.ensemble or new_ensamble:
+        if not self.ensemble or new_ensemble:
             self.ensemble = self._create_mpmd_ensemble(restart_file)
-            logger.info(f"New ensamble created")
+            logger.info(f"New ensemble created")
         else:
             self.ensemble.run_settings = self._generate_mpmd_settings(restart_file)
-            logger.info(f"Updated ensamble args for SOD2D simulations")
+            logger.info(f"Updated ensemble args for SOD2D simulations")
 
 
         self.exp.start(self.ensemble, block=False) # non-blocking start of Sod2D solver(s)

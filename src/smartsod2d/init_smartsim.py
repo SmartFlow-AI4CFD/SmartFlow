@@ -84,7 +84,7 @@ def init_smartsim(
 
     # Launch in a cluster environment
     elif launcher in launchers:
-        assert network_interface != "lo", "Launching in a cluster but network interface is set as 'lo'."
+        # assert network_interface != "lo", "Launching in a cluster but network interface is set as 'lo'."
         hosts = get_slurm_hosts()
         num_hosts = len(hosts)
         logger.info(f"Launching in cluster. Identified available nodes: {hosts}")
