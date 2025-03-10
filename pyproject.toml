@@ -3,20 +3,27 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "smartsod2d"
+name = "smartflow"
 version = "1.0.0"
 authors = [
+    {name="Maochao Xiao", email="maochao.xiao@uniroma1.it"},
+    {name="Francisco Alcántara Ávila", email="fraa@kth.se"},
     {name="Bernat Font", email="b.font@tudelft.nl"},
-    {name="Francisco Alcántara Ávila", email="fraa@kth.se"}
+    {name="Marius Kurz", email="Marius.Kurz@cwi.nl"},
+    {name="Di Zhou", email="dizhou@caltech.edu"},
+    {name="Yuning Wang", email="yuningw@kth.se"},
+    {name="Ting Zhu", email="Ting.Zhu@warwick.ac.uk"},
+    {name="Ricardo Vinuesa", email="rvinuesa@mech.kth.se"},
+    {name="Johan Larsson", email="jola@umd.edu"},
+    {name="Sergio Pirozzoli", email="sergio.pirozzoli@uniroma1.it"},
 ]
-description = "A ML framework for the SOD2D CFD solver using SmartSim"
+description = "A ML framework for CFD solvers using SmartSim"
 keywords = ["reinforcement learning", "computational fluid dynamics"]
 requires-python = ">=3.10"
 dependencies = [
   "smartsim==0.7.0",
   "smartredis==0.5.3",
-  "tensorflow",
-  "tf_agents==0.19.0",
+  "stable-baselines3",
   "numpy",
   "matplotlib",
 ]

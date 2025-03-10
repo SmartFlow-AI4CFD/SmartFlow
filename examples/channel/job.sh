@@ -1,32 +1,21 @@
 #!/bin/bash
+# shopt -s extglob
+# rm -r train __pycache__  experiment DRLsignals
+# cd  train-0
+# rm -r !(input*|stats*|fld_0.bin)
+# cd ..
 
-### Job name on queue
-#SBATCH --job-name=channel
+# cd  train-1
+# rm -r !(input*|stats*|fld_0.bin)
+# cd ..
 
-### Output and error files directory
-#SBATCH -D .
+# cd  train-2 
+# rm -r !(input*|stats*|fld_0.bin)
+# cd ..
 
-### Output and error files
-#SBATCH --output=job_%j.out
-#SBATCH --error=job_%j.err
 
-### Run configuration
-### Rule: {ntasks-per-node} \times {cpus-per-task} = 80
-#SBATCH --nodes=1
-#SBATCH --ntasks=2
-#SBATCH --ntasks-per-node=2
-#SBATCH --cpus-per-task=1
-#SBATCH --time=48:00:00
-##SBATCH --gres=gpu:4
+rm -r __pycache__  experiment dump_data logs models model_0.zip runs wandb
 
-### Queue and account
-##SBATCH --qos=acc_resa
-##SBATCH --account=upc76
+python main.py > job.out 2> job.err
 
-### Load MN% modules + DRL libraries
-#. ../../utils/modules-mn5-acc.sh
-
-export SLURM_OVERLAP=1
-
-python run.py
-
+python main.py runner.mode=train runner.restart=True runner.reset_num_timesteps=False

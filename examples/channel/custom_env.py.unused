@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+
+import numpy as np
+import os
+import glob
+
+from smartsim.log import get_logger
+from smartsod2d.utils import numpy_str
+from smartsod2d.cfd_env import CFDEnv
+
+logger = get_logger(__name__)
+
+class CustomEnv(CFDEnv):
+    """
+    SOD2D environment(s) extending the tf_agents.environments.PyEnvironment class.
+    The function to implement are: _redistribute_state, _get_reward, _set_action
+    Inherits from the SodEnvBase environment, the functions defined here are specific for the reduction of the
+    recirculation bubble in a turbulent boundary layer.
+    """
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Initialize ground truth velocity profile, half channel
+        self.tauw_ref = np.zeros((self.cfd_n_envs,))
+        self.ref_vel = np.zeros((self.cfd_n_envs, self.n_3))
+        self.ref_dzf = np.zeros((self.cfd_n_envs, self.n_3))
+        
+        for i in range(self.cfd_n_envs):
+            name = f"train_{i}/" if self.mode == "train" else f"eval_{i}/"
+            data = np.loadtxt(os.path.join(self.cwd, name + "stats.txt"))
+            self.tauw_ref[i] = data[1]**2
+            
+            stats_file = glob.glob(self.cwd + "/" + name + "stats-single-point-chan-?????.out")[0]
+            self.ref_vel[i,:] = np.loadtxt(stats_file, usecols=2, max_rows=self.n_3)
+            zf = np.loadtxt(stats_file, usecols=1, max_rows=self.n_3)
+            dzf = np.zeros(self.n_3)
+            dzf[0] = zf[0] - 0.0
+            for j in range(1, self.n_3):
+                dzf[j] = zf[j] - zf[j-1]
+            self.ref_dzf[i,:] = dzf
+
+    def _redistribute_state(self):
+        """
+        Redistribute state across MARL pseudo-environments.
+        """
+
+        n_state_psenv = int(self.n_state/self.marl_n_envs)
+
+        # Distribute original state taking groups of "n_state_marls" on each row and append it to the state_marl array
+        # n_state_psenv = n_state_marl, if there is no neighbor
+        for i in range(self.cfd_n_envs):
+            for j in range(self.marl_n_envs):
+                self._state_marl[i*self.marl_n_envs+j,:] = self._state[i, (j*n_state_psenv):(j*n_state_psenv)+self.n_state_marl]
+
+
+    def _get_reward(self):
+        """
+        Obtain the local reward (already computed in SOD2D) from each CFD environment and compute the local/global reward for the problem at hand
+        It is better to compute the global reward in python
+        """
+        for i in range(self.cfd_n_envs):
+            if self._step_type[i] > 0: # environment still running
+                self.client.poll_tensor(self.reward_key[i], 100, self.poll_time)
+                try:
+                    self._local_reward[i, :] = self.client.get_tensor(self.reward_key[i])
+                    self.client.delete_tensor(self.reward_key[i])
+
+                    reward = self._local_reward[i, :].reshape(self.marl_n_envs, self.n_reward)
+
+                    # u_profile
+                    vel_profile_err = np.zeros(self.marl_n_envs)
+                    for j in range(self.marl_n_envs):
+                        vel_profile_err[j] = np.sum(self.ref_dzf[i,0:6]*(reward[j,3:3+6] - self.ref_vel[i,0:6])**2) # 0.15
+                    
+                    vel_profile_err_global = np.sum(self.ref_dzf[i,0:6]*(np.mean(reward[:,3:3+6],axis=0) - self.ref_vel[i,0:6])**2)
+                    
+                    #
+                    rl_0 = -0.0*np.abs(        reward[:,0]  - 0.8045) # u, not used any more
+                    rg_0 = -0.0*np.abs(np.mean(reward[:,0]) - 0.8045)
+
+
+                    rl_1 = -1.0*50.0 *np.abs(        reward[:,1]  - self.tauw_ref[i]) # tauw, 25000
+                    rg_1 = -1.0*50.0 *np.abs(np.mean(reward[:,1]) - self.tauw_ref[i])
+
+                    # # Add bonus reward when wall shear stress is close to target
+                    # # (within 10% of reference value)
+                    # rl_1 = np.zeros(self.marl_n_envs)
+                    # for j in range(self.marl_n_envs):
+                    #     if np.abs(reward[j,1] - self.tauw_ref[i]) < 0.2 * self.tauw_ref[i]:
+                    #         rl_1[j] = 0.5
+                    # # if np.abs(np.mean(reward[:,1]) - self.tauw_ref[i]) < 0.2 * self.tauw_ref[i]:
+                    # #     rg_1 = 0.5
+                    # rg_1 = np.mean(rl_1[:])
+                    
+                    rl_2 = -0.0*100.0 *        reward[:,2] # u_profile_err
+                    rg_2 = -0.0*100.0 *np.mean(reward[:,2]) # 100 should be increased here, not used any more
+                    rl_3 = -1.0*100.0 *vel_profile_err[:] # u_profile_err
+                    rg_3 = -1.0*500.0 *vel_profile_err_global
+                    rl_4 =  0.0 # tauw_rms
+                    rg_4 = -0.0*500.0*np.abs(np.sqrt(np.mean((reward[:,1] - self.tauw_ref[i])**2)) - self.tauw_ref[i]/5.0) # 500
+
+                    local_reward  =  rl_0 + rl_1 + rl_2 + rl_3 + rl_4
+                    global_reward =  rg_0 + rg_1 + rg_2 + rg_3 + rg_4
+
+                    # logger.info(f"rl_1: {rl_1}, rg_1: {rg_1}, rl_3: {rl_3}, rg_3: {rg_3}, rl_4: {rl_4}, rg_4: {rg_4}")
+                    logger.info(f"rl_1: {rl_1}, rg_1: {rg_1}, rl_3: {rl_3}, rg_3: {rg_3}")
+
+
+                    for j in range(self.marl_n_envs):
+                        self._reward[i * self.marl_n_envs + j] = self.reward_beta * global_reward + (1.0 - self.reward_beta) * local_reward[j]
+                    logger.info(f"[Env {i}] Global reward: {global_reward}")
+                except Exception as exc:
+                    raise Warning(f"Could not read reward from key: {self.reward_key[i]}") from exc
+
+
+    def _set_action(self, action):
+        """
+        Write actions for each environment to be polled by the corresponding SOD2D environment.
+        Action clipping must be performed within the environment: https://github.com/tensorflow/agents/issues/216 when using PPO
+        """
+
+        lower_bound = 0.001
+        upper_bound = 0.009
+        scaled_action = lower_bound + 0.5 * (action + 1) * (upper_bound - lower_bound)
+
+        for i in range(self.cfd_n_envs):
+            for j in range(self.marl_n_envs):
+                for k in range(self.n_action):   # action is a single value
+                    self._action[i, j * self.n_action + k] = scaled_action[i * self.marl_n_envs + j, k]
+
+        # write action into database
+        for i in range(self.cfd_n_envs):
+            self.client.put_tensor(self.action_key[i], self._action[i, :].astype(self.sod_dtype))
+            logger.debug(f"[Env {i}] Writing action: {numpy_str(self._action[i, :5], precision=5)}")

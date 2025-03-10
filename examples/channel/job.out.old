@@ -1,0 +1,85 @@
+Configuration:
+runner:
+  mode: eval
+  total_env_episodes: 2
+  total_pseudo_env_episodes: 96
+  total_pseudo_env_action_steps: 288
+  n_epochs: 1
+  net:
+  - 128
+  - 128
+  learning_rate: 0.0005
+  log_interval: 1
+  summary_interval: 1
+  seed: 16
+  ckpt_num: 1000000
+  ckpt_interval: 1
+  n_action_steps_per_pseudo_env_episode: 3
+  n_action_steps_per_training_iteration: 288
+  total_training_iterations: 1
+  agent_run_name: 0
+  batch_size: 288
+environment:
+  n_envs: 2
+  n_pseudo_envs_per_env: 48
+  n_pseudo_envs: 96
+  n_tasks_per_env: 4
+  witness_file: witness.txt
+  marl_neighbors: 1
+  rectangle_file: rectangleControl.txt
+  time_key: time
+  step_type_key: step_type
+  state_key: state
+  state_size_key: state_size
+  action_key: action
+  action_size_key: action_size
+  reward_key: reward
+  poll_time: 360000000
+  verbosity: debug
+  dump_data_flag: true
+  n_cfd_time_steps_per_action: 10
+  agent_interval: 4
+  dtype: float32
+  cfd_dtype: float64
+  action_bounds:
+  - -1.0
+  - 1.0
+  t_action: 0.1
+  f_action: 10.0
+  t_episode: 0.1
+  t_begin_control: 0.0
+  reward_norm: 1
+  reward_beta: 0.2
+  restart_file: 0
+logging:
+  run_name: 1741512812
+  group: null
+  notes: null
+  save_dir: ../runs
+smartsim:
+  port: 6837
+  n_dbs: 1
+  network_interface: lo
+  run_command: mpirun
+  launcher: local
+
+10:33:32 gjertvasstind SmartSim[82846:MainThread] INFO Starting SmartSim...
+10:33:32 gjertvasstind SmartSim[82846:MainThread] INFO Launching locally on: ['gjertvasstind']
+10:33:32 gjertvasstind SmartSim[82846:MainThread] INFO Removing stale files from old database...
+10:33:32 gjertvasstind SmartSim[82846:MainThread] INFO Creating output directory for database log files...
+10:33:32 gjertvasstind SmartSim[82846:MainThread] INFO Starting database...
+10:33:43 gjertvasstind SmartSim[82846:MainThread] INFO If the SmartRedis database isn't stopping properly you can use this command to stop it from the command line:
+10:33:43 gjertvasstind SmartSim[82846:MainThread] INFO $(smart dbcli) -h 127.0.0.1 -p 6837 shutdown
+10:33:43 gjertvasstind SmartSim[82846:MainThread] INFO DB address: 127.0.0.1:6837
+SmartRedis Library@10-33-43:WARNING: Environment variable SR_LOG_FILE is not set. Defaulting to stdout
+SmartRedis Library@10-33-43:WARNING: Environment variable SR_LOG_LEVEL is not set. Defaulting to INFO
+10:33:43 gjertvasstind SmartSim[82846:MainThread] INFO [93mThe data path `/scratch/maochao/code/SmartSOD2D/examples/channel/dump_data` exists. Moving it to `/scratch/maochao/code/SmartSOD2D/examples/channel/dump_data_2`[0m
+10:33:45 gjertvasstind SmartSim[82846:MainThread] INFO [Env 0] Global reward: -0.14902041038250455
+10:33:45 gjertvasstind SmartSim[82846:MainThread] INFO [Env 1] Global reward: -0.14902041038250455
+10:33:45 gjertvasstind SmartSim[82846:MainThread] INFO [Env 0] Global reward: -0.14899525841389905
+10:33:45 gjertvasstind SmartSim[82846:MainThread] INFO [Env 1] Global reward: -0.14899525841389905
+10:33:45 gjertvasstind SmartSim[82846:MainThread] INFO [Env 0] Global reward: -0.14897318073500296
+10:33:45 gjertvasstind SmartSim[82846:MainThread] INFO [Env 1] Global reward: -0.14897318073500296
+10:33:45 gjertvasstind SmartSim[82846:MainThread] INFO Stopping model eval_0 with job name eval_0-D8BMRUML6OVL
+10:33:45 gjertvasstind SmartSim[82846:MainThread] INFO Stopping model eval_1 with job name eval_1-D8BMRURGO7TA
+Evaluation complete.
