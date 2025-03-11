@@ -20,7 +20,7 @@ class Runner:
     learning_rate: float = 5e-4
     log_interval: int = 1  # save model, policy, metrics, interval
     summary_interval: int = 1  # write to tensorboard interval
-    seed: int = 16
+    seed: Optional[int] = 16
     ckpt_num: int = int(1e6)
     ckpt_interval: int = 1
     n_action_steps_per_pseudo_env_episode: int = None
@@ -61,6 +61,7 @@ class Environment:
     reward_beta: float = 0.2  # reward = beta * reward_global + (1.0 - beta) * reward_local
     restart_file: int = 0  # 3: random. 1: restart 1. 2: restart 2
     env_names: List = None
+    seed: Optional[int] = 16
 
 @dataclass
 class Logging:

@@ -3,7 +3,7 @@ ng(1:3) = 32, 12, 32
 l(1:3) = 3.2, 1.2, 2.
 gtype = 6, gr = 0.
 cfl = 0.95, dtmin = 0.04
-visci = 20000.
+visci = 125000.
 inivel = 'poi'
 is_wallturb = T
 nstep = 10000, time_max = 1800., tw_max = 12

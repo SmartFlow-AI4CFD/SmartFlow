@@ -1,0 +1,629 @@
+Configuration:
+runner:
+  mode: train
+  restart: false
+  reset_num_timesteps: true
+  total_env_episodes: 16
+  total_pseudo_env_episodes: 768
+  total_pseudo_env_action_steps: 2304
+  n_epochs: 1
+  net:
+  - 128
+  - 128
+  learning_rate: 0.0005
+  log_interval: 1
+  summary_interval: 1
+  seed: 16
+  ckpt_num: 1000000
+  ckpt_interval: 1
+  n_action_steps_per_pseudo_env_episode: 3
+  n_action_steps_per_training_iteration: 144
+  total_training_iterations: 16
+  agent_run_name: 0
+  batch_size: 144
+environment:
+  n_vec_envs: 1
+  n_pseudo_envs_per_env: 48
+  n_pseudo_envs: 48
+  n_tasks_per_env: 4
+  witness_file: witness.txt
+  marl_neighbors: 1
+  rectangle_file: rectangleControl.txt
+  time_key: time
+  step_type_key: step_type
+  state_key: state
+  state_size_key: state_size
+  action_key: action
+  action_size_key: action_size
+  reward_key: reward
+  poll_time: 360000000
+  verbosity: debug
+  dump_data_flag: true
+  n_cfd_time_steps_per_action: 10
+  agent_interval: 4
+  dtype: float32
+  cfd_dtype: float64
+  action_bounds:
+  - -1.0
+  - 1.0
+  t_action: 0.1
+  f_action: 10.0
+  t_episode: 0.1
+  t_begin_control: 0.0
+  reward_norm: 1
+  reward_beta: 0.2
+  restart_file: 0
+  env_names:
+  - retau_1000
+  - retau_5200
+  seed: 16
+logging:
+  run_name: 1741726669
+  group: null
+  notes: null
+  save_dir: ../runs
+smartsim:
+  port: 6281
+  n_dbs: 1
+  network_interface: lo
+  run_command: mpirun
+  launcher: local
+
+21:57:50 gjertvasstind SmartSim[33990:MainThread] INFO Starting SmartSim...
+21:57:50 gjertvasstind SmartSim[33990:MainThread] INFO Launching locally on: ['gjertvasstind']
+21:57:50 gjertvasstind SmartSim[33990:MainThread] INFO Removing stale files from old database...
+21:57:50 gjertvasstind SmartSim[33990:MainThread] INFO Creating output directory for database log files...
+21:57:50 gjertvasstind SmartSim[33990:MainThread] INFO Starting database...
+21:58:01 gjertvasstind SmartSim[33990:MainThread] INFO If the SmartRedis database isn't stopping properly you can use this command to stop it from the command line:
+21:58:01 gjertvasstind SmartSim[33990:MainThread] INFO $(smart dbcli) -h 127.0.0.1 -p 6281 shutdown
+21:58:01 gjertvasstind SmartSim[33990:MainThread] INFO DB address: 127.0.0.1:6281
+SmartRedis Library@21-58-01:WARNING: Environment variable SR_LOG_FILE is not set. Defaulting to stdout
+SmartRedis Library@21-58-01:WARNING: Environment variable SR_LOG_LEVEL is not set. Defaulting to INFO
+Using cpu device
+conf.runner.reset_num_timesteps: True
+21:58:01 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:01 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:01 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+Logging to runs/17u8a830/PPO_1
+21:58:03 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.17863529485772955
+21:58:03 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.16658707491540742
+21:58:03 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.20991452535720684
+21:58:03 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_0 with job name Env_0-D8DQKVMUCEES
+21:58:03 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:03 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:03 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+---------------------------------
+| rollout/           |          |
+|    ep_len_mean     | 3        |
+|    ep_rew_mean     | -0.574   |
+| time/              |          |
+|    fps             | 62       |
+|    iterations      | 1        |
+|    time_elapsed    | 2        |
+|    total_timesteps | 144      |
+---------------------------------
+21:58:04 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.1659155662274156
+21:58:04 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.17451783366468676
+21:58:04 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.16212120964217777
+21:58:04 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_1 with job name Env_1-D8DQKW9O5432
+21:58:04 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:04 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:04 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+------------------------------------------
+| rollout/                |              |
+|    ep_len_mean          | 3            |
+|    ep_rew_mean          | -0.552       |
+| time/                   |              |
+|    fps                  | 77           |
+|    iterations           | 2            |
+|    time_elapsed         | 3            |
+|    total_timesteps      | 288          |
+| train/                  |              |
+|    approx_kl            | 0.0006327861 |
+|    clip_fraction        | 0            |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -1.42        |
+|    explained_variance   | 0.00404      |
+|    learning_rate        | 0.0003       |
+|    loss                 | 0.0928       |
+|    n_updates            | 10           |
+|    policy_gradient_loss | -0.00669     |
+|    std                  | 0.997        |
+|    value_loss           | 0.323        |
+------------------------------------------
+21:58:05 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.14157968088420828
+21:58:05 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.18086325914002782
+21:58:06 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.1495535290617728
+21:58:06 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_2 with job name Env_2-D8DQKWVCDJ97
+21:58:06 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:06 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:06 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 3           |
+|    ep_rew_mean          | -0.525      |
+| time/                   |             |
+|    fps                  | 85          |
+|    iterations           | 3           |
+|    time_elapsed         | 5           |
+|    total_timesteps      | 432         |
+| train/                  |             |
+|    approx_kl            | 0.000904106 |
+|    clip_fraction        | 0           |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -1.41       |
+|    explained_variance   | 0.00573     |
+|    learning_rate        | 0.0003      |
+|    loss                 | 0.0105      |
+|    n_updates            | 20          |
+|    policy_gradient_loss | -0.0108     |
+|    std                  | 0.994       |
+|    value_loss           | 0.115       |
+-----------------------------------------
+21:58:07 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.16867584060327187
+21:58:07 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.15178011109223083
+21:58:07 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.17107357690483593
+21:58:07 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_3 with job name Env_3-D8DQKXIVLPX9
+21:58:07 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:07 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:07 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+------------------------------------------
+| rollout/                |              |
+|    ep_len_mean          | 3            |
+|    ep_rew_mean          | -0.506       |
+| time/                   |              |
+|    fps                  | 89           |
+|    iterations           | 4            |
+|    time_elapsed         | 6            |
+|    total_timesteps      | 576          |
+| train/                  |              |
+|    approx_kl            | 0.0017907715 |
+|    clip_fraction        | 0            |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -1.41        |
+|    explained_variance   | -0.00181     |
+|    learning_rate        | 0.0003       |
+|    loss                 | -0.0112      |
+|    n_updates            | 30           |
+|    policy_gradient_loss | -0.0145      |
+|    std                  | 0.99         |
+|    value_loss           | 0.0441       |
+------------------------------------------
+21:58:08 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.13151630992912158
+21:58:08 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.14679855133662534
+21:58:08 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.15814775021564467
+21:58:08 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_4 with job name Env_4-D8DQKY4M88ZW
+21:58:08 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:08 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:08 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+------------------------------------------
+| rollout/                |              |
+|    ep_len_mean          | 3            |
+|    ep_rew_mean          | -0.495       |
+| time/                   |              |
+|    fps                  | 91           |
+|    iterations           | 5            |
+|    time_elapsed         | 7            |
+|    total_timesteps      | 720          |
+| train/                  |              |
+|    approx_kl            | 0.0042053014 |
+|    clip_fraction        | 0.00764      |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -1.41        |
+|    explained_variance   | -0.00912     |
+|    learning_rate        | 0.0003       |
+|    loss                 | -0.018       |
+|    n_updates            | 40           |
+|    policy_gradient_loss | -0.0193      |
+|    std                  | 0.987        |
+|    value_loss           | 0.0409       |
+------------------------------------------
+21:58:09 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.09669301315893708
+21:58:10 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.1297110439506887
+21:58:10 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.10966203214344762
+21:58:10 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_5 with job name Env_5-D8DQKYRXGH73
+21:58:10 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:10 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:10 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+------------------------------------------
+| rollout/                |              |
+|    ep_len_mean          | 3            |
+|    ep_rew_mean          | -0.428       |
+| time/                   |              |
+|    fps                  | 93           |
+|    iterations           | 6            |
+|    time_elapsed         | 9            |
+|    total_timesteps      | 864          |
+| train/                  |              |
+|    approx_kl            | 0.0065161125 |
+|    clip_fraction        | 0.0146       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -1.4         |
+|    explained_variance   | 0.00488      |
+|    learning_rate        | 0.0003       |
+|    loss                 | -0.0243      |
+|    n_updates            | 50           |
+|    policy_gradient_loss | -0.0226      |
+|    std                  | 0.984        |
+|    value_loss           | 0.043        |
+------------------------------------------
+21:58:11 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.10598644289916206
+21:58:11 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.09917397962382712
+21:58:11 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.10521051720793345
+21:58:11 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_6 with job name Env_6-D8DQKZFG901Z
+21:58:11 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:11 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:11 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 3           |
+|    ep_rew_mean          | -0.371      |
+| time/                   |             |
+|    fps                  | 94          |
+|    iterations           | 7           |
+|    time_elapsed         | 10          |
+|    total_timesteps      | 1008        |
+| train/                  |             |
+|    approx_kl            | 0.008124256 |
+|    clip_fraction        | 0.0285      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -1.4        |
+|    explained_variance   | -0.0172     |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0353     |
+|    n_updates            | 60          |
+|    policy_gradient_loss | -0.0263     |
+|    std                  | 0.98        |
+|    value_loss           | 0.0351      |
+-----------------------------------------
+21:58:12 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.0941735080270753
+21:58:12 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.07746321968166175
+21:58:12 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.07833853285481983
+21:58:12 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_7 with job name Env_7-D8DQL02WN0NM
+21:58:13 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:13 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:13 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+----------------------------------------
+| rollout/                |            |
+|    ep_len_mean          | 3          |
+|    ep_rew_mean          | -0.339     |
+| time/                   |            |
+|    fps                  | 94         |
+|    iterations           | 8          |
+|    time_elapsed         | 12         |
+|    total_timesteps      | 1152       |
+| train/                  |            |
+|    approx_kl            | 0.01267984 |
+|    clip_fraction        | 0.059      |
+|    clip_range           | 0.2        |
+|    entropy_loss         | -1.4       |
+|    explained_variance   | 0.0218     |
+|    learning_rate        | 0.0003     |
+|    loss                 | -0.0484    |
+|    n_updates            | 70         |
+|    policy_gradient_loss | -0.0343    |
+|    std                  | 0.976      |
+|    value_loss           | 0.026      |
+----------------------------------------
+21:58:14 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.05318081670923142
+21:58:14 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.07026988919782605
+21:58:14 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.042362182416544485
+21:58:14 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_8 with job name Env_8-D8DQL0QF2FMN
+21:58:14 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:14 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:14 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+----------------------------------------
+| rollout/                |            |
+|    ep_len_mean          | 3          |
+|    ep_rew_mean          | -0.278     |
+| time/                   |            |
+|    fps                  | 96         |
+|    iterations           | 9          |
+|    time_elapsed         | 13         |
+|    total_timesteps      | 1296       |
+| train/                  |            |
+|    approx_kl            | 0.01622229 |
+|    clip_fraction        | 0.0813     |
+|    clip_range           | 0.2        |
+|    entropy_loss         | -1.39      |
+|    explained_variance   | -0.0289    |
+|    learning_rate        | 0.0003     |
+|    loss                 | -0.0689    |
+|    n_updates            | 80         |
+|    policy_gradient_loss | -0.0447    |
+|    std                  | 0.973      |
+|    value_loss           | 0.0194     |
+----------------------------------------
+21:58:15 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.03035164577516713
+21:58:15 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.04984407949237478
+21:58:15 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.018981594908072434
+21:58:15 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_9 with job name Env_9-D8DQL1DVAY69
+21:58:15 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:15 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:15 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 3           |
+|    ep_rew_mean          | -0.224      |
+| time/                   |             |
+|    fps                  | 96          |
+|    iterations           | 10          |
+|    time_elapsed         | 14          |
+|    total_timesteps      | 1440        |
+| train/                  |             |
+|    approx_kl            | 0.020413293 |
+|    clip_fraction        | 0.0924      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -1.39       |
+|    explained_variance   | -0.0101     |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0555     |
+|    n_updates            | 90          |
+|    policy_gradient_loss | -0.0406     |
+|    std                  | 0.969       |
+|    value_loss           | 0.0169      |
+-----------------------------------------
+21:58:16 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.03480107925611079
+21:58:17 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.024052301673777195
+21:58:17 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.013315030794813179
+21:58:17 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_10 with job name Env_10-D8DQL1ZO1PWT
+21:58:17 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:17 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:17 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 3           |
+|    ep_rew_mean          | -0.182      |
+| time/                   |             |
+|    fps                  | 97          |
+|    iterations           | 11          |
+|    time_elapsed         | 16          |
+|    total_timesteps      | 1584        |
+| train/                  |             |
+|    approx_kl            | 0.022165414 |
+|    clip_fraction        | 0.116       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -1.39       |
+|    explained_variance   | -0.0342     |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0438     |
+|    n_updates            | 100         |
+|    policy_gradient_loss | -0.0333     |
+|    std                  | 0.965       |
+|    value_loss           | 0.0115      |
+-----------------------------------------
+21:58:18 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.00750056086018569
+21:58:18 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.001899400121271812
+21:58:18 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.014191357599043115
+21:58:18 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_11 with job name Env_11-D8DQL2NAQFN2
+21:58:18 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:18 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:18 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 3           |
+|    ep_rew_mean          | -0.15       |
+| time/                   |             |
+|    fps                  | 97          |
+|    iterations           | 12          |
+|    time_elapsed         | 17          |
+|    total_timesteps      | 1728        |
+| train/                  |             |
+|    approx_kl            | 0.015352501 |
+|    clip_fraction        | 0.0653      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -1.38       |
+|    explained_variance   | 0.0233      |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0627     |
+|    n_updates            | 110         |
+|    policy_gradient_loss | -0.0393     |
+|    std                  | 0.961       |
+|    value_loss           | 0.01        |
+-----------------------------------------
+21:58:19 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.016614820457593764
+21:58:19 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.008453122061667
+21:58:19 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.008717736598831932
+21:58:19 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_12 with job name Env_12-D8DQL3AXVKX4
+21:58:19 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:19 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:19 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 3           |
+|    ep_rew_mean          | -0.128      |
+| time/                   |             |
+|    fps                  | 98          |
+|    iterations           | 13          |
+|    time_elapsed         | 19          |
+|    total_timesteps      | 1872        |
+| train/                  |             |
+|    approx_kl            | 0.021710373 |
+|    clip_fraction        | 0.134       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -1.38       |
+|    explained_variance   | 0.0133      |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0408     |
+|    n_updates            | 120         |
+|    policy_gradient_loss | -0.0309     |
+|    std                  | 0.958       |
+|    value_loss           | 0.00428     |
+-----------------------------------------
+21:58:21 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.02394226648683035
+21:58:21 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.013443880031501952
+21:58:21 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.011412282978985978
+21:58:21 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_13 with job name Env_13-D8DQL3WNT6BB
+21:58:21 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:21 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:21 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 3           |
+|    ep_rew_mean          | -0.11       |
+| time/                   |             |
+|    fps                  | 98          |
+|    iterations           | 14          |
+|    time_elapsed         | 20          |
+|    total_timesteps      | 2016        |
+| train/                  |             |
+|    approx_kl            | 0.011794288 |
+|    clip_fraction        | 0.0521      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -1.37       |
+|    explained_variance   | -0.00362    |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.0198     |
+|    n_updates            | 130         |
+|    policy_gradient_loss | -0.0154     |
+|    std                  | 0.954       |
+|    value_loss           | 0.00421     |
+-----------------------------------------
+21:58:22 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.020163855031366973
+21:58:22 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.023348743451738332
+21:58:22 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.00778060500199781
+21:58:22 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_14 with job name Env_14-D8DQL4KA3GZ2
+21:58:22 gjertvasstind SmartSim[33990:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+21:58:22 gjertvasstind SmartSim[33990:MainThread] INFO Using restart files from folder retau_5200
+21:58:22 gjertvasstind SmartSim[33990:MainThread] INFO Selected restart file: fld_2.bin
+-----------------------------------------
+| rollout/                |             |
+|    ep_len_mean          | 3           |
+|    ep_rew_mean          | -0.103      |
+| time/                   |             |
+|    fps                  | 99          |
+|    iterations           | 15          |
+|    time_elapsed         | 21          |
+|    total_timesteps      | 2160        |
+| train/                  |             |
+|    approx_kl            | 0.008367676 |
+|    clip_fraction        | 0.0236      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -1.37       |
+|    explained_variance   | -0.0371     |
+|    learning_rate        | 0.0003      |
+|    loss                 | -0.00616    |
+|    n_updates            | 140         |
+|    policy_gradient_loss | -0.00547    |
+|    std                  | 0.95        |
+|    value_loss           | 0.00184     |
+-----------------------------------------
+21:58:23 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.016339522697994057
+21:58:23 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.030575620728142933
+21:58:24 gjertvasstind SmartSim[33990:MainThread] INFO [Env 0] Global reward: -0.02235626812981242
+21:58:24 gjertvasstind SmartSim[33990:MainThread] INFO Stopping model Env_15 with job name Env_15-D8DQL57VDVPS
+------------------------------------------
+| rollout/                |              |
+|    ep_len_mean          | 3            |
+|    ep_rew_mean          | -0.105       |
+| time/                   |              |
+|    fps                  | 103          |
+|    iterations           | 16           |
+|    time_elapsed         | 22           |
+|    total_timesteps      | 2304         |
+| train/                  |              |
+|    approx_kl            | 0.0053892597 |
+|    clip_fraction        | 0.0104       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -1.37        |
+|    explained_variance   | 0.0246       |
+|    learning_rate        | 0.0003       |
+|    loss                 | -0.00677     |
+|    n_updates            | 150          |
+|    policy_gradient_loss | -0.00493     |
+|    std                  | 0.945        |
+|    value_loss           | 0.00213      |
+------------------------------------------
+Error loading manifest: Expecting value: line 8107 column 19 (char 277943)
+Error loading manifest: Expecting ',' delimiter: line 5711 column 26 (char 196177)
+Error loading manifest: Expecting value: line 5465 column 22 (char 187993)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6664 column 27 (char 228808)
+Error loading manifest: Expecting property name enclosed in double quotes: line 7149 column 26 (char 245197)
+Error loading manifest: Expecting value: line 8107 column 19 (char 277943)
+Error loading manifest: Expecting value: line 6187 column 22 (char 212452)
+Error loading manifest: Expecting value: line 5465 column 22 (char 187993)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6664 column 27 (char 228808)
+Error loading manifest: Expecting value: line 6187 column 22 (char 212452)
+Error loading manifest: Expecting value: line 8107 column 19 (char 277943)
+Error loading manifest: Expecting ',' delimiter: line 5227 column 56 (char 179910)
+Error loading manifest: Expecting ',' delimiter: line 6427 column 38 (char 220630)
+Error loading manifest: Expecting ',' delimiter: line 7629 column 28 (char 261565)
+Error loading manifest: Expecting value: line 6187 column 22 (char 212452)
+Error loading manifest: Expecting value: line 3312 column 22 (char 114495)
+Error loading manifest: Expecting ',' delimiter: line 5711 column 26 (char 196177)
+Error loading manifest: Expecting ',' delimiter: line 6427 column 38 (char 220630)
+Error loading manifest: Expecting property name enclosed in double quotes: line 9072 column 30 (char 310573)
+Error loading manifest: Expecting ',' delimiter: line 5711 column 26 (char 196177)
+Error loading manifest: Expecting value: line 5465 column 22 (char 187993)
+Error loading manifest: Expecting property name enclosed in double quotes: line 7386 column 10 (char 253386)
+Error loading manifest: Expecting ',' delimiter: line 6427 column 38 (char 220630)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6907 column 32 (char 236993)
+Error loading manifest: Expecting ',' delimiter: line 5945 column 35 (char 204363)
+Error loading manifest: Expecting property name enclosed in double quotes: line 7149 column 26 (char 245197)
+Error loading manifest: Expecting property name enclosed in double quotes: line 7149 column 26 (char 245197)
+Error loading manifest: Expecting property name enclosed in double quotes: line 7386 column 10 (char 253386)
+Error loading manifest: Expecting ',' delimiter: line 4508 column 38 (char 155430)
+Error loading manifest: Expecting ',' delimiter: line 5227 column 56 (char 179910)
+Error loading manifest: Unterminated string starting at: line 5358 column 28 (char 184312)
+Error loading manifest: Expecting value: line 5465 column 22 (char 187993)
+Error loading manifest: Expecting ',' delimiter: line 5711 column 26 (char 196177)
+Error loading manifest: Expecting ',' delimiter: line 5227 column 56 (char 179910)
+Error loading manifest: Expecting ',' delimiter: line 3787 column 14 (char 130867)
+Error loading manifest: Expecting property name enclosed in double quotes: line 7386 column 10 (char 253386)
+Error loading manifest: Expecting ',' delimiter: line 5227 column 56 (char 179910)
+Error loading manifest: Expecting ',' delimiter: line 5227 column 56 (char 179910)
+Error loading manifest: Expecting ',' delimiter: line 5945 column 35 (char 204363)
+Error loading manifest: Expecting ',' delimiter: line 5227 column 56 (char 179910)
+Error loading manifest: Expecting ',' delimiter: line 5711 column 26 (char 196177)
+Error loading manifest: Expecting property name enclosed in double quotes: line 7149 column 26 (char 245197)
+Error loading manifest: Expecting ',' delimiter: line 7629 column 28 (char 261565)
+Error loading manifest: Expecting property name enclosed in double quotes: line 7386 column 10 (char 253386)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6664 column 27 (char 228808)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6907 column 32 (char 236993)
+Error loading manifest: Expecting value: line 5465 column 22 (char 187993)
+Error loading manifest: Expecting value: line 6187 column 22 (char 212452)
+Error loading manifest: Expecting property name enclosed in double quotes: line 4271 column 141 (char 147238)
+Error loading manifest: Unterminated string starting at: line 5597 column 7 (char 192501)
+Error loading manifest: Expecting ',' delimiter: line 4749 column 26 (char 163616)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6907 column 32 (char 236993)
+Error loading manifest: Expecting value: line 6187 column 22 (char 212452)
+Error loading manifest: Expecting value: line 5465 column 22 (char 187993)
+Error loading manifest: Expecting ',' delimiter: line 4508 column 38 (char 155430)
+Error loading manifest: Expecting ',' delimiter: line 4749 column 26 (char 163616)
+Error loading manifest: Expecting value: line 4994 column 26 (char 171728)
+Error loading manifest: Expecting ',' delimiter: line 4508 column 38 (char 155430)
+Error loading manifest: Expecting value: line 4994 column 26 (char 171728)
+Error loading manifest: Expecting value: line 5465 column 22 (char 187993)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6664 column 27 (char 228808)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6664 column 27 (char 228808)
+Error loading manifest: Expecting property name enclosed in double quotes: line 3545 column 33 (char 122670)
+Error loading manifest: Expecting ',' delimiter: line 4749 column 26 (char 163616)
+Error loading manifest: Expecting value: line 6187 column 22 (char 212452)
+Error loading manifest: Expecting ',' delimiter: line 5227 column 56 (char 179910)
+Error loading manifest: Expecting ',' delimiter: line 5711 column 26 (char 196177)
+Error loading manifest: Expecting property name enclosed in double quotes: line 3074 column 78 (char 106316)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6664 column 27 (char 228808)
+Error loading manifest: Expecting ',' delimiter: line 5227 column 56 (char 179910)
+Error loading manifest: Expecting value: line 4994 column 26 (char 171728)
+Error loading manifest: Expecting value: line 5465 column 22 (char 187993)
+Error loading manifest: Expecting ',' delimiter: line 5227 column 56 (char 179910)
+Error loading manifest: Expecting value: line 4994 column 26 (char 171728)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6907 column 32 (char 236993)
+Error loading manifest: Expecting ',' delimiter: line 4508 column 38 (char 155430)
+Error loading manifest: Expecting ',' delimiter: line 5227 column 56 (char 179910)
+Error loading manifest: Expecting value: line 5465 column 22 (char 187993)
+Error loading manifest: Expecting ',' delimiter: line 6427 column 38 (char 220630)
+Error loading manifest: Expecting value: line 4994 column 26 (char 171728)
+Error loading manifest: Expecting ',' delimiter: line 4508 column 38 (char 155430)
+Error loading manifest: Expecting ',' delimiter: line 5945 column 35 (char 204363)
+Error loading manifest: Expecting value: line 5465 column 22 (char 187993)
+Error loading manifest: Expecting ',' delimiter: line 4749 column 26 (char 163616)
+Error loading manifest: Expecting ',' delimiter: line 6427 column 38 (char 220630)
+Error loading manifest: Expecting property name enclosed in double quotes: line 6664 column 27 (char 228808)
+Error loading manifest: Expecting value: line 6187 column 22 (char 212452)
+Error loading manifest: Expecting property name enclosed in double quotes: line 4271 column 141 (char 147238)
+Error loading manifest: Expecting property name enclosed in double quotes: line 4027 column 40 (char 139052)
+Error loading manifest: Expecting value: line 4994 column 26 (char 171728)
+Error loading manifest: Expecting ',' delimiter: line 5711 column 26 (char 196177)
+Error loading manifest: Expecting value: line 4994 column 26 (char 171728)
+Error loading manifest: Expecting ',' delimiter: line 4508 column 38 (char 155430)

@@ -423,7 +423,11 @@ class CFDEnv(VecEnv):
         """
         Create ensemble of CFD simulations.
         """
-        idx = random.randint(0, self.n_envs-1)
+        seed = self.conf.environment.seed
+        rng = random.Random(seed)
+        idx = rng.randint(0, self.n_envs-1)
+        logger.info(f"Using seed {seed} to select environment {idx} from {self.n_envs} available environments")
+
         logger.info(f"Using restart files from folder {self.env_names[idx]}")
         self.tauw_ref = self.envs[idx]["tauw_ref"]
         self.ref_vel = self.envs[idx]["ref_vel"]
@@ -447,7 +451,8 @@ class CFDEnv(VecEnv):
                     os.remove(target_path)
                 shutil.copy(self.envs[idx]["input.py"], target_path)
                 
-            restart_file = random.choice(self.envs[idx]["restart_files"])
+
+            restart_file = rng.choice(self.envs[idx]["restart_files"])
             target_dir = os.path.join(self.cwd, folder_name)
             target_path = os.path.join(target_dir, "fld.bin")
             if os.path.exists(target_path):
