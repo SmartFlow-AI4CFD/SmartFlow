@@ -386,11 +386,13 @@ class CFDEnv(VecEnv):
         Get current flow state from the database.
         """
         for i in range(self.n_vec_envs):
+            print(f"Polling state from key: {self.state_key[i]}")
             self.client.poll_tensor(self.state_key[i], 100, self.poll_time)
+            print(f"Getting state from key: {self.state_key[i]}")
             try:
                 self._state[i, :] = self.client.get_tensor(self.state_key[i])
                 self.client.delete_tensor(self.state_key[i])
-                logger.debug(f"[Env {i}] Got state: {self._state[i, :5]}")
+                logger.info(f"[Env {i}] Got state: {self._state[i, :5]}")
             except Exception as exc:
                 raise Warning(f"Could not read state from key: {self.state_key[i]}") from exc
                 
@@ -472,7 +474,7 @@ class CFDEnv(VecEnv):
                 'report-bindings': None
             }
             run = self.exp.create_run_settings(
-                exe='/scratch/maochao/code/CaLES/build/cales',
+                exe='/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales',
                 exe_args=exe_args,
                 run_command='mpirun',
                 run_args=run_args
@@ -561,15 +563,16 @@ class CFDEnv(VecEnv):
                 rg_1 = -1.0*50.0 *np.abs(np.mean(reward[:,1]) - self.tauw_ref)
 
                 
-                rl_2 = -0.0*100.0 *        reward[:,2] # u_profile_err
+                rl_2 = -0.0*100.0 *        reward[:,2] # u_profile_err  # can be nan even multiplied by zero
                 rg_2 = -0.0*100.0 *np.mean(reward[:,2]) # 100 should be increased here, not used any more
                 rl_3 = -0.0*100.0 *vel_profile_err[:] # u_profile_err
                 rg_3 = -0.0*500.0 *vel_profile_err_global
                 rl_4 =  0.0 # tauw_rms
                 rg_4 = -0.0*500.0*np.abs(np.sqrt(np.mean((reward[:,1] - self.tauw_ref)**2)) - self.tauw_ref/5.0) # 500
 
-                local_reward  =  rl_0 + rl_1 + rl_2 + rl_3 + rl_4
-                global_reward =  rg_0 + rg_1 + rg_2 + rg_3 + rg_4
+                local_reward  =  rl_0 + rl_1 + rl_3 + rl_4
+                global_reward =  rg_0 + rg_1 + rg_3 + rg_4
+
 
                 # logger.info(f"rl_1: {rl_1}, rg_1: {rg_1}, rl_3: {rl_3}, rg_3: {rg_3}, rl_4: {rl_4}, rg_4: {rg_4}")
                 # logger.info(f"rl_1: {rl_1}, rg_1: {rg_1}, rl_3: {rl_3}, rg_3: {rg_3}")
@@ -599,3 +602,4 @@ class CFDEnv(VecEnv):
         # write action into database
         for i in range(self.n_vec_envs):
             self.client.put_tensor(self.action_key[i], self._action[i, :].astype(self.cfd_dtype))
+            print(f"Put action: {self._action[i, :].astype(self.cfd_dtype)}")
