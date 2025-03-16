@@ -34,7 +34,8 @@ class CFDEnv(VecEnv):
 
     def __init__(
         self,
-        conf
+        conf,
+        runtime,
     ):
         # Define agents before using in dones/rewards dicts, and one pseudo-env has one agent
         self.possible_agents = [f"agent_{i}" for i in range(conf.environment.n_pseudo_envs)]
@@ -88,20 +89,26 @@ class CFDEnv(VecEnv):
         # Init SmartSim framework: Experiment and Orchestrator (database)
         # smartsim manages the environments, so it is initialized here for now...
         # This part needs to be improved...
-        exp, hosts, db, db_is_clustered = init_smartsim(
-            port = conf.smartsim.port,
-            network_interface = conf.smartsim.network_interface,
-            launcher = conf.smartsim.launcher,
-            run_command = conf.smartsim.run_command,
-        )
-        self.exp = exp
-        self.db = db
-        # connect Python Redis client to an orchestrator database
-        db_address = db.get_address()[0]
-        os.environ["SSDB"] = db_address
+        # exp, hosts, db, db_is_clustered = init_smartsim(
+        #     port = conf.smartsim.port,
+        #     network_interface = conf.smartsim.network_interface,
+        #     launcher = conf.smartsim.launcher,
+        #     run_command = conf.smartsim.run_command,
+        # )
+        # self.exp = exp
+        # self.db = db
+        # # connect Python Redis client to an orchestrator database
+        # db_address = db.get_address()[0]
+        # os.environ["SSDB"] = db_address
+        # self.client = Client(
+        #     address=db_address,
+        #     cluster=db.batch
+        # )
+
+        self.runtime = runtime
         self.client = Client(
-            address=db_address,
-            cluster=db.batch
+            address=self.runtime.db_entry, 
+            cluster=False,
         )
 
         # manage directories
@@ -229,7 +236,10 @@ class CFDEnv(VecEnv):
 
         # Start the simulation with a new ensemble
         restart_file = self.conf.runner.restart_file if hasattr(self.conf.runner, "restart_file") else 0
-        self._start_exp(restart_file=restart_file, global_step=0)
+        self.ensemble = self._start_exp(restart_file=restart_file, global_step=0)
+
+        self._get_state()
+        self._redistribute_state()
         
         # Return numpy array observations instead of dict for VecEnv compatibility
         observations = np.zeros((self.n_pseudo_envs, self.n_state_marl), dtype=self.dtype)
@@ -316,7 +326,7 @@ class CFDEnv(VecEnv):
         Clean up the environment's resources.
         """
         self._stop_exp()
-        self.exp.stop(self.db)
+        # self.exp.stop(self.db)
 
     def get_attr(self, attr_name: str, indices: VecEnvIndices = None) -> list[Any]:
         """
@@ -395,9 +405,75 @@ class CFDEnv(VecEnv):
                 logger.info(f"[Env {i}] Got state: {self._state[i, :5]}")
             except Exception as exc:
                 raise Warning(f"Could not read state from key: {self.state_key[i]}") from exc
-                
+
 
     def _start_exp(self, restart_file=0, global_step=0):
+        """Start CFD instances within runtime environment.
+            
+            Returns:
+                List of `smartsim` handles for each started CFD environment.
+        """
+        seed = self.conf.environment.seed
+        rng = random.Random(seed)
+        idx = rng.randint(0, self.n_envs-1)
+        logger.info(f"Using seed {seed} to select environment {idx} from {self.n_envs} available environments")
+
+        logger.info(f"Using restart files from folder {self.env_names[idx]}")
+        self.tauw_ref = self.envs[idx]["tauw_ref"]
+        self.ref_vel = self.envs[idx]["ref_vel"]
+        self.ref_dzf = self.envs[idx]["ref_dzf"]
+
+
+        exe_args = []
+        exe_name = []
+        for i in range(self.n_vec_envs):
+            folder_name = f"train_{i}" if self.mode == "train" else f"eval_{i}"
+            folder_path = os.path.join(self.cwd, "experiment" ,folder_name)
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
+
+            if os.path.exists(self.envs[idx]["input.nml"]):
+                target_path = os.path.join(folder_path, "input.nml")
+                if os.path.exists(target_path):
+                    os.remove(target_path)
+                shutil.copy(self.envs[idx]["input.nml"], target_path)
+            if os.path.exists(self.envs[idx]["input.py"]):
+                target_path = os.path.join(folder_path, "input.py")
+                if os.path.exists(target_path):
+                    os.remove(target_path)
+                shutil.copy(self.envs[idx]["input.py"], target_path)
+            
+            restart_file = rng.choice(self.envs[idx]["restart_files"])
+            target_path = os.path.join(folder_path, "fld.bin")
+            if os.path.exists(target_path):
+                os.remove(target_path)
+            shutil.copy(restart_file, target_path)
+            logger.info(f"Selected restart file: {os.path.basename(restart_file)}")
+
+            # mpirun -n 2 /scratch/maochao/code/CaLES/build/cales --action_interval=10 --agent_interval=4 --restart_file=../restart/fld.bin
+            this_exe_args = {
+                "--tag": self.tag[i],
+                "--action_interval": self.n_cfd_time_steps_per_action,
+                "--agent_interval": self.agent_interval,
+                # "--restart_file": restart_file,
+            }
+            this_exe_args = [f"{k}={v}" for k,v in this_exe_args.items()]
+            exe_args.append(this_exe_args)
+            exe_name.append(f"train_{self.training_iteration*self.n_vec_envs + i}")
+
+
+        # Launch executables in runtime
+        return self.runtime.launch_models(
+            '/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales',
+            exe_args,
+            exe_name,
+            self.n_tasks_per_env,
+            self.n_vec_envs,
+            launcher=self.conf.smartsim.run_command,
+        )
+
+
+    def _start_exp_old(self, restart_file=0, global_step=0):
         """
         Starts all SOD2D instances with configuration specified in initialization.
         """
@@ -421,7 +497,7 @@ class CFDEnv(VecEnv):
             self._dump_rl_data()
 
 
-    def _create_ensemble(self):
+    def _create_ensemble_old(self):
         """
         Create ensemble of CFD simulations.
         """
@@ -452,8 +528,7 @@ class CFDEnv(VecEnv):
                 if os.path.exists(target_path):
                     os.remove(target_path)
                 shutil.copy(self.envs[idx]["input.py"], target_path)
-                
-
+            
             restart_file = rng.choice(self.envs[idx]["restart_files"])
             target_dir = os.path.join(self.cwd, folder_name)
             target_path = os.path.join(target_dir, "fld.bin")
@@ -481,7 +556,6 @@ class CFDEnv(VecEnv):
             )
             run.set_tasks(self.n_tasks_per_env)
 
-            
             model = self.exp.create_model(
                 name=f"Env_{self.training_iteration*self.n_vec_envs + i}",
                 run_settings=run,
@@ -513,8 +587,8 @@ class CFDEnv(VecEnv):
         """
         if self.ensemble:
             for i in range(self.n_vec_envs):
-                if i < len(self.ensemble) and self.ensemble[i] is not None and not self.exp.finished(self.ensemble[i]):
-                    self.exp.stop(self.ensemble[i])
+                if i < len(self.ensemble) and self.ensemble[i] is not None and not self.runtime.exp.finished(self.ensemble[i]):
+                    self.runtime.exp.stop(self.ensemble[i])
 
 
     ## Custom methods

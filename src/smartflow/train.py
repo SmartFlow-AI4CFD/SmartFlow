@@ -21,20 +21,27 @@ from smartflow.cfd_env import CFDEnv
 import wandb
 from wandb.integration.sb3 import WandbCallback
 
-def train(conf, **ignored_kwargs):
+def train(
+        conf,
+        runtime,
+        **ignored_kwargs
+    ):
 
-    run = wandb.init(
-        project="RLWM-Channel",
-        # id = "PPO-first",
-        name="PPO",
-        # config=conf,
-        sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
-        # monitor_gym=True,  # auto-upload the videos of agents playing the game
-        # save_code=True,  # optional
+    # run = wandb.init(
+    #     project="RLWM-Channel",
+    #     # id = "PPO-first",
+    #     name="PPO",
+    #     # config=conf,
+    #     sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
+    #     # monitor_gym=True,  # auto-upload the videos of agents playing the game
+    #     # save_code=True,  # optional
+    # )
+    # wandb.define_metric("*", step_metric="global_step")
+
+    env = CFDEnv(
+        conf,
+        runtime=runtime,
     )
-    wandb.define_metric("*", step_metric="global_step")
-
-    env = CFDEnv(conf)
 
     if conf.runner.restart:
         model = PPO.load(
@@ -49,7 +56,7 @@ def train(conf, **ignored_kwargs):
             verbose=3,
             n_steps=conf.runner.n_action_steps_per_pseudo_env_episode,
             batch_size=conf.runner.batch_size,
-            tensorboard_log=f"runs/{run.id}",
+            # tensorboard_log=f"runs/{run.id}",
             seed=conf.runner.seed,
         )
 
@@ -72,4 +79,6 @@ def train(conf, **ignored_kwargs):
         path=f"model_{conf.runner.agent_run_name}"
     )
 
-    run.finish()
+    print("Training done!")
+
+    # run.finish()

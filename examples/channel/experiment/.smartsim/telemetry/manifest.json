@@ -5,40 +5,40 @@
   },
   "experiment": {
     "name": "experiment",
-    "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment",
-    "launcher": "Local",
-    "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/logs/smartsim.out",
-    "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/logs/smartsim.err"
+    "path": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment",
+    "launcher": "Slurm",
+    "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/logs/smartsim.out",
+    "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/logs/smartsim.err"
   },
   "runs": [
     {
-      "run_id": "b768508",
-      "timestamp": 1741730827836713157,
+      "run_id": "ac9f7f1",
+      "timestamp": 1742144040775790888,
       "model": [],
       "orchestrator": [
         {
           "name": "orchestrator",
           "type": "redis",
           "interface": [
-            "lo"
+            "ib0"
           ],
           "shards": [
             {
               "name": "orchestrator_0",
-              "hostname": "127.0.0.1",
-              "port": 6322,
+              "hostname": "10.128.45.29",
+              "port": 6739,
               "cluster": false,
               "conf_file": null,
-              "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/b768508/database/orchestrator/orchestrator_0/orchestrator_0.out",
-              "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/b768508/database/orchestrator/orchestrator_0/orchestrator_0.err",
+              "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/ac9f7f1/database/orchestrator/orchestrator_0/orchestrator_0.out",
+              "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/ac9f7f1/database/orchestrator/orchestrator_0/orchestrator_0.err",
               "memory_file": "",
               "client_file": "",
               "client_count_file": "",
               "telemetry_metadata": {
-                "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/b768508/database/orchestrator/orchestrator_0",
-                "step_id": null,
-                "task_id": "69016",
-                "managed": false
+                "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/ac9f7f1/database/orchestrator/orchestrator_0",
+                "step_id": "13965369.0",
+                "task_id": "3488533",
+                "managed": true
               }
             }
           ]
@@ -47,12 +47,12 @@
       "ensemble": []
     },
     {
-      "run_id": "7f890e1",
-      "timestamp": 1741730828772362738,
+      "run_id": "9f303c6",
+      "timestamp": 1742144042183112392,
       "model": [
         {
-          "name": "Env_0",
-          "path": "/scratch/maochao/code/SmartFlow/examples/channel/train_0",
+          "name": "train_0",
+          "path": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/train_0",
           "exe_args": [
             "--tag=0",
             "--action_interval=10",
@@ -60,10 +60,11 @@
           ],
           "run_settings": {
             "exe": [
-              "/scratch/maochao/code/CaLES/build/cales"
+              "/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales"
             ],
-            "run_command": "/usr/bin/mpirun",
+            "run_command": "/leonardo/prod/opt/libraries/openmpi/4.1.6/gcc--12.2.0/bin/mpirun",
             "run_args": {
+              "rankfile": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00000.txt",
               "report-bindings": null,
               "n": 4
             }
@@ -77,36 +78,37 @@
           },
           "colocated_db": {},
           "telemetry_metadata": {
-            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/7f890e1/model/Env_0",
+            "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/9f303c6/model/train_0",
             "step_id": null,
-            "task_id": "69145",
+            "task_id": "3488669",
             "managed": false
           },
-          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/7f890e1/model/Env_0/Env_0.out",
-          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/7f890e1/model/Env_0/Env_0.err"
+          "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/9f303c6/model/train_0/train_0.out",
+          "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/9f303c6/model/train_0/train_0.err"
         }
       ],
       "orchestrator": [],
       "ensemble": []
     },
     {
-      "run_id": "63ffc8f",
-      "timestamp": 1741730830081206027,
+      "run_id": "bc118bd",
+      "timestamp": 1742144043391378405,
       "model": [
         {
-          "name": "Env_1",
-          "path": "/scratch/maochao/code/SmartFlow/examples/channel/train_0",
+          "name": "train_1",
+          "path": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/train_1",
           "exe_args": [
-            "--tag=0",
+            "--tag=1",
             "--action_interval=10",
             "--agent_interval=4"
           ],
           "run_settings": {
             "exe": [
-              "/scratch/maochao/code/CaLES/build/cales"
+              "/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales"
             ],
-            "run_command": "/usr/bin/mpirun",
+            "run_command": "/leonardo/prod/opt/libraries/openmpi/4.1.6/gcc--12.2.0/bin/mpirun",
             "run_args": {
+              "rankfile": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00001.txt",
               "report-bindings": null,
               "n": 4
             }
@@ -120,25 +122,60 @@
           },
           "colocated_db": {},
           "telemetry_metadata": {
-            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/63ffc8f/model/Env_1",
+            "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/bc118bd/model/train_1",
             "step_id": null,
-            "task_id": "69210",
+            "task_id": "3488708",
             "managed": false
           },
-          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/63ffc8f/model/Env_1/Env_1.out",
-          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/63ffc8f/model/Env_1/Env_1.err"
+          "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/bc118bd/model/train_1/train_1.out",
+          "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/bc118bd/model/train_1/train_1.err"
         }
       ],
       "orchestrator": [],
       "ensemble": []
     },
     {
-      "run_id": "4d1a232",
-      "timestamp": 1741730831419269781,
+      "run_id": "87319eb",
+      "timestamp": 1742144894027704003,
+      "model": [],
+      "orchestrator": [
+        {
+          "name": "orchestrator",
+          "type": "redis",
+          "interface": [
+            "ib0"
+          ],
+          "shards": [
+            {
+              "name": "orchestrator_0",
+              "hostname": "10.128.26.229",
+              "port": 6714,
+              "cluster": false,
+              "conf_file": null,
+              "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/87319eb/database/orchestrator/orchestrator_0/orchestrator_0.out",
+              "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/87319eb/database/orchestrator/orchestrator_0/orchestrator_0.err",
+              "memory_file": "",
+              "client_file": "",
+              "client_count_file": "",
+              "telemetry_metadata": {
+                "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/87319eb/database/orchestrator/orchestrator_0",
+                "step_id": "13965666.0",
+                "task_id": "2221483",
+                "managed": true
+              }
+            }
+          ]
+        }
+      ],
+      "ensemble": []
+    },
+    {
+      "run_id": "e47542b",
+      "timestamp": 1742144895445781989,
       "model": [
         {
-          "name": "Env_2",
-          "path": "/scratch/maochao/code/SmartFlow/examples/channel/train_0",
+          "name": "train_0",
+          "path": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/train_0",
           "exe_args": [
             "--tag=0",
             "--action_interval=10",
@@ -146,10 +183,11 @@
           ],
           "run_settings": {
             "exe": [
-              "/scratch/maochao/code/CaLES/build/cales"
+              "/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales"
             ],
-            "run_command": "/usr/bin/mpirun",
+            "run_command": "/leonardo/prod/opt/libraries/openmpi/4.1.6/gcc--12.2.0/bin/mpirun",
             "run_args": {
+              "rankfile": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00000.txt",
               "report-bindings": null,
               "n": 4
             }
@@ -163,36 +201,37 @@
           },
           "colocated_db": {},
           "telemetry_metadata": {
-            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/4d1a232/model/Env_2",
+            "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/e47542b/model/train_0",
             "step_id": null,
-            "task_id": "69405",
+            "task_id": "2221619",
             "managed": false
           },
-          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/4d1a232/model/Env_2/Env_2.out",
-          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/4d1a232/model/Env_2/Env_2.err"
+          "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/e47542b/model/train_0/train_0.out",
+          "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/e47542b/model/train_0/train_0.err"
         }
       ],
       "orchestrator": [],
       "ensemble": []
     },
     {
-      "run_id": "c1b5b0c",
-      "timestamp": 1741730832788578436,
+      "run_id": "c77191c",
+      "timestamp": 1742144896654806657,
       "model": [
         {
-          "name": "Env_3",
-          "path": "/scratch/maochao/code/SmartFlow/examples/channel/train_0",
+          "name": "train_1",
+          "path": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/train_1",
           "exe_args": [
-            "--tag=0",
+            "--tag=1",
             "--action_interval=10",
             "--agent_interval=4"
           ],
           "run_settings": {
             "exe": [
-              "/scratch/maochao/code/CaLES/build/cales"
+              "/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales"
             ],
-            "run_command": "/usr/bin/mpirun",
+            "run_command": "/leonardo/prod/opt/libraries/openmpi/4.1.6/gcc--12.2.0/bin/mpirun",
             "run_args": {
+              "rankfile": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00001.txt",
               "report-bindings": null,
               "n": 4
             }
@@ -206,13 +245,136 @@
           },
           "colocated_db": {},
           "telemetry_metadata": {
-            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/c1b5b0c/model/Env_3",
+            "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/c77191c/model/train_1",
             "step_id": null,
-            "task_id": "69585",
+            "task_id": "2221658",
             "managed": false
           },
-          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/c1b5b0c/model/Env_3/Env_3.out",
-          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/c1b5b0c/model/Env_3/Env_3.err"
+          "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/c77191c/model/train_1/train_1.out",
+          "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/c77191c/model/train_1/train_1.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "7fc66e3",
+      "timestamp": 1742145979125599895,
+      "model": [],
+      "orchestrator": [
+        {
+          "name": "orchestrator",
+          "type": "redis",
+          "interface": [
+            "ib0"
+          ],
+          "shards": [
+            {
+              "name": "orchestrator_0",
+              "hostname": "10.128.26.229",
+              "port": 6105,
+              "cluster": false,
+              "conf_file": null,
+              "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/7fc66e3/database/orchestrator/orchestrator_0/orchestrator_0.out",
+              "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/7fc66e3/database/orchestrator/orchestrator_0/orchestrator_0.err",
+              "memory_file": "",
+              "client_file": "",
+              "client_count_file": "",
+              "telemetry_metadata": {
+                "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/7fc66e3/database/orchestrator/orchestrator_0",
+                "step_id": "13966011.0",
+                "task_id": "2223305",
+                "managed": true
+              }
+            }
+          ]
+        }
+      ],
+      "ensemble": []
+    },
+    {
+      "run_id": "6ae733f",
+      "timestamp": 1742145980534683975,
+      "model": [
+        {
+          "name": "train_0",
+          "path": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/train_0",
+          "exe_args": [
+            "--tag=0",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales"
+            ],
+            "run_command": "/leonardo/prod/opt/libraries/openmpi/4.1.6/gcc--12.2.0/bin/mpirun",
+            "run_args": {
+              "rankfile": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/6ae733f/model/train_0",
+            "step_id": null,
+            "task_id": "2223442",
+            "managed": false
+          },
+          "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/6ae733f/model/train_0/train_0.out",
+          "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/6ae733f/model/train_0/train_0.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "1351ab5",
+      "timestamp": 1742145981743982124,
+      "model": [
+        {
+          "name": "train_1",
+          "path": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/train_1",
+          "exe_args": [
+            "--tag=1",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales"
+            ],
+            "run_command": "/leonardo/prod/opt/libraries/openmpi/4.1.6/gcc--12.2.0/bin/mpirun",
+            "run_args": {
+              "rankfile": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/1351ab5/model/train_1",
+            "step_id": null,
+            "task_id": "2223481",
+            "managed": false
+          },
+          "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/1351ab5/model/train_1/train_1.out",
+          "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/1351ab5/model/train_1/train_1.err"
         }
       ],
       "orchestrator": [],

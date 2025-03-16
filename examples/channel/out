@@ -1,0 +1,101 @@
+Configuration:
+runner:
+  mode: train
+  restart: false
+  reset_num_timesteps: true
+  total_env_episodes: 2
+  total_pseudo_env_episodes: 96
+  total_pseudo_env_action_steps: 288
+  n_epochs: 1
+  net:
+  - 128
+  - 128
+  learning_rate: 0.0005
+  log_interval: 1
+  summary_interval: 1
+  seed: 16
+  ckpt_num: 1000000
+  ckpt_interval: 1
+  n_action_steps_per_pseudo_env_episode: 3
+  n_action_steps_per_training_iteration: 288
+  total_training_iterations: 1
+  agent_run_name: 0
+  batch_size: 288
+environment:
+  n_vec_envs: 2
+  n_pseudo_envs_per_env: 48
+  n_pseudo_envs: 96
+  n_tasks_per_env: 4
+  witness_file: witness.txt
+  marl_neighbors: 1
+  rectangle_file: rectangleControl.txt
+  time_key: time
+  step_type_key: step_type
+  state_key: state
+  state_size_key: state_size
+  action_key: action
+  action_size_key: action_size
+  reward_key: reward
+  poll_time: 360000000
+  verbosity: debug
+  dump_data_flag: true
+  n_cfd_time_steps_per_action: 10
+  agent_interval: 4
+  dtype: float32
+  cfd_dtype: float64
+  action_bounds:
+  - -1.0
+  - 1.0
+  t_action: 0.1
+  f_action: 10.0
+  t_episode: 0.1
+  t_begin_control: 0.0
+  reward_norm: 1
+  reward_beta: 0.2
+  restart_file: 0
+  env_names:
+  - retau_1000
+  - retau_5200
+  seed: 16
+logging:
+  run_name: 1742145964
+  group: null
+  notes: null
+  save_dir: ../runs
+smartsim:
+  port: 6105
+  n_dbs: 1
+  network_interface: ib0
+  run_command: mpirun
+  launcher: slurm
+
+
+# Setting up "slurm" runtime...
+# Success!
+# Starting the Orchestrator...
+# Success!
+
+# Use this command to shutdown database if not terminated correctly:
+# $(smart dbcli) -h 10.128.26.229 -p 6105 shutdown
+
+# Configuration of runtime environment:
+#   Scheduler: slurm
+#   Hosts:     ['lrdn1329', 'lrdn1332']
+
+# Running in DISTRIBUTED mode:
+#   Head:      lrdn1329
+#   Workers:   ['lrdn1332']
+SmartRedis Library@18-26-19:WARNING: Environment variable SR_LOG_FILE is not set. Defaulting to stdout
+SmartRedis Library@18-26-19:WARNING: Environment variable SR_LOG_LEVEL is not set. Defaulting to INFO
+Using cpu device
+conf.runner.reset_num_timesteps: True
+18:26:19 lrdn1329.leonardo.local SmartSim[2223231:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+18:26:19 lrdn1329.leonardo.local SmartSim[2223231:MainThread] INFO Using restart files from folder retau_5200
+18:26:19 lrdn1329.leonardo.local SmartSim[2223231:MainThread] INFO Selected restart file: fld_2.bin
+18:26:19 lrdn1329.leonardo.local SmartSim[2223231:MainThread] INFO Selected restart file: fld_2.bin
+self.launch_config.rankfiles[i] = /leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00000.txt
+self.launch_config.rankfiles[i] = /leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00001.txt
+Polling state from key: ensemble_0.state
+Getting state from key: ensemble_0.state
+18:26:22 lrdn1329.leonardo.local SmartSim[2223231:MainThread] INFO [Env 0] Got state: [0.8764584  0.11032851 0.16       0.73724806 0.14453325]
+Polling state from key: ensemble_1.state

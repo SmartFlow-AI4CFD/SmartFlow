@@ -133,7 +133,7 @@ def init_smartsim(
             hosts=hosts,  # specify hostnames of nodes to launch on (without ip-addresses)
             run_command=run_command,  # ie. mpirun, srun, etc
             db_per_host=1,  # number of database shards per system host (MPMD), defaults to 1
-            single_cmd=True,  # run all shards with one (MPMD) command, defaults to True
+            single_cmd=False,  # run all shards with one (MPMD) command, defaults to True
     )
 
     # remove db files from previous run if necessary

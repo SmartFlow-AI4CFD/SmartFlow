@@ -14,8 +14,8 @@
 # cd ..
 
 
-rm -r __pycache__  experiment dump_data logs models model_0.zip runs wandb
+# rm -r __pycache__  experiment dump_data logs models model_0.zip runs wandb
 
-python main.py > job.out 2> job.err
+python -u main.py > job.out 2> job.err
 
-python main.py runner.mode=train runner.restart=True runner.reset_num_timesteps=False
+# python main.py runner.mode=train runner.restart=True runner.reset_num_timesteps=False

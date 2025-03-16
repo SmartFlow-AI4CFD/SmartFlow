@@ -1,31 +1,17 @@
 #!/bin/bash
-
-### Job name on queue
-#SBATCH --job-name=channel
-
-### Output and error files directory
-#SBATCH -D .
-
-### Output and error files
-#SBATCH --output=job_%j.out
-#SBATCH --error=job_%j.err
-
-### Run configuration
-### Rule: {ntasks-per-node} \times {cpus-per-task} = 80
-#SBATCH --nodes=1
-#SBATCH --ntasks=2
-#SBATCH --ntasks-per-node=2
-#SBATCH --cpus-per-task=1
-#SBATCH --time=00:10:00
+#SBATCH --time=00:30:00
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=32
 ##SBATCH --gres=gpu:4
+#SBATCH --cpus-per-task=1
+#SBATCH --partition=boost_usr_prod
+#SBATCH --qos=boost_qos_dbg
+##SBATCH --job-name=gpu
+#SBATCH --err=err
+#SBATCH --out=out
+#SBATCH --account=IscrB_SCORE
 
-### Queue and account
-##SBATCH --qos=acc_resa
-##SBATCH --account=upc76
+##SBATCH --ntasks-per-socket=
+##SBATCH --mem=494000 # memory per node out of 494000MB (481GB)
 
-### Load MN% modules + DRL libraries
-#. ../../utils/modules-mn5-acc.sh
-
-# export SLURM_OVERLAP=1
-
-python run.py
+python -u main.py

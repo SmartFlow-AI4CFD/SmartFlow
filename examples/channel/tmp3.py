@@ -1,22 +1,35 @@
-------------------------------------------
-| rollout/                |              |
-|    ep_len_mean          | 3            |
-|    ep_rew_mean          | -0.105       |
-| time/                   |              |
-|    fps                  | 103          |
-|    iterations           | 16           |
-|    time_elapsed         | 22           |
-|    total_timesteps      | 2304         |
-| train/                  |              |
-|    approx_kl            | 0.0053892597 |
-|    clip_fraction        | 0.0104       |
-|    clip_range           | 0.2          |
-|    entropy_loss         | -1.37        |
-|    explained_variance   | 0.0246       |
-|    learning_rate        | 0.0003       |
-|    loss                 | -0.00677     |
-|    n_updates            | 150          |
-|    policy_gradient_loss | -0.00493     |
-|    std                  | 0.945        |
-|    value_loss           | 0.00213      |
-------------------------------------------
+from smartsim import Experiment
+from smartredis import Client
+import numpy as np
+import torch
+
+# REDIS_PORT = 6379  # Use default Redis port
+REDIS_PORT = 6394  # Use default Redis port
+
+# Start a new Experiment
+exp = Experiment("experiment", launcher="local")
+
+# Create and start the Orchestrator database
+db = exp.create_database(db_nodes=1, port=REDIS_PORT, interface="lo")
+exp.generate(db)
+exp.start(db)
+
+# Connect SmartRedis client
+client = Client(address=db.get_address()[0], cluster=False)
+
+# Create sample tensor
+# sample_array_1 = torch.from_numpy(np.array([np.arange(9.)]))
+sample_array_1 = np.array([np.arange(9.)])
+client.put_tensor("script-data-1", sample_array_1)
+# client.put_tensor("script-data-1", sample_array_1.numpy().astype(np.float32))
+
+# Get and print the output tensor
+sample_array_2 = np.array([np.arange(9.)], dtype=np.float64)
+sample_array_2[0:9] = client.get_tensor("script-data-1")
+
+# Stop the database
+exp.stop(db)
+
+# print("Type of sample_array_1:", sample_array_1.numpy().astype(np.float32).dtype)
+# print("Type of sample_array_2:", sample_array_2[0:9].dtype)
+print("sample_array_1:", sample_array_1)
