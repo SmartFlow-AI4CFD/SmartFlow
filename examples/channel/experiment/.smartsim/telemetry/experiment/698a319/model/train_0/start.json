@@ -1,0 +1,8 @@
+{
+  "timestamp": 1742227487249,
+  "job_id": 27633,
+  "step_id": "",
+  "type": "model",
+  "action": "start",
+  "detail": "Proxy process 27633 started child process 27690"
+}

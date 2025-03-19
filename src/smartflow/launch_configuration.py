@@ -280,7 +280,7 @@ class LaunchConfig():
         next_free_slot = 0
         n_cores_used = 0
         for i_exe in range(n_exe):
-            filename = f'/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_{i_exe:05d}.txt'
+            filename = f'/scratch/maochao/code/SmartFlow/examples/channel/.env_{i_exe:05d}.txt'
             rankfiles.append(filename)
             with open(filename, 'w', encoding='utf-8') as rankfile:
                 for i in range(n_procs[i_exe]):

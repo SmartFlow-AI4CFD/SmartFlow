@@ -20,6 +20,8 @@ import subprocess
 from stable_baselines3.common.vec_env import VecEnv
 from stable_baselines3.common.vec_env.base_vec_env import VecEnvObs, VecEnvStepReturn, VecEnvIndices
 
+from abc import abstractmethod
+
 logger = get_logger(__name__)
 
 
@@ -85,25 +87,6 @@ class CFDEnv(VecEnv):
         
         # Data paths
         self.dump_data_path = os.path.join(self.cwd, "dump_data")
-
-        # Init SmartSim framework: Experiment and Orchestrator (database)
-        # smartsim manages the environments, so it is initialized here for now...
-        # This part needs to be improved...
-        # exp, hosts, db, db_is_clustered = init_smartsim(
-        #     port = conf.smartsim.port,
-        #     network_interface = conf.smartsim.network_interface,
-        #     launcher = conf.smartsim.launcher,
-        #     run_command = conf.smartsim.run_command,
-        # )
-        # self.exp = exp
-        # self.db = db
-        # # connect Python Redis client to an orchestrator database
-        # db_address = db.get_address()[0]
-        # os.environ["SSDB"] = db_address
-        # self.client = Client(
-        #     address=db_address,
-        #     cluster=db.batch
-        # )
 
         self.runtime = runtime
         self.client = Client(
@@ -326,7 +309,6 @@ class CFDEnv(VecEnv):
         Clean up the environment's resources.
         """
         self._stop_exp()
-        # self.exp.stop(self.db)
 
     def get_attr(self, attr_name: str, indices: VecEnvIndices = None) -> list[Any]:
         """
@@ -464,107 +446,13 @@ class CFDEnv(VecEnv):
 
         # Launch executables in runtime
         return self.runtime.launch_models(
-            '/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales',
+            '/scratch/maochao/code/CaLES/build/cales',
             exe_args,
             exe_name,
             self.n_tasks_per_env,
             self.n_vec_envs,
             launcher=self.conf.smartsim.run_command,
         )
-
-
-    def _start_exp_old(self, restart_file=0, global_step=0):
-        """
-        Starts all SOD2D instances with configuration specified in initialization.
-        """
-        # allow users to restart a completed entity, but does not allow users to
-        # run an entity of the same name that is completed or running
-        # https://github.com/CrayLabs/SmartSim/pull/480
-        # if not self.ensemble:
-        self.ensemble = self._create_ensemble()
-
-        for i in range(self.n_vec_envs):
-            self.exp.start(self.ensemble[i], block=False) # non-blocking start of CFD solvers
-
-        self._episode_global_step = 0
-
-        # Get the initial state
-        self._get_state()
-        self._redistribute_state()
-
-        # Write RL data into disk
-        if self.dump_data_flag:
-            self._dump_rl_data()
-
-
-    def _create_ensemble_old(self):
-        """
-        Create ensemble of CFD simulations.
-        """
-        seed = self.conf.environment.seed
-        rng = random.Random(seed)
-        idx = rng.randint(0, self.n_envs-1)
-        logger.info(f"Using seed {seed} to select environment {idx} from {self.n_envs} available environments")
-
-        logger.info(f"Using restart files from folder {self.env_names[idx]}")
-        self.tauw_ref = self.envs[idx]["tauw_ref"]
-        self.ref_vel = self.envs[idx]["ref_vel"]
-        self.ref_dzf = self.envs[idx]["ref_dzf"]
-
-        ensemble = []
-        for i in range(self.n_vec_envs):
-            folder_name = f"train_{i}" if self.mode == "train" else f"eval_{i}"
-            ensemble_path = os.path.join(self.cwd, folder_name)
-            if not os.path.exists(ensemble_path):
-                os.makedirs(ensemble_path)
-
-            if os.path.exists(self.envs[idx]["input.nml"]):
-                target_path = os.path.join(self.cwd, f"train_{i}", "input.nml")
-                if os.path.exists(target_path):
-                    os.remove(target_path)
-                shutil.copy(self.envs[idx]["input.nml"], target_path)
-            if os.path.exists(self.envs[idx]["input.py"]):
-                target_path = os.path.join(self.cwd, f"train_{i}", "input.py")
-                if os.path.exists(target_path):
-                    os.remove(target_path)
-                shutil.copy(self.envs[idx]["input.py"], target_path)
-            
-            restart_file = rng.choice(self.envs[idx]["restart_files"])
-            target_dir = os.path.join(self.cwd, folder_name)
-            target_path = os.path.join(target_dir, "fld.bin")
-            if os.path.exists(target_path):
-                os.remove(target_path)
-            shutil.copy(restart_file, target_path)
-            logger.info(f"Selected restart file: {os.path.basename(restart_file)}")
-
-            # mpirun -n 2 /scratch/maochao/code/CaLES/build/cales --action_interval=10 --agent_interval=4 --restart_file=../restart/fld.bin
-            exe_args = {
-                "--tag": self.tag[i],
-                "--action_interval": self.n_cfd_time_steps_per_action,
-                "--agent_interval": self.agent_interval,
-                # "--restart_file": restart_file,
-            }
-            exe_args = [f"{k}={v}" for k,v in exe_args.items()]
-            run_args = {
-                'report-bindings': None
-            }
-            run = self.exp.create_run_settings(
-                exe='/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales',
-                exe_args=exe_args,
-                run_command='mpirun',
-                run_args=run_args
-            )
-            run.set_tasks(self.n_tasks_per_env)
-
-            model = self.exp.create_model(
-                name=f"Env_{self.training_iteration*self.n_vec_envs + i}",
-                run_settings=run,
-                # path=self.cwd,
-                path=os.path.join(self.cwd, folder_name)
-            )
-            ensemble.append(model)
-
-        return ensemble
 
 
     def _dump_rl_data(self):
@@ -590,22 +478,11 @@ class CFDEnv(VecEnv):
                 if i < len(self.ensemble) and self.ensemble[i] is not None and not self.runtime.exp.finished(self.ensemble[i]):
                     self.runtime.exp.stop(self.ensemble[i])
 
-
-    ## Custom methods
     
-
     def _redistribute_state(self):
         """
         Redistribute state across MARL pseudo-environments.
         """
-
-        n_state_psenv = int(self.n_state/self.n_pseudo_envs_per_env)
-
-        # Distribute original state taking groups of "n_state_marls" on each row and append it to the state_marl array
-        # n_state_psenv = n_state_marl, if there is no neighbor
-        for i in range(self.n_vec_envs):
-            for j in range(self.n_pseudo_envs_per_env):
-                self._state_marl[i*self.n_pseudo_envs_per_env+j,:] = self._state[i, (j*n_state_psenv):(j*n_state_psenv)+self.n_state_marl]
 
 
     def _get_reward(self):
@@ -613,67 +490,9 @@ class CFDEnv(VecEnv):
         Obtain the local reward (already computed in SOD2D) from each CFD environment and compute the local/global reward for the problem at hand
         It is better to compute the global reward in python
         """
-        for i in range(self.n_vec_envs):
-            self.client.poll_tensor(self.reward_key[i], 100, self.poll_time)
-            try:
-                self._local_reward[i, :] = self.client.get_tensor(self.reward_key[i])
-                self.client.delete_tensor(self.reward_key[i])
-
-                reward = self._local_reward[i, :].reshape(self.n_pseudo_envs_per_env, self.n_reward)
-
-                # u_profile
-                vel_profile_err = np.zeros(self.n_pseudo_envs_per_env)
-                for j in range(self.n_pseudo_envs_per_env):
-                    vel_profile_err[j] = np.sum(self.ref_dzf[0:6]*(reward[j,3:3+6] - self.ref_vel[0:6])**2) # 0.15
-                
-                vel_profile_err_global = np.sum(self.ref_dzf[0:6]*(np.mean(reward[:,3:3+6],axis=0) - self.ref_vel[0:6])**2)
-                
-                #
-                rl_0 = -0.0*np.abs(        reward[:,0]  - 0.8045) # u, not used any more
-                rg_0 = -0.0*np.abs(np.mean(reward[:,0]) - 0.8045)
-
-
-                rl_1 = -1.0*50.0 *np.abs(        reward[:,1]  - self.tauw_ref) # tauw, 25000
-                rg_1 = -1.0*50.0 *np.abs(np.mean(reward[:,1]) - self.tauw_ref)
-
-                
-                rl_2 = -0.0*100.0 *        reward[:,2] # u_profile_err  # can be nan even multiplied by zero
-                rg_2 = -0.0*100.0 *np.mean(reward[:,2]) # 100 should be increased here, not used any more
-                rl_3 = -0.0*100.0 *vel_profile_err[:] # u_profile_err
-                rg_3 = -0.0*500.0 *vel_profile_err_global
-                rl_4 =  0.0 # tauw_rms
-                rg_4 = -0.0*500.0*np.abs(np.sqrt(np.mean((reward[:,1] - self.tauw_ref)**2)) - self.tauw_ref/5.0) # 500
-
-                local_reward  =  rl_0 + rl_1 + rl_3 + rl_4
-                global_reward =  rg_0 + rg_1 + rg_3 + rg_4
-
-
-                # logger.info(f"rl_1: {rl_1}, rg_1: {rg_1}, rl_3: {rl_3}, rg_3: {rg_3}, rl_4: {rl_4}, rg_4: {rg_4}")
-                # logger.info(f"rl_1: {rl_1}, rg_1: {rg_1}, rl_3: {rl_3}, rg_3: {rg_3}")
-                # print(f"rl_1: {rl_1}, rg_1: {rg_1}, rl_3: {rl_3}, rg_3: {rg_3}")
-
-                for j in range(self.n_pseudo_envs_per_env):
-                    self._reward[i * self.n_pseudo_envs_per_env + j] = self.reward_beta * global_reward + (1.0 - self.reward_beta) * local_reward[j]
-                logger.info(f"[Env {i}] Global reward: {global_reward}")
-            except Exception as exc:
-                raise Warning(f"Could not read reward from key: {self.reward_key[i]}") from exc
 
 
     def _set_action(self, action):
         """
         Write actions for each environment to be polled by the corresponding SOD2D environment.
         """
-
-        lower_bound = 0.001
-        upper_bound = 0.009
-        scaled_action = lower_bound + 0.5 * (action + 1) * (upper_bound - lower_bound)
-
-        for i in range(self.n_vec_envs):
-            for j in range(self.n_pseudo_envs_per_env):
-                for k in range(self.n_action):   # action is a single value
-                    self._action[i, j * self.n_action + k] = scaled_action[i * self.n_pseudo_envs_per_env + j, k]
-
-        # write action into database
-        for i in range(self.n_vec_envs):
-            self.client.put_tensor(self.action_key[i], self._action[i, :].astype(self.cfd_dtype))
-            print(f"Put action: {self._action[i, :].astype(self.cfd_dtype)}")

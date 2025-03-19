@@ -16,7 +16,7 @@ import absl.logging
 
 import sys
 
-from smartflow.cfd_env import CFDEnv
+from smartflow.custom_env import CustomEnv
 
 import wandb
 from wandb.integration.sb3 import WandbCallback
@@ -38,7 +38,7 @@ def train(
     # )
     # wandb.define_metric("*", step_metric="global_step")
 
-    env = CFDEnv(
+    env = CustomEnv(
         conf,
         runtime=runtime,
     )

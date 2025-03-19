@@ -74,9 +74,9 @@ class Logging:
 class SmartSim:
     port: int = field(default_factory=lambda: random.randint(6000, 7000))  # generate a random port number
     n_dbs: int = 1
-    network_interface: str = "ib0"  # "lo", "ib0"
+    network_interface: str = "lo"  # "lo", "ib0"
     run_command: str = "mpirun"
-    launcher: str = "slurm"  # "local", "slurm", "slurm-split"
+    launcher: str = "local"  # "local", "slurm", "slurm-split"
 
 @dataclass
 class Config:
@@ -89,7 +89,7 @@ class Config:
         # Initialize with defaults if not provided
         if self.environment is None:
             # These values should be provided by the user or set elsewhere
-            n_vec_envs = 2
+            n_vec_envs = 3
             n_pseudo_envs_per_env = 48
             n_cfd_time_steps_per_action = 10
             agent_interval = 4
@@ -105,7 +105,7 @@ class Config:
             self.environment.env_names = ["retau_1000", "retau_5200"]
         
         if self.runner is None:
-            total_env_episodes = 2
+            total_env_episodes = 3
             total_pseudo_env_episodes = total_env_episodes * self.environment.n_pseudo_envs_per_env
             n_action_steps_per_pseudo_env_episode = 3
             # These values should be provided by the user or set elsewhere

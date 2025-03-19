@@ -3,9 +3,9 @@ runner:
   mode: train
   restart: false
   reset_num_timesteps: true
-  total_env_episodes: 2
-  total_pseudo_env_episodes: 96
-  total_pseudo_env_action_steps: 288
+  total_env_episodes: 8
+  total_pseudo_env_episodes: 384
+  total_pseudo_env_action_steps: 1152
   n_epochs: 1
   net:
   - 128
@@ -17,14 +17,14 @@ runner:
   ckpt_num: 1000000
   ckpt_interval: 1
   n_action_steps_per_pseudo_env_episode: 3
-  n_action_steps_per_training_iteration: 288
+  n_action_steps_per_training_iteration: 1152
   total_training_iterations: 1
   agent_run_name: 0
-  batch_size: 288
+  batch_size: 1152
 environment:
-  n_vec_envs: 2
+  n_vec_envs: 8
   n_pseudo_envs_per_env: 48
-  n_pseudo_envs: 96
+  n_pseudo_envs: 384
   n_tasks_per_env: 4
   witness_file: witness.txt
   marl_neighbors: 1
@@ -58,12 +58,12 @@ environment:
   - retau_5200
   seed: 16
 logging:
-  run_name: 1742145964
+  run_name: 1742225727
   group: null
   notes: null
   save_dir: ../runs
 smartsim:
-  port: 6105
+  port: 6477
   n_dbs: 1
   network_interface: ib0
   run_command: mpirun
@@ -76,26 +76,38 @@ smartsim:
 # Success!
 
 # Use this command to shutdown database if not terminated correctly:
-# $(smart dbcli) -h 10.128.26.229 -p 6105 shutdown
+# $(smart dbcli) -h 10.128.15.49 -p 6477 shutdown
 
 # Configuration of runtime environment:
 #   Scheduler: slurm
-#   Hosts:     ['lrdn1329', 'lrdn1332']
+#   Hosts:     ['lrdn0580', 'lrdn0603']
 
 # Running in DISTRIBUTED mode:
-#   Head:      lrdn1329
-#   Workers:   ['lrdn1332']
-SmartRedis Library@18-26-19:WARNING: Environment variable SR_LOG_FILE is not set. Defaulting to stdout
-SmartRedis Library@18-26-19:WARNING: Environment variable SR_LOG_LEVEL is not set. Defaulting to INFO
+#   Head:      lrdn0580
+#   Workers:   ['lrdn0603']
+SmartRedis Library@16-35-41:WARNING: Environment variable SR_LOG_FILE is not set. Defaulting to stdout
+SmartRedis Library@16-35-41:WARNING: Environment variable SR_LOG_LEVEL is not set. Defaulting to INFO
 Using cpu device
 conf.runner.reset_num_timesteps: True
-18:26:19 lrdn1329.leonardo.local SmartSim[2223231:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
-18:26:19 lrdn1329.leonardo.local SmartSim[2223231:MainThread] INFO Using restart files from folder retau_5200
-18:26:19 lrdn1329.leonardo.local SmartSim[2223231:MainThread] INFO Selected restart file: fld_2.bin
-18:26:19 lrdn1329.leonardo.local SmartSim[2223231:MainThread] INFO Selected restart file: fld_2.bin
+16:35:41 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO Using seed 16 to select environment 1 from 2 available environments
+16:35:41 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO Using restart files from folder retau_5200
+16:35:41 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO Selected restart file: fld_2.bin
+16:35:41 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO Selected restart file: fld_2.bin
+16:35:41 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO Selected restart file: fld_3.bin
+16:35:41 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO Selected restart file: fld_2.bin
+16:35:41 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO Selected restart file: fld_1.bin
+16:35:41 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO Selected restart file: fld_2.bin
+16:35:41 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO Selected restart file: fld_0.bin
+16:35:41 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO Selected restart file: fld_2.bin
 self.launch_config.rankfiles[i] = /leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00000.txt
 self.launch_config.rankfiles[i] = /leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00001.txt
+self.launch_config.rankfiles[i] = /leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00002.txt
+self.launch_config.rankfiles[i] = /leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00003.txt
+self.launch_config.rankfiles[i] = /leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00004.txt
+self.launch_config.rankfiles[i] = /leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00005.txt
+self.launch_config.rankfiles[i] = /leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00006.txt
+self.launch_config.rankfiles[i] = /leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/channel/.env_00007.txt
 Polling state from key: ensemble_0.state
 Getting state from key: ensemble_0.state
-18:26:22 lrdn1329.leonardo.local SmartSim[2223231:MainThread] INFO [Env 0] Got state: [0.8764584  0.11032851 0.16       0.73724806 0.14453325]
+16:35:51 lrdn0580.leonardo.local SmartSim[1889285:MainThread] INFO [Env 0] Got state: [0.8764584  0.11032851 0.16       0.73724806 0.14453325]
 Polling state from key: ensemble_1.state
