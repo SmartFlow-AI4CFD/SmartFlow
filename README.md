@@ -5,12 +5,11 @@
 - [Publications](#publications)
 - [How it works](#how-it-works)
 - [Installation](#installation)
-  - [1. SmartSim](#1-smartsim)
-  - [2. SmartRedis](#2-smartredis)
-  - [3. SmartRedis-MPI](#3-smartredis-mpi)
-  - [4. Stable-Baselines3](#4-stable-baselines3)
+  - [1. SmartSim and SmartRedis](#1-smartsim-and-smartredis)
+  - [2. Stable-Baselines3](#2-stable-baselines3)
+  - [3. SmartFlow](#3-smartflow)
+  - [4. SmartRedis-MPI](#4-smartredis-mpi)
   - [5. CFD Solver](#5-cfd-solver)
-  - [6. SmartFlow](#6-smartflow)
 - [Run a case](#run-a-case)
   - [Running on a standalone machine](#running-on-a-standalone-machine)
   - [Running with SLURM on a cluster](#running-with-slurm-on-a-cluster)
@@ -38,12 +37,11 @@ The SmartRedis clients offer high-level API calls such as `put_tensor` and `get_
 
 ## Installation
 The following components are required to use the SmartFlow framework:
-1. SmartSim
-2. SmartRedis
-3. SmartRedis-MPI
-4. Stable-Baselines3
+1. SmartSim and SmartRedis
+2. Stable-Baselines3
+3. SmartFlow
+4. SmartRedis-MPI
 5. CFD solver
-6. SmartFlow
 
 For comprehensive installation instructions, please refer to the official documentation for each component:
 - [SmartSim and SmartRedis](https://www.craylabs.org/docs/installation_instructions/basic.html)
@@ -59,20 +57,17 @@ python -m venv /path/to/smartflow/environment
 source /path/to/smartflow/environment/bin/activate
 ```
 
-### 1. SmartSim
-Install SmartSim with the following commands:
+### 1. SmartSim and SmartRedis
+SmartSim provides the infrastructure for launching and managing simulations, while SmartRedis provides client interfaces for interacting with the in-memory Redis database.
 
+#### Python Installation
 ```sh
+# Install SmartSim
 pip install smartsim
 # Build SmartSim with CPU support and Dragon
 smart build --device cpu --dragon
-```
 
-### 2. SmartRedis
-SmartRedis provides the client interfaces for interacting with the in-memory Redis database.
-
-#### Python Client
-```sh
+# Install SmartRedis Python client
 pip install smartredis
 ```
 
@@ -100,8 +95,22 @@ cd smartredis
 make lib-with-fortran CC=nvc CXX=nvc++ FC=nvfortran
 ```
 
-### 3. SmartRedis-MPI
-After installing SmartRedis, build SmartRedis-MPI for MPI-based parallel applications:
+### 2. Stable-Baselines3
+Stable-Baselines3 is a Python library that provides implementations of reinforcement learning algorithms. It can be installed with the following command:
+```sh
+pip install stable-baselines3[extra]
+```
+
+### 3. SmartFlow
+SmartFlow is installed with the following commands:
+```sh
+cd SmartFlow
+pip install -e .
+```
+This will mark the current package as editable, so it can be modified and the changes will be automatically available to the Python environment.
+
+### 4. SmartRedis-MPI
+Before installing CFD solver, build the SmartRedis-MPI library that will be linked by MPI-based parallel cfd solver:
 
 ```sh
 git clone https://github.com/soaringxmc/smartredis-mpi.git
@@ -120,23 +129,8 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/smartredis-mpi/lib
 # Add this to your .bashrc or .bash_profile for persistence
 ```
 
-### 4. Stable-Baselines3
-Stable-Baselines3 is a Python library that provides implementations of reinforcement learning algorithms. It can be installed with the following command:
-```sh
-pip install stable-baselines3[extra]
-```
-
 ### 5. CFD Solver
-The biggest advantage of SmartFlow is that it can be easily integrated with any CFD solver. Only several lines of code need to be added to the CFD solver to enable the communication with the SmartFlow framework. As an example, we only added five lines of code to the [CaLES](https://github.com/soaringxmc/CaLES) solver to enable its coupling with the SmartFlow framework. If you want to use CaLES as your CFD solver or to simply test the workflow of the SmartFlow framework, please refer to the [CaLES](https://github.com/soaringxmc/CaLES) documentation for installation instructions.
-
-### 6. SmartFlow
-Finally, SmartFlow is installed with the following commands:
-```sh
-cd SmartFlow
-pip install -e .
-```
-This will mark the current package as editable, so it can be modified and the changes will be automatically available to the Python environment.
-
+The advantage of SmartFlow is that it can be easily integrated with any CFD solver. Only several lines of code need to be added to the CFD solver to enable the communication with the SmartFlow framework. As an example, we only added five lines of code to the [CaLES](https://github.com/soaringxmc/CaLES) solver to enable its coupling with the SmartFlow framework. If you want to use CaLES as your CFD solver or to simply test the workflow of the SmartFlow framework, please refer to the [CaLES](https://github.com/soaringxmc/CaLES) documentation for installation instructions.
 
 ## Run a case
 ### Running on a standalone machine
