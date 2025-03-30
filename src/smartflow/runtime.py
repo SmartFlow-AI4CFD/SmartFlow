@@ -180,6 +180,7 @@ class Runtime():
     def launch_models(
             self,
             exe: Union[str, List[str]],
+            exe_path: Union[str, List[str]],
             exe_args: Union[str, List[str]],
             exe_name: Union[str, List[str]],
             n_procs: Union[int, List[int]],
@@ -216,6 +217,7 @@ class Runtime():
 
         # Validate that arguments are of correct length
         exe = _validate_args(exe, n_exe)
+        exe_path = _validate_args(exe_path, n_exe)
         exe_args = _validate_args(exe_args, n_exe)
         exe_name = _validate_args(exe_name, n_exe)
         n_procs = _validate_args(n_procs, n_exe)
@@ -246,7 +248,6 @@ class Runtime():
                 )
             else:
                 if launcher == 'mpirun':
-                    print(f"self.launch_config.rankfiles[i] = {self.launch_config.rankfiles[i]}")
                     run_args = {
                         'rankfile': self.launch_config.rankfiles[i],
                         'report-bindings': None
@@ -267,7 +268,7 @@ class Runtime():
                 )
                 run_settings.set_tasks(n_procs[i])
 
-            model = self.exp.create_model(exe_name[i], run_settings)
+            model = self.exp.create_model(exe_name[i], run_settings, path=exe_path[i])
             self.exp.start(model, block=False, summary=False)
             models.append(model)
 
@@ -389,7 +390,7 @@ class Runtime():
                 the IP address of the host of the database.
         """
         # Generate relexi experiment
-        exp = Experiment('experiment', launcher=self.type)
+        exp = Experiment('envs', launcher=self.type)
 
         # Initialize the orchestrator based on the orchestrator_type
         db = exp.create_database(

@@ -1,0 +1,31 @@
+{
+  "os": "Linux-6.1.0-32-amd64-x86_64-with-glibc2.36",
+  "python": "CPython 3.10.16",
+  "startedAt": "2025-03-29T16:58:09.795911Z",
+  "program": "/scratch/maochao/code/SmartFlow/examples/channel/main.py",
+  "codePath": "examples/channel/main.py",
+  "git": {
+    "remote": "git@github.com:soaringxmc/SmartFlow.git",
+    "commit": "d32ae3d39564c563cff9aefb3dc8e81c0a8d6f0e"
+  },
+  "email": "maochao.xiao@uniroma1.it",
+  "root": "/scratch/maochao/code/SmartFlow/examples/channel",
+  "host": "gjertvasstind",
+  "executable": "/scratch/maochao/.venv/smartsod2d/bin/python",
+  "codePathLocal": "main.py",
+  "cpu_count": 14,
+  "cpu_count_logical": 28,
+  "disk": {
+    "/": {
+      "total": "63090663424",
+      "used": "39454175232"
+    }
+  },
+  "memory": {
+    "total": "269923917824"
+  },
+  "cpu": {
+    "count": 14,
+    "countLogical": 28
+  }
+}

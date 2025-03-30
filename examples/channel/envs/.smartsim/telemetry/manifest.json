@@ -1,0 +1,1070 @@
+{
+  "schema info": {
+    "schema_name": "entity manifest",
+    "version": "0.0.4"
+  },
+  "experiment": {
+    "name": "experiment",
+    "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment",
+    "launcher": "Local",
+    "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/logs/smartsim.out",
+    "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/logs/smartsim.err"
+  },
+  "runs": [
+    {
+      "run_id": "48538dc",
+      "timestamp": 1743367542304811219,
+      "model": [],
+      "orchestrator": [
+        {
+          "name": "orchestrator",
+          "type": "redis",
+          "interface": [
+            "lo"
+          ],
+          "shards": [
+            {
+              "name": "orchestrator_0",
+              "hostname": "127.0.0.1",
+              "port": 6382,
+              "cluster": false,
+              "conf_file": null,
+              "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/48538dc/database/orchestrator/orchestrator_0/orchestrator_0.out",
+              "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/48538dc/database/orchestrator/orchestrator_0/orchestrator_0.err",
+              "memory_file": "",
+              "client_file": "",
+              "client_count_file": "",
+              "telemetry_metadata": {
+                "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/48538dc/database/orchestrator/orchestrator_0",
+                "step_id": null,
+                "task_id": "38555",
+                "managed": false
+              }
+            }
+          ]
+        }
+      ],
+      "ensemble": []
+    },
+    {
+      "run_id": "d6cfe14",
+      "timestamp": 1743367543699671267,
+      "model": [
+        {
+          "name": "env_0",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_000",
+          "exe_args": [
+            "--tag=env_000",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/d6cfe14/model/env_0",
+            "step_id": null,
+            "task_id": "38736",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/d6cfe14/model/env_0/env_0.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/d6cfe14/model/env_0/env_0.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "d9f2dc6",
+      "timestamp": 1743367543921941352,
+      "model": [
+        {
+          "name": "env_1",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_001",
+          "exe_args": [
+            "--tag=env_001",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/d9f2dc6/model/env_1",
+            "step_id": null,
+            "task_id": "38768",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/d9f2dc6/model/env_1/env_1.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/d9f2dc6/model/env_1/env_1.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "95dcb29",
+      "timestamp": 1743367545223012472,
+      "model": [
+        {
+          "name": "env_2",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_002",
+          "exe_args": [
+            "--tag=env_002",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/95dcb29/model/env_2",
+            "step_id": null,
+            "task_id": "38854",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/95dcb29/model/env_2/env_2.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/95dcb29/model/env_2/env_2.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "e8a27bf",
+      "timestamp": 1743367545472247950,
+      "model": [
+        {
+          "name": "env_3",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_003",
+          "exe_args": [
+            "--tag=env_003",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/e8a27bf/model/env_3",
+            "step_id": null,
+            "task_id": "38882",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/e8a27bf/model/env_3/env_3.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/e8a27bf/model/env_3/env_3.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "68006f8",
+      "timestamp": 1743367743864695176,
+      "model": [],
+      "orchestrator": [
+        {
+          "name": "orchestrator",
+          "type": "redis",
+          "interface": [
+            "lo"
+          ],
+          "shards": [
+            {
+              "name": "orchestrator_0",
+              "hostname": "127.0.0.1",
+              "port": 6771,
+              "cluster": false,
+              "conf_file": null,
+              "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/68006f8/database/orchestrator/orchestrator_0/orchestrator_0.out",
+              "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/68006f8/database/orchestrator/orchestrator_0/orchestrator_0.err",
+              "memory_file": "",
+              "client_file": "",
+              "client_count_file": "",
+              "telemetry_metadata": {
+                "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/68006f8/database/orchestrator/orchestrator_0",
+                "step_id": null,
+                "task_id": "39796",
+                "managed": false
+              }
+            }
+          ]
+        }
+      ],
+      "ensemble": []
+    },
+    {
+      "run_id": "30c78d6",
+      "timestamp": 1743367745335613391,
+      "model": [
+        {
+          "name": "env_0",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_000",
+          "exe_args": [
+            "--tag=env_000",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/30c78d6/model/env_0",
+            "step_id": null,
+            "task_id": "39942",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/30c78d6/model/env_0/env_0.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/30c78d6/model/env_0/env_0.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "9452431",
+      "timestamp": 1743367745542496766,
+      "model": [
+        {
+          "name": "env_1",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_001",
+          "exe_args": [
+            "--tag=env_001",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/9452431/model/env_1",
+            "step_id": null,
+            "task_id": "39970",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/9452431/model/env_1/env_1.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/9452431/model/env_1/env_1.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "2b019b8",
+      "timestamp": 1743367746828082843,
+      "model": [
+        {
+          "name": "env_2",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_002",
+          "exe_args": [
+            "--tag=env_002",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/2b019b8/model/env_2",
+            "step_id": null,
+            "task_id": "40056",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/2b019b8/model/env_2/env_2.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/2b019b8/model/env_2/env_2.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "e8214ac",
+      "timestamp": 1743367747098218010,
+      "model": [
+        {
+          "name": "env_3",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_003",
+          "exe_args": [
+            "--tag=env_003",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/e8214ac/model/env_3",
+            "step_id": null,
+            "task_id": "40084",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/e8214ac/model/env_3/env_3.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/e8214ac/model/env_3/env_3.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "b3514d4",
+      "timestamp": 1743367819271610013,
+      "model": [],
+      "orchestrator": [
+        {
+          "name": "orchestrator",
+          "type": "redis",
+          "interface": [
+            "lo"
+          ],
+          "shards": [
+            {
+              "name": "orchestrator_0",
+              "hostname": "127.0.0.1",
+              "port": 6697,
+              "cluster": false,
+              "conf_file": null,
+              "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/b3514d4/database/orchestrator/orchestrator_0/orchestrator_0.out",
+              "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/b3514d4/database/orchestrator/orchestrator_0/orchestrator_0.err",
+              "memory_file": "",
+              "client_file": "",
+              "client_count_file": "",
+              "telemetry_metadata": {
+                "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/b3514d4/database/orchestrator/orchestrator_0",
+                "step_id": null,
+                "task_id": "40784",
+                "managed": false
+              }
+            }
+          ]
+        }
+      ],
+      "ensemble": []
+    },
+    {
+      "run_id": "81add38",
+      "timestamp": 1743367820808253955,
+      "model": [
+        {
+          "name": "env_0",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_000",
+          "exe_args": [
+            "--tag=env_000",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/81add38/model/env_0",
+            "step_id": null,
+            "task_id": "40979",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/81add38/model/env_0/env_0.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/81add38/model/env_0/env_0.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "823e6f8",
+      "timestamp": 1743367821012654117,
+      "model": [
+        {
+          "name": "env_1",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_001",
+          "exe_args": [
+            "--tag=env_001",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/823e6f8/model/env_1",
+            "step_id": null,
+            "task_id": "41007",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/823e6f8/model/env_1/env_1.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/823e6f8/model/env_1/env_1.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "ce44a0e",
+      "timestamp": 1743367822395798748,
+      "model": [
+        {
+          "name": "env_2",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_002",
+          "exe_args": [
+            "--tag=env_002",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/ce44a0e/model/env_2",
+            "step_id": null,
+            "task_id": "41093",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/ce44a0e/model/env_2/env_2.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/ce44a0e/model/env_2/env_2.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "7d7b83b",
+      "timestamp": 1743367822652934931,
+      "model": [
+        {
+          "name": "env_3",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/env_003",
+          "exe_args": [
+            "--tag=env_003",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/7d7b83b/model/env_3",
+            "step_id": null,
+            "task_id": "41121",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/7d7b83b/model/env_3/env_3.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/experiment/.smartsim/telemetry/experiment/7d7b83b/model/env_3/env_3.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "30a456c",
+      "timestamp": 1743368486394659022,
+      "model": [],
+      "orchestrator": [
+        {
+          "name": "orchestrator",
+          "type": "redis",
+          "interface": [
+            "lo"
+          ],
+          "shards": [
+            {
+              "name": "orchestrator_0",
+              "hostname": "127.0.0.1",
+              "port": 6669,
+              "cluster": false,
+              "conf_file": null,
+              "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/30a456c/database/orchestrator/orchestrator_0/orchestrator_0.out",
+              "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/30a456c/database/orchestrator/orchestrator_0/orchestrator_0.err",
+              "memory_file": "",
+              "client_file": "",
+              "client_count_file": "",
+              "telemetry_metadata": {
+                "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/30a456c/database/orchestrator/orchestrator_0",
+                "step_id": null,
+                "task_id": "43242",
+                "managed": false
+              }
+            }
+          ]
+        }
+      ],
+      "ensemble": []
+    },
+    {
+      "run_id": "8569a41",
+      "timestamp": 1743368487781950535,
+      "model": [
+        {
+          "name": "env_0",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/envs/env_000",
+          "exe_args": [
+            "--tag=env_000",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/8569a41/model/env_0",
+            "step_id": null,
+            "task_id": "43416",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/8569a41/model/env_0/env_0.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/8569a41/model/env_0/env_0.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "e093c0a",
+      "timestamp": 1743368488004013347,
+      "model": [
+        {
+          "name": "env_1",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/envs/env_001",
+          "exe_args": [
+            "--tag=env_001",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/e093c0a/model/env_1",
+            "step_id": null,
+            "task_id": "43448",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/e093c0a/model/env_1/env_1.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/e093c0a/model/env_1/env_1.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "cf9d139",
+      "timestamp": 1743368489295509083,
+      "model": [
+        {
+          "name": "env_2",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/envs/env_002",
+          "exe_args": [
+            "--tag=env_002",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/cf9d139/model/env_2",
+            "step_id": null,
+            "task_id": "43534",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/cf9d139/model/env_2/env_2.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/cf9d139/model/env_2/env_2.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "91e7f63",
+      "timestamp": 1743368489547381208,
+      "model": [
+        {
+          "name": "env_3",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/envs/env_003",
+          "exe_args": [
+            "--tag=env_003",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/91e7f63/model/env_3",
+            "step_id": null,
+            "task_id": "43562",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/91e7f63/model/env_3/env_3.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/91e7f63/model/env_3/env_3.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "f17b642",
+      "timestamp": 1743369245249343856,
+      "model": [],
+      "orchestrator": [
+        {
+          "name": "orchestrator",
+          "type": "redis",
+          "interface": [
+            "lo"
+          ],
+          "shards": [
+            {
+              "name": "orchestrator_0",
+              "hostname": "127.0.0.1",
+              "port": 6281,
+              "cluster": false,
+              "conf_file": null,
+              "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/f17b642/database/orchestrator/orchestrator_0/orchestrator_0.out",
+              "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/f17b642/database/orchestrator/orchestrator_0/orchestrator_0.err",
+              "memory_file": "",
+              "client_file": "",
+              "client_count_file": "",
+              "telemetry_metadata": {
+                "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/f17b642/database/orchestrator/orchestrator_0",
+                "step_id": null,
+                "task_id": "44690",
+                "managed": false
+              }
+            }
+          ]
+        }
+      ],
+      "ensemble": []
+    },
+    {
+      "run_id": "57ae13e",
+      "timestamp": 1743369246662512674,
+      "model": [
+        {
+          "name": "env_0",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/envs/env_000",
+          "exe_args": [
+            "--tag=env_000",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/57ae13e/model/env_0",
+            "step_id": null,
+            "task_id": "44871",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/57ae13e/model/env_0/env_0.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/57ae13e/model/env_0/env_0.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "bef338f",
+      "timestamp": 1743369246891926757,
+      "model": [
+        {
+          "name": "env_1",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/envs/env_001",
+          "exe_args": [
+            "--tag=env_001",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/bef338f/model/env_1",
+            "step_id": null,
+            "task_id": "44901",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/bef338f/model/env_1/env_1.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/bef338f/model/env_1/env_1.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "7e76702",
+      "timestamp": 1743369248165271156,
+      "model": [
+        {
+          "name": "env_2",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/envs/env_002",
+          "exe_args": [
+            "--tag=env_002",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_000.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/7e76702/model/env_2",
+            "step_id": null,
+            "task_id": "44996",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/7e76702/model/env_2/env_2.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/7e76702/model/env_2/env_2.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "14f435f",
+      "timestamp": 1743369248411882404,
+      "model": [
+        {
+          "name": "env_3",
+          "path": "/scratch/maochao/code/SmartFlow/examples/channel/envs/env_003",
+          "exe_args": [
+            "--tag=env_003",
+            "--action_interval=10",
+            "--agent_interval=4"
+          ],
+          "run_settings": {
+            "exe": [
+              "/scratch/maochao/code/CaLES/build/cales"
+            ],
+            "run_command": "/usr/bin/mpirun",
+            "run_args": {
+              "rankfile": "/scratch/maochao/code/SmartFlow/examples/channel/.env_001.txt",
+              "report-bindings": null,
+              "n": 4
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/14f435f/model/env_3",
+            "step_id": null,
+            "task_id": "45024",
+            "managed": false
+          },
+          "out_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/14f435f/model/env_3/env_3.out",
+          "err_file": "/scratch/maochao/code/SmartFlow/examples/channel/envs/.smartsim/telemetry/envs/14f435f/model/env_3/env_3.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    }
+  ]
+}

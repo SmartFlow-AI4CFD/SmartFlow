@@ -1,0 +1,84 @@
+#!/usr/bin/env python3
+
+import os
+import random
+import time
+import contextlib
+import absl.logging
+import sys
+
+import numpy as np
+
+import wandb
+from wandb.integration.sb3 import WandbCallback
+
+from stable_baselines3 import PPO
+from stable_baselines3.ppo import CnnPolicy
+from stable_baselines3.common.callbacks import CheckpointCallback
+from stable_baselines3.common import env_checker
+
+from smartsim.log import get_logger
+from smartflow.custom_env import CustomEnv
+
+
+def train(
+        conf,
+        runtime,
+        **ignored_kwargs
+    ):
+
+    run = wandb.init(
+        project="RLWM-Channel",
+        # id = "PPO-first",
+        name="PPO",
+        # config=conf,
+        sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
+        # monitor_gym=True,  # auto-upload the videos of agents playing the game
+        # save_code=True,  # optional
+    )
+    wandb.define_metric("*", step_metric="global_step")
+
+    env = CustomEnv(
+        conf,
+        runtime=runtime,
+    )
+
+    model = PPO(
+        policy='MlpPolicy',
+        env=env,
+        verbose=3,
+        n_steps=conf.runner.n_action_steps_per_pseudo_env_episode,
+        batch_size=conf.runner.batch_size,
+        tensorboard_log=f"runs/{run.id}",
+        seed=conf.runner.seed,
+    )
+
+    # Definition of the learning callback
+    checkpoint_callback = CheckpointCallback(
+        save_freq=conf.runner.n_action_steps_per_pseudo_env_episode,
+        save_path='./logs/',
+        name_prefix=f'{conf.logging.run_name}-rl_model'
+    )
+
+    # Actual training
+    model.learn(
+        total_timesteps=conf.runner.total_pseudo_env_action_steps,
+        callback=checkpoint_callback,
+        reset_num_timesteps=True
+    )
+
+    model.set_random_seed(conf.runner.seed)
+    env.training_iteration = 0
+    env.rng = random.Random(conf.environment.seed)
+    env.reset()
+    model.set_env(env, force_reset=True)
+
+    model.learn(
+        total_timesteps=conf.runner.total_pseudo_env_action_steps,
+        callback=checkpoint_callback,
+        reset_num_timesteps=False
+    )
+
+    print("Training done!")
+
+    run.finish()

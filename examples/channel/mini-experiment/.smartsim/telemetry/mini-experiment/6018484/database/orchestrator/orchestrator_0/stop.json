@@ -1,9 +1,0 @@
-{
-  "timestamp": 1742060523488,
-  "job_id": 2418635,
-  "step_id": "13935260.0",
-  "type": "orchestrator",
-  "action": "stop",
-  "detail": "status: SmartSimStatus.STATUS_COMPLETED",
-  "return_code": 0
-}

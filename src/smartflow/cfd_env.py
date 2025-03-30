@@ -9,7 +9,6 @@ from typing import Any, List, Dict, Union, Optional, Tuple, Sequence
 
 from smartredis import Client
 from smartsim.log import get_logger
-from smartflow.init_smartsim import init_smartsim
 
 import gymnasium as gym
 from gymnasium import spaces
@@ -33,165 +32,112 @@ class CFDEnv(VecEnv):
     :param observation_space: Observation space
     :param action_space: Action space
     """
+    def __init__(self, conf, runtime):
 
-    def __init__(
-        self,
-        conf,
-        runtime,
-    ):
+        self.n_total_agents = conf.environment.n_total_agents
+        self.agent_state_dim = conf.environment.agent_state_dim
+        self.agent_action_dim = conf.environment.agent_action_dim
+        self.action_bounds = conf.environment.action_bounds
+
+        observation_space = spaces.Box(
+            low=-np.inf,
+            high=np.inf,
+            shape=(self.agent_state_dim,),
+            dtype=np.float32
+        )
+
+        action_space = spaces.Box(
+            low=self.action_bounds[0],
+            high=self.action_bounds[1],
+            shape=(self.agent_action_dim,),
+            dtype=np.float32
+        )
+
+        super().__init__(
+            num_envs=self.n_total_agents,
+            observation_space=observation_space,
+            action_space=action_space
+        )
+
         # Define agents before using in dones/rewards dicts, and one pseudo-env has one agent
-        self.possible_agents = [f"agent_{i}" for i in range(conf.environment.n_pseudo_envs)]
+        self.possible_agents = [f"agent_{i}" for i in range(self.n_total_agents)]
         self.agents = self.possible_agents[:]
         
         # Set render_mode early to avoid warnings from VecEnv
         self.render_mode = None
-        
-        # Store configuration
         self.conf = conf
+        self.runtime = runtime
         
         # Initialize required parameters from config
         self.mode = conf.runner.mode
-        self.n_action_steps_per_pseudo_env_episode = conf.runner.n_action_steps_per_pseudo_env_episode
-        self.n_vec_envs = conf.environment.n_vec_envs
-        self.n_pseudo_envs_per_env = conf.environment.n_pseudo_envs_per_env
-        self.n_pseudo_envs = conf.environment.n_pseudo_envs
-        self.n_tasks_per_env = conf.environment.n_tasks_per_env
-        self.witness_file = conf.environment.witness_file
-        self.rectangle_file = conf.environment.rectangle_file
-        self.time_key = conf.environment.time_key
-        self.step_type_key = conf.environment.step_type_key
-        self.state_key = conf.environment.state_key
-        self.action_key = conf.environment.action_key
-        self.reward_key = conf.environment.reward_key
-        self.state_size_key = conf.environment.state_size_key
-        self.action_size_key = conf.environment.action_size_key
-        self.dtype = conf.environment.dtype
+        self.steps_per_episode = conf.runner.steps_per_episode
+        self.n_action_steps_per_batch = conf.runner.steps_per_batch
+        self.n_cfds = conf.environment.n_cfds
+        self.agents_per_cfd = conf.environment.agents_per_cfd
+        self.tasks_per_cfd = conf.environment.tasks_per_cfd
         self.cfd_dtype = conf.environment.cfd_dtype
         self.poll_time = conf.environment.poll_time
-        self.env_names = conf.environment.env_names
-        self.dump_data_flag = conf.environment.dump_data_flag
-        self.cwd = os.getcwd()
-        self.total_training_iterations = conf.runner.total_training_iterations
-        
-        # Action related parameters
-        self.n_cfd_time_steps_per_action = conf.environment.n_cfd_time_steps_per_action
+        self.save_trajectories = conf.environment.save_trajectories
+        self.trajectory_path = conf.environment.trajectory_path
+        self.total_iterations = conf.runner.n_iterations
+        self.cfd_state_dim = conf.environment.cfd_state_dim
+        self.cfd_action_dim = conf.environment.cfd_action_dim
+        self.cfd_reward_dim = conf.environment.cfd_reward_dim
+        self.exe = conf.environment.executable_path
+        self.cfd_steps_per_action = conf.environment.cfd_steps_per_action
         self.agent_interval = conf.environment.agent_interval
-        self.action_bounds = conf.environment.action_bounds
         self.reward_beta = conf.environment.reward_beta
-        self.t_action = conf.environment.t_action
-        self.f_action = conf.environment.f_action
-        self.t_episode = conf.environment.t_episode
-        self.t_begin_control = conf.environment.t_begin_control
+        self.cwd = os.getcwd()
 
-        self.training_iteration = 0
-        
-        # Data paths
-        self.dump_data_path = os.path.join(self.cwd, "dump_data")
+        # Initialize parameters applicable to all cases
+        self.n_cases = len(conf.environment.case_names)
+        self.cases = [{} for _ in range(self.n_cases)]
+        for i in range(self.n_cases):
+            self.cases[i]["name"] = conf.environment.case_names[i]
+            case_path = os.path.join(conf.environment.case_folder, conf.environment.case_names[i])
+            self.cases[i]["path"] = case_path
 
-        self.runtime = runtime
+        # Initialize counters
+        self.iteration = 0
+        self._global_step = 0
+
+        # Initialize smartredis client
         self.client = Client(
             address=self.runtime.db_entry, 
             cluster=False,
         )
 
-        # manage directories
-        if self.mode == "eval" and os.path.exists(self.dump_data_path):
-            counter = 0
-            path = self.dump_data_path + f"_{counter}"
-            while os.path.exists(path):
-                counter += 1
-                path = self.dump_data_path + f"_{counter}"
-            os.rename(self.dump_data_path, path)
-            logger.info(f"{bcolors.WARNING}The data path `{self.dump_data_path}` exists. Moving it to `{path}`{bcolors.ENDC}")
-        if self.dump_data_flag:
-            if not os.path.exists(os.path.join(self.dump_data_path, "state")):
-                os.makedirs(os.path.join(self.dump_data_path, "state"))
-            if not os.path.exists(os.path.join(self.dump_data_path, "reward")):
-                os.makedirs(os.path.join(self.dump_data_path, "reward"))
-            if not os.path.exists(os.path.join(self.dump_data_path, "action")):
-                os.makedirs(os.path.join(self.dump_data_path, "action"))
+        # Initialize states, actions, and rewards by CFD and agent, respectively
+        self._cfd_states = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_state_dim))
+        self._cfd_actions = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_action_dim))
+        self._cfd_rewards = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_reward_dim))
+        self._agent_states = np.zeros((self.n_total_agents, self.agent_state_dim))
+        self._agent_actions = np.zeros((self.n_total_agents, self.agent_action_dim))
+        self._agent_rewards = np.zeros(self.n_total_agents)
 
-        # generate ensemble keys
-        self.time_key = ["ensemble_" + str(i) + "." + self.time_key for i in range(self.n_vec_envs)]
-        self.step_type_key = ["ensemble_" + str(i) + "." + self.step_type_key for i in range(self.n_vec_envs)]
-        self.state_key = ["ensemble_" + str(i) + "." + self.state_key for i in range(self.n_vec_envs)]
-        self.action_key = ["ensemble_" + str(i) + "." + self.action_key for i in range(self.n_vec_envs)]
-        self.reward_key = ["ensemble_" + str(i) + "." + self.reward_key for i in range(self.n_vec_envs)]
-
-        # create exe arguments
-        self.tag = [str(i) for i in range(self.n_vec_envs)]
-        self.f_action = [str(self.f_action) for _ in range(self.n_vec_envs)]
-        self.t_episode = [str(self.t_episode) for _ in range(self.n_vec_envs)]
-        self.t_begin_control = [str(self.t_begin_control) for _ in range(self.n_vec_envs)]
-
-        # create ensemble models inside experiment
-        self.ensemble = None
-        self._episode_ended = False
-        self.envs_initialised = False
-
-        self.n_3 = 16 # half channel, so we split the channel into 2 parts in the z direction
-        self.n_state_marl = 3
-        self.n_state = self.n_pseudo_envs_per_env*self.n_state_marl
-        self.n_action = 1
-        self.n_reward = 3 + self.n_3
-        
-        # Track whether the environment has terminated for each agent
         self.dones = {agent: False for agent in self.possible_agents}
         self.rewards = {agent: 0.0 for agent in self.possible_agents}
         self.infos = {agent: {} for agent in self.possible_agents}
+        self.models = [None for _ in range(self.n_cfds)]
 
-        self._state = np.zeros((self.n_vec_envs, self.n_state), dtype=self.dtype)
-        self._state_marl = np.zeros((self.n_pseudo_envs, self.n_state_marl), dtype=self.dtype)
-        self._action = np.zeros((self.n_vec_envs, self.n_pseudo_envs_per_env * self.n_action), dtype=self.dtype)
-        self._local_reward = np.zeros((self.n_vec_envs, self.n_pseudo_envs_per_env * self.n_reward))
-        self._reward = np.zeros(self.n_pseudo_envs)
-        self._episode_global_step = 0
-
-        # data files
-        self.n_envs = len(self.env_names)
-        self.envs = [{} for _ in range(self.n_envs)]
-        for i in range(self.n_envs):
-            env_path = os.path.join(self.cwd, "environments", self.env_names[i])
-            self.envs[i]["directory"] = env_path
-            self.envs[i]["restart_files"] = glob.glob(os.path.join(env_path, "fld_*.bin"))
-            self.envs[i]["stats"] = np.loadtxt(os.path.join(env_path, "stats.txt"))
-            self.envs[i]["stats_file"] = glob.glob(os.path.join(env_path, "stats-single-point-chan-?????.out"))[0]
-            self.envs[i]["tauw_ref"] = self.envs[i]["stats"][1]**2
-            self.envs[i]["ref_vel"] = np.loadtxt(self.envs[i]["stats_file"], usecols=2, max_rows=self.n_3)
-            zf = np.loadtxt(self.envs[i]["stats_file"], usecols=1, max_rows=self.n_3)
-            dzf = np.zeros(self.n_3)
-            dzf[0] = zf[0] - 0.0
-            for j in range(1, self.n_3):
-                dzf[j] = zf[j] - zf[j-1]
-            self.envs[i]["ref_dzf"] = dzf
-            self.envs[i]["input.nml"] = os.path.join(env_path, "input.nml")
-            self.envs[i]["input.py"] = os.path.join(env_path, "input.py")
+        self.state_key = [None for _ in range(self.n_cfds)]
+        self.action_key = [None for _ in range(self.n_cfds)]
+        self.reward_key = [None for _ in range(self.n_cfds)]
         
-        # Create proper spaces for VecEnv
-        observation_space = spaces.Box(
-            low=-np.inf,
-            high=np.inf,
-            shape=(self.n_state_marl,),
-            dtype=np.float32
-        )
-        
-        action_space = spaces.Box(
-            low=conf.environment.action_bounds[0],
-            high=conf.environment.action_bounds[1],
-            shape=(self.n_action,),
-            dtype=np.float32
-        )
-        
-        # Initialize VecEnv parent class
-        super().__init__(
-            num_envs=self.n_pseudo_envs,
-            observation_space=observation_space,
-            action_space=action_space
-        )
-        
-        # Add step_async required variables
+        # Initialize step_async required variables
         self._actions = None
         self._waiting = False
+
+        # Initialize random number generators
+        seeds = self.seed(self.conf.runner.seed)[::self.agents_per_cfd]
+        self.case_selector = random.Random(seeds[0])
+        self.restart_selectors = [random.Random(seed) for seed in seeds]
+
+        # Initialize trajectory saving
+        if self.save_trajectories:
+            os.makedirs(os.path.join(self.trajectory_path, "state" ), exist_ok=True)
+            os.makedirs(os.path.join(self.trajectory_path, "action"), exist_ok=True)
+            os.makedirs(os.path.join(self.trajectory_path, "reward"), exist_ok=True)
 
 
     def reset(self) -> VecEnvObs:
@@ -203,31 +149,46 @@ class CFDEnv(VecEnv):
         be cancelled and step_wait() should not be called
         until step_async() is invoked again.
 
-        :return: observation
+        :return: observations
         """
-        
+        # Update keys for the current iteration
+        self.envs = [{} for _ in range(self.n_cfds)]
+        for i in range(self.n_cfds):
+            env_idx = self.iteration * self.n_cfds + i
+            self.envs[i]["exe"] = self.conf.environment.executable_path
+            self.envs[i]["n_tasks"] = self.tasks_per_cfd
+            self.envs[i]["exe_name"] = f"env_{env_idx}"
+            exe_path = os.path.join("envs", f"env_{env_idx:03d}")
+            if os.path.exists(exe_path):
+                shutil.rmtree(exe_path)
+            os.makedirs(exe_path)
+            self.envs[i]["exe_path"] = exe_path
+            self.state_key[i]  = f"env_{(self.iteration * self.n_cfds + i):03d}.state"
+            self.action_key[i] = f"env_{(self.iteration * self.n_cfds + i):03d}.action"
+            self.reward_key[i] = f"env_{(self.iteration * self.n_cfds + i):03d}.reward"
+
         # Reset dones and rewards
         self.dones = {agent: False for agent in self.agents}
         self.rewards = {agent: 0.0 for agent in self.agents}
         self.infos = {agent: {} for agent in self.agents}
 
         self.episode_steps = 0
-        self.episode_rewards = np.zeros(self.n_pseudo_envs)
+        self.episode_rewards = np.zeros(self.n_total_agents)
+        self._global_step += self.n_action_steps_per_batch
 
         # Close the current CFD simulations
-        self._stop_exp()
+        self._stop_envs()
 
-        # Start the simulation with a new ensemble
-        restart_file = self.conf.runner.restart_file if hasattr(self.conf.runner, "restart_file") else 0
-        self.ensemble = self._start_exp(restart_file=restart_file, global_step=0)
-
+        # Start the simulation with new models
+        self._create_envs()
+        self.models = self._start_envs()
         self._get_state()
-        self._redistribute_state()
+        self._recalculate_state()
         
         # Return numpy array observations instead of dict for VecEnv compatibility
-        observations = np.zeros((self.n_pseudo_envs, self.n_state_marl), dtype=self.dtype)
-        for i in range(self.n_pseudo_envs):
-            observations[i] = self._state_marl[i]
+        observations = np.zeros((self.n_total_agents, self.agent_state_dim))
+        for i in range(self.n_total_agents):
+            observations[i] = self._agent_states[i]
         
         return observations
     
@@ -244,10 +205,11 @@ class CFDEnv(VecEnv):
         if self._waiting:
             raise ValueError("Async step already in progress")
             
-        self._actions = actions
+        self._agent_actions = actions
         self._waiting = True
 
         # Set actions in the CFD environment
+        self._recalculate_action()
         self._set_action(self._actions)
 
 
@@ -262,53 +224,55 @@ class CFDEnv(VecEnv):
 
         # Poll new state and reward
         self._get_state()
-        self._redistribute_state()
+        self._recalculate_state()
         self._get_reward()
+        self._recalculate_reward()
         
         # Format VecEnv return values - observations, rewards, dones, infos
-        observations = np.zeros((self.n_pseudo_envs, self.n_state_marl), dtype=self.dtype)
-        rewards = np.zeros(self.n_pseudo_envs)
-        dones = np.zeros(self.n_pseudo_envs, dtype=bool)
-        infos = [{} for _ in range(self.n_pseudo_envs)]
+        observations = np.zeros((self.n_total_agents, self.agent_state_dim))
+        rewards = np.zeros(self.n_total_agents)
+        dones = np.zeros(self.n_total_agents, dtype=bool)
+        infos = [{} for _ in range(self.n_total_agents)]
         
-        for i in range(self.n_pseudo_envs):
-            observations[i] = self._state_marl[i]
-            rewards[i] = self._reward[i]
+        for i in range(self.n_total_agents):
+            observations[i] = self._agent_states[i]
+            rewards[i] = self._agent_rewards[i]
 
         self.episode_steps += 1
         self.episode_rewards += rewards
 
         # Check if episode has ended
-        self._episode_global_step += 1
-        if self._episode_global_step >= self.n_action_steps_per_pseudo_env_episode:
+        if self.episode_steps >= self.steps_per_episode:
             dones[:] = True
         
         # Write RL data to disk if enabled
-        if self.dump_data_flag:
-            self._dump_rl_data()
+        if self.save_trajectories:
+            self._save_trajectories()
         
         self._waiting = False
 
         if all(dones):
-            for i in range(self.n_pseudo_envs):
+            for i in range(self.n_total_agents):
                 infos[i]["terminal_observation"] = observations[i]
                 infos[i]["episode"] = dict(
                     r=self.episode_rewards[i],
                     l=self.episode_steps
                 )
-            self.training_iteration += 1
-            if self.training_iteration >= self.total_training_iterations:
+            self.iteration += 1
+            if self.iteration >= self.total_iterations:
                 self.close()
             else:
                 observations = self.reset()
 
         return observations, rewards, dones, infos
 
+
     def close(self) -> None:
         """
         Clean up the environment's resources.
         """
-        self._stop_exp()
+        self._stop_envs()
+
 
     def get_attr(self, attr_name: str, indices: VecEnvIndices = None) -> list[Any]:
         """
@@ -319,8 +283,9 @@ class CFDEnv(VecEnv):
         :return: List of values of 'attr_name' in all environments
         """
         if indices is None:
-            indices = range(self.n_pseudo_envs)
+            indices = range(self.n_total_agents)
         return [getattr(self, attr_name) for _ in indices]
+
 
     def set_attr(self, attr_name: str, value: Any, indices: VecEnvIndices = None) -> None:
         """
@@ -332,9 +297,10 @@ class CFDEnv(VecEnv):
         :return:
         """
         if indices is None:
-            indices = range(self.n_pseudo_envs)
+            indices = range(self.n_total_agents)
         for _ in indices:
             setattr(self, attr_name, value)
+
 
     def env_method(self, method_name: str, *method_args, indices: VecEnvIndices = None, **method_kwargs) -> list[Any]:
         """
@@ -347,8 +313,9 @@ class CFDEnv(VecEnv):
         :return: List of items returned by the environment's method call
         """
         if indices is None:
-            indices = range(self.n_pseudo_envs)
+            indices = range(self.n_total_agents)
         return [getattr(self, method_name)(*method_args, **method_kwargs) for _ in indices]
+
 
     def env_is_wrapped(self, wrapper_class: type[gym.Wrapper], indices: VecEnvIndices = None) -> list[bool]:
         """
@@ -361,14 +328,15 @@ class CFDEnv(VecEnv):
         :return: True if the env is wrapped, False otherwise, for each env queried.
         """
         if indices is None:
-            indices = range(self.n_pseudo_envs)
+            indices = range(self.n_total_agents)
         return [False for _ in indices]  # No wrappers used in this environment
         
+
     def get_images(self) -> Sequence[Optional[np.ndarray]]:
         """
         Return RGB images from each environment
         """
-        return [None for _ in range(self.n_pseudo_envs)]  # No rendering support
+        return [None for _ in range(self.n_total_agents)]  # No rendering support
     
 
     # Internal methods below
@@ -377,122 +345,114 @@ class CFDEnv(VecEnv):
         """
         Get current flow state from the database.
         """
-        for i in range(self.n_vec_envs):
-            print(f"Polling state from key: {self.state_key[i]}")
+        for i in range(self.n_cfds):
             self.client.poll_tensor(self.state_key[i], 100, self.poll_time)
-            print(f"Getting state from key: {self.state_key[i]}")
             try:
-                self._state[i, :] = self.client.get_tensor(self.state_key[i])
+                self._cfd_states[i, :] = self.client.get_tensor(self.state_key[i])
                 self.client.delete_tensor(self.state_key[i])
-                logger.info(f"[Env {i}] Got state: {self._state[i, :5]}")
             except Exception as exc:
                 raise Warning(f"Could not read state from key: {self.state_key[i]}") from exc
+            
+    
+    def _get_reward(self):
+        """
+        Obtain the local reward from each CFD environment and compute the local/global reward for the problem at hand
+        It is better to compute the global reward in python
+        """
+        for i in range(self.n_cfds):
+            self.client.poll_tensor(self.reward_key[i], 100, self.poll_time)
+            try:
+                self._cfd_rewards[i, :] = self.client.get_tensor(self.reward_key[i])
+                self.client.delete_tensor(self.reward_key[i])
+            except Exception as exc:
+                raise Warning(f"Could not read reward from key: {self.reward_key[i]}") from exc
+            
 
+    def _set_action(self, action):
+        """
+        Write actions for each environment to be polled by the corresponding SOD2D environments.
+        """
+        for i in range(self.n_cfds):
+            self.client.put_tensor(self.action_key[i], self._cfd_actions[i, :].astype(self.cfd_dtype))
+            
+    
+    @abstractmethod    
+    def _create_envs(self):
+        """Create CFD instances within runtime environment.
+            
+            Returns:
+                List of `smartsim` handles for each started CFD environment.
+        """
 
-    def _start_exp(self, restart_file=0, global_step=0):
+        raise NotImplementedError
+    
+
+    def _start_envs(self):
         """Start CFD instances within runtime environment.
             
             Returns:
                 List of `smartsim` handles for each started CFD environment.
         """
-        seed = self.conf.environment.seed
-        rng = random.Random(seed)
-        idx = rng.randint(0, self.n_envs-1)
-        logger.info(f"Using seed {seed} to select environment {idx} from {self.n_envs} available environments")
-
-        logger.info(f"Using restart files from folder {self.env_names[idx]}")
-        self.tauw_ref = self.envs[idx]["tauw_ref"]
-        self.ref_vel = self.envs[idx]["ref_vel"]
-        self.ref_dzf = self.envs[idx]["ref_dzf"]
-
-
-        exe_args = []
-        exe_name = []
-        for i in range(self.n_vec_envs):
-            folder_name = f"train_{i}" if self.mode == "train" else f"eval_{i}"
-            folder_path = os.path.join(self.cwd, "experiment" ,folder_name)
-            if not os.path.exists(folder_path):
-                os.makedirs(folder_path)
-
-            if os.path.exists(self.envs[idx]["input.nml"]):
-                target_path = os.path.join(folder_path, "input.nml")
-                if os.path.exists(target_path):
-                    os.remove(target_path)
-                shutil.copy(self.envs[idx]["input.nml"], target_path)
-            if os.path.exists(self.envs[idx]["input.py"]):
-                target_path = os.path.join(folder_path, "input.py")
-                if os.path.exists(target_path):
-                    os.remove(target_path)
-                shutil.copy(self.envs[idx]["input.py"], target_path)
-            
-            restart_file = rng.choice(self.envs[idx]["restart_files"])
-            target_path = os.path.join(folder_path, "fld.bin")
-            if os.path.exists(target_path):
-                os.remove(target_path)
-            shutil.copy(restart_file, target_path)
-            logger.info(f"Selected restart file: {os.path.basename(restart_file)}")
-
-            # mpirun -n 2 /scratch/maochao/code/CaLES/build/cales --action_interval=10 --agent_interval=4 --restart_file=../restart/fld.bin
-            this_exe_args = {
-                "--tag": self.tag[i],
-                "--action_interval": self.n_cfd_time_steps_per_action,
-                "--agent_interval": self.agent_interval,
-                # "--restart_file": restart_file,
-            }
-            this_exe_args = [f"{k}={v}" for k,v in this_exe_args.items()]
-            exe_args.append(this_exe_args)
-            exe_name.append(f"train_{self.training_iteration*self.n_vec_envs + i}")
-
-
         # Launch executables in runtime
         return self.runtime.launch_models(
-            '/scratch/maochao/code/CaLES/build/cales',
-            exe_args,
-            exe_name,
-            self.n_tasks_per_env,
-            self.n_vec_envs,
+            exe=[env["exe"] for env in self.envs],
+            exe_path=[env["exe_path"] for env in self.envs],
+            exe_args=[env["exe_args"] for env in self.envs],
+            exe_name=[env["exe_name"] for env in self.envs],
+            n_procs=[env["n_tasks"] for env in self.envs],
+            n_exe=self.n_cfds,
             launcher=self.conf.smartsim.run_command,
-        )
+        )    
 
 
-    def _dump_rl_data(self):
-        """Write RL data into disk."""
-        for i in range(self.n_vec_envs):
-            with open(os.path.join(self.dump_data_path , "state", f"state_env{i}_eps{self._episode_global_step}.txt"),'a') as f:
-                np.savetxt(f, self._state[i, :][np.newaxis], fmt='%.8f', delimiter=' ')
-            f.close()
-            with open(os.path.join(self.dump_data_path , "reward", f"local_reward_env{i}_eps{self._episode_global_step}.txt"),'a') as f:
-                np.savetxt(f, self._local_reward[i, :][np.newaxis], fmt='%.8f', delimiter=' ')
-            f.close()
-            with open(os.path.join(self.dump_data_path , "action", f"action_env{i}_eps{self._episode_global_step}.txt"),'a') as f:
-                np.savetxt(f, self._action[i, :][np.newaxis], fmt='%.8f', delimiter=' ')
-            f.close()
-
-
-    def _stop_exp(self):
+    def _stop_envs(self):
         """
-        Stop all CFD instances.
+        Stop all running CFD instances and clean up resources.
+        
+        This method iterates through all CFD environments and stops them if they
+        are running. It handles errors gracefully and logs the stopping process.
         """
-        if self.ensemble:
-            for i in range(self.n_vec_envs):
-                if i < len(self.ensemble) and self.ensemble[i] is not None and not self.runtime.exp.finished(self.ensemble[i]):
-                    self.runtime.exp.stop(self.ensemble[i])
+        for i in range(self.n_cfds):
+            if self.models[i] is None:
+                continue
+            elif not self.runtime.exp.finished(self.models[i]):
+                self.runtime.exp.stop(self.models[i])
 
+        self.models = [None for _ in range(self.n_cfds)]
+
+
+    @abstractmethod
+    def _recalculate_state(self):
+        """
+        Redistribute state.
+        """
+        raise NotImplementedError
     
-    def _redistribute_state(self):
-        """
-        Redistribute state across MARL pseudo-environments.
-        """
 
+    @abstractmethod
+    def _recalculate_reward(self):
+        """
+        Recalculate reward.
+        """
+        raise NotImplementedError
+    
 
-    def _get_reward(self):
+    @abstractmethod
+    def _recalculate_action(self):
         """
-        Obtain the local reward (already computed in SOD2D) from each CFD environment and compute the local/global reward for the problem at hand
-        It is better to compute the global reward in python
+        Rescale action.
         """
+        raise NotImplementedError
+    
 
-
-    def _set_action(self, action):
-        """
-        Write actions for each environment to be polled by the corresponding SOD2D environment.
-        """
+    def _save_trajectories(self):
+        """Write RL trajectory data into disk following the conventional order: state, action, reward."""
+        agents_per_cfd = self.agents_per_cfd
+        for i in range(self.n_cfds):
+            agent_indices = slice(i * agents_per_cfd, (i + 1) * agents_per_cfd)
+            with open(os.path.join(self.trajectory_path, f"state/env{i}_eps{self._global_step}.txt"),'a') as f:
+                np.savetxt(f, self._agent_states[agent_indices], fmt='%.8f', delimiter=' ')
+            with open(os.path.join(self.trajectory_path, f"action/env{i}_eps{self._global_step}.txt"),'a') as f:
+                np.savetxt(f, self._agent_actions[agent_indices], fmt='%.8f', delimiter=' ')
+            with open(os.path.join(self.trajectory_path, f"reward/env{i}_eps{self._global_step}.txt"),'a') as f:
+                np.savetxt(f, self._agent_rewards[agent_indices], fmt='%.8f', delimiter=' ')

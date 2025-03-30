@@ -9,6 +9,8 @@ from typing import List
 
 import numpy as np
 
+import os
+
 class LaunchConfig():
     """Launch configuration for a batch of executables in a runtime.
 
@@ -280,9 +282,9 @@ class LaunchConfig():
         next_free_slot = 0
         n_cores_used = 0
         for i_exe in range(n_exe):
-            filename = f'/scratch/maochao/code/SmartFlow/examples/channel/.env_{i_exe:05d}.txt'
-            rankfiles.append(filename)
-            with open(filename, 'w', encoding='utf-8') as rankfile:
+            filepath = os.path.join(os.getcwd(), f'.env_{i_exe:03d}.txt')
+            rankfiles.append(filepath)
+            with open(filepath, 'w', encoding='utf-8') as rankfile:
                 for i in range(n_procs[i_exe]):
                     rankfile.write(f'rank {i}={workers[n_cores_used//n_slots_per_worker]} slot={next_free_slot}\n')
                     next_free_slot += 1

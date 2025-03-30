@@ -1,11 +1,14 @@
 from omegaconf import OmegaConf
 from configuration import Config
-from smartflow.train import train
-from smartflow.eval import eval
+from train import train
+from eval import eval
 from smartflow.runtime import Runtime
+import wandb
+from wandb.integration.sb3 import WandbCallback
 
 def main():
 
+    # Load configuration
     conf = OmegaConf.merge(
         OmegaConf.structured(Config()),
         OmegaConf.load("config.yaml"),
@@ -15,6 +18,19 @@ def main():
     print("Configuration:")
     print(OmegaConf.to_yaml(conf))
 
+    # Initialize wandb
+    run = wandb.init(
+        project=conf.wandb.project,
+        # id = "PPO-first",
+        name=conf.wandb.run_name,
+        # config=conf,
+        sync_tensorboard=conf.wandb.sync_tensorboard, # auto-upload sb3's tensorboard metrics
+        # monitor_gym=True,  # auto-upload the videos of agents playing the game
+        # save_code=True,  # optional
+    )
+    wandb.define_metric("*", step_metric="global_step")
+
+    # Initialize runtime
     with Runtime(
         type_=conf.smartsim.launcher,
         db_port=conf.smartsim.port,
@@ -24,12 +40,12 @@ def main():
         runtime.info()
 
         if conf.runner.mode == "train":
-            train(
-                conf,
-                runtime,
-            )
+            train(conf, runtime, run=run)
         elif conf.runner.mode == "eval":
             eval(conf)
+
+    # Finish wandb
+    run.finish()
 
 if __name__ == "__main__":
     main()
