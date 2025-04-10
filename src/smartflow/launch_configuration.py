@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-
 """Launch configuration for a batch of executables in a runtime."""
 
 from __future__ import annotations

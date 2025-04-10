@@ -1,0 +1,61 @@
+wandb:
+  project: "channel"
+  run_name: "eval-retau-05200"
+  mode: "online"
+  sync_tensorboard: true
+  # group: null  # Optional
+  # tags: []     # Optional
+  save_code: true
+
+environment:
+  n_cfds: 1
+  agents_per_cfd: 48
+  tasks_per_cfd: 4
+  cfd_state_dim: 2
+  cfd_reward_dim: 2
+  cfd_action_dim: 1
+  agent_state_dim: 2
+  agent_action_dim: 1
+  cfd_steps_per_action: 10
+  agent_interval: 4
+  neighbor_count: 0
+  poll_time: 360000000
+  verbosity: "debug"
+  save_trajectories: true
+  trajectory_path: "trajectories"
+  cfd_dtype: "float64"
+  action_bounds: [-1.0, 1.0]
+  reward_scale: 1
+  reward_beta: 0.2
+  case_names: ["retau_05200"]
+  executable_path: "/scratch/maochao/code/CaLES/build/cales"
+  case_folder: "../flow_cases"
+
+runner:
+  mode: "eval"
+  restart: false
+  policy: "MlpPolicy"
+  reset_num_timesteps: true
+  total_cfd_episodes: 1
+  steps_per_episode: 120
+  hidden_layers: [128, 128]
+  learning_rate: 5e-4
+  log_interval: 1
+  summary_interval: 1
+  seed: 16
+  ckpt_num: 1000000
+  ckpt_interval: 1
+  batch_size: 1
+  previous_run_id: "00000000"
+
+logging:
+  save_dir: '../runs'
+
+smartsim:
+  n_dbs: 1
+  network_interface: "lo"
+  run_command: "mpirun"
+  launcher: "local"
+
+extras:
+  n_cells: 16

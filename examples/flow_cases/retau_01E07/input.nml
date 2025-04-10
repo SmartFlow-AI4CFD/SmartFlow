@@ -1,0 +1,38 @@
+&dns
+ng(1:3) = 32, 12, 32
+l(1:3) = 3.2, 1.2, 2.
+gtype = 6, gr = 0.
+cfl = 0.95, dtmax = 1.e5, dt_f = 0.04
+visci = 4.5e08
+inivel = 'poi'
+is_wallturb = T
+nstep = 10000, time_max = 3200., tw_max = 12
+stop_type(1:3) = F, T, F
+restart = T, is_overwrite_save = T, nsaves_max = 0
+icheck = 10, iout0d = 10, iout1d = 100, iout2d = 0, iout3d = 0, isave = 0
+cbcvel(0:1,1:3,1) = 'P','P',  'P','P',  'D','D'
+cbcvel(0:1,1:3,2) = 'P','P',  'P','P',  'D','D'
+cbcvel(0:1,1:3,3) = 'P','P',  'P','P',  'D','D'
+cbcpre(0:1,1:3)   = 'P','P',  'P','P',  'N','N'
+cbcsgs(0:1,1:3)   = 'P','P',  'P','P',  'D','D'
+bcvel(0:1,1:3,1) =  0.,0.,   0.,0.,   0.,0.
+bcvel(0:1,1:3,2) =  0.,0.,   0.,0.,   0.,0.
+bcvel(0:1,1:3,3) =  0.,0.,   0.,0.,   0.,0.
+bcpre(0:1,1:3)   =  0.,0.,   0.,0.,   0.,0.
+bcsgs(0:1,1:3)   =  0.,0.,   0.,0.,   0.,0.
+bforce(1:3) = 0., 0., 0.
+is_forced(1:3) = T, F, F
+velf(1:3) = 1., 0., 0.
+dims(1:2) = 4, 1
+/
+
+&les
+sgstype = 'smag'
+lwm(0:1,1:3) = 0,0, 0,0, 3,3
+hwm = 0.1
+/
+
+&cudecomp
+cudecomp_t_comm_backend = 0, cudecomp_is_t_enable_nccl = T, cudecomp_is_t_enable_nvshmem = T
+cudecomp_h_comm_backend = 0, cudecomp_is_h_enable_nccl = T, cudecomp_is_h_enable_nvshmem = T
+/

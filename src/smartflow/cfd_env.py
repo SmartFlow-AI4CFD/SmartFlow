@@ -71,7 +71,7 @@ class CFDEnv(VecEnv):
         # Initialize required parameters from config
         self.mode = conf.runner.mode
         self.steps_per_episode = conf.runner.steps_per_episode
-        self.n_action_steps_per_batch = conf.runner.steps_per_batch
+        self.steps_per_batch = conf.runner.steps_per_batch
         self.n_cfds = conf.environment.n_cfds
         self.agents_per_cfd = conf.environment.agents_per_cfd
         self.tasks_per_cfd = conf.environment.tasks_per_cfd
@@ -94,12 +94,13 @@ class CFDEnv(VecEnv):
         self.cases = [{} for _ in range(self.n_cases)]
         for i in range(self.n_cases):
             self.cases[i]["name"] = conf.environment.case_names[i]
-            case_path = os.path.join(conf.environment.case_folder, conf.environment.case_names[i])
+            case_path = os.path.join(self.cwd, conf.environment.case_folder, conf.environment.case_names[i])
             self.cases[i]["path"] = case_path
 
         # Initialize counters
         self.iteration = 0
         self._global_step = 0
+        self._cfd_episode = 0
 
         # Initialize smartredis client
         self.client = Client(
@@ -114,6 +115,8 @@ class CFDEnv(VecEnv):
         self._agent_states = np.zeros((self.n_total_agents, self.agent_state_dim))
         self._agent_actions = np.zeros((self.n_total_agents, self.agent_action_dim))
         self._agent_rewards = np.zeros(self.n_total_agents)
+
+        self._scaled_agent_actions = np.zeros((self.n_total_agents, self.agent_action_dim))
 
         self.dones = {agent: False for agent in self.possible_agents}
         self.rewards = {agent: 0.0 for agent in self.possible_agents}
@@ -135,9 +138,10 @@ class CFDEnv(VecEnv):
 
         # Initialize trajectory saving
         if self.save_trajectories:
-            os.makedirs(os.path.join(self.trajectory_path, "state" ), exist_ok=True)
-            os.makedirs(os.path.join(self.trajectory_path, "action"), exist_ok=True)
-            os.makedirs(os.path.join(self.trajectory_path, "reward"), exist_ok=True)
+            os.makedirs(os.path.join(self.trajectory_path, "state" ))
+            os.makedirs(os.path.join(self.trajectory_path, "action"))
+            os.makedirs(os.path.join(self.trajectory_path, "reward"))
+            os.makedirs(os.path.join(self.trajectory_path, "scaled_action"))
 
 
     def reset(self) -> VecEnvObs:
@@ -155,6 +159,7 @@ class CFDEnv(VecEnv):
         self.envs = [{} for _ in range(self.n_cfds)]
         for i in range(self.n_cfds):
             env_idx = self.iteration * self.n_cfds + i
+            self.envs[i]["env_idx"] = env_idx
             self.envs[i]["exe"] = self.conf.environment.executable_path
             self.envs[i]["n_tasks"] = self.tasks_per_cfd
             self.envs[i]["exe_name"] = f"env_{env_idx}"
@@ -174,7 +179,8 @@ class CFDEnv(VecEnv):
 
         self.episode_steps = 0
         self.episode_rewards = np.zeros(self.n_total_agents)
-        self._global_step += self.n_action_steps_per_batch
+        self._global_step += self.steps_per_batch
+        self._cfd_episode += self.n_cfds
 
         # Close the current CFD simulations
         self._stop_envs()
@@ -185,6 +191,9 @@ class CFDEnv(VecEnv):
         self._get_state()
         self._recalculate_state()
         
+        if self.save_trajectories:
+            self._save_trajectories(state_only=True)
+
         # Return numpy array observations instead of dict for VecEnv compatibility
         observations = np.zeros((self.n_total_agents, self.agent_state_dim))
         for i in range(self.n_total_agents):
@@ -445,14 +454,27 @@ class CFDEnv(VecEnv):
         raise NotImplementedError
     
 
-    def _save_trajectories(self):
-        """Write RL trajectory data into disk following the conventional order: state, action, reward."""
+    def _save_trajectories(self, state_only=False):
+        """Write RL trajectory data into disk following the conventional order: state, action, reward.
+        
+        Args:
+            state_only (bool): If True, only save state data, otherwise save state, action and reward.
+        """
         agents_per_cfd = self.agents_per_cfd
         for i in range(self.n_cfds):
+            env_idx = self.envs[i]["env_idx"]
             agent_indices = slice(i * agents_per_cfd, (i + 1) * agents_per_cfd)
-            with open(os.path.join(self.trajectory_path, f"state/env{i}_eps{self._global_step}.txt"),'a') as f:
-                np.savetxt(f, self._agent_states[agent_indices], fmt='%.8f', delimiter=' ')
-            with open(os.path.join(self.trajectory_path, f"action/env{i}_eps{self._global_step}.txt"),'a') as f:
-                np.savetxt(f, self._agent_actions[agent_indices], fmt='%.8f', delimiter=' ')
-            with open(os.path.join(self.trajectory_path, f"reward/env{i}_eps{self._global_step}.txt"),'a') as f:
-                np.savetxt(f, self._agent_rewards[agent_indices], fmt='%.8f', delimiter=' ')
+            with open(os.path.join(self.trajectory_path, f"state/env_{env_idx:03d}.dat"),'a') as f:
+                flattened_state = self._agent_states[agent_indices].flatten()
+                np.savetxt(f, flattened_state.reshape(1, -1), fmt='%13.6e', delimiter=' ')
+            
+            if not state_only:
+                with open(os.path.join(self.trajectory_path, f"action/env_{env_idx:03d}.dat"),'a') as f:
+                    flattened_action = self._agent_actions[agent_indices].flatten()
+                    np.savetxt(f, flattened_action.reshape(1, -1), fmt='%13.6e', delimiter=' ')
+                with open(os.path.join(self.trajectory_path, f"reward/env_{env_idx:03d}.dat"),'a') as f:
+                    flattened_reward = self._agent_rewards[agent_indices].flatten()
+                    np.savetxt(f, flattened_reward.reshape(1, -1), fmt='%13.6e', delimiter=' ')
+                with open(os.path.join(self.trajectory_path, f"scaled_action/env_{env_idx:03d}.dat"),'a') as f:
+                    flattened_scaled_action = self._scaled_agent_actions[agent_indices].flatten()
+                    np.savetxt(f, flattened_scaled_action.reshape(1, -1), fmt='%13.6e', delimiter=' ')
