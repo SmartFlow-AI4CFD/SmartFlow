@@ -185,9 +185,10 @@ For this setting, we allocate 2 nodes with 32 tasks per node and 8 CPUs per task
 ## Contributors
 SmartFlow is developed and maintained by a dedicated team of researchers and developers. We are grateful for the contributions of:
 
-- **Maochao Xiao** ([@soaringxmc](https://github.com/soaringxmc)) - Code implementation and library design
-- **Bernat Font** ([@b-fg](https://github.com/b-fg)) - Code implementation and library design
-- **Marius Kurz** ([@m-kurz](https://github.com/m-kurz)) - Code implementation and library design
+- **Maochao Xiao** ([@soaringxmc](https://github.com/soaringxmc)) - Library design and code implementation
+- **Bernat Font** ([@b-fg](https://github.com/b-fg)) - Library design and code implementation
+- **Marius Kurz** ([@m-kurz](https://github.com/m-kurz)) - Library design and code implementation
+- **Ziyu Zhou** ([@zz-blue](https://github.com/zz-blue)) - Documentation and code implementation
 - **You!** ([@your-username](https://github.com/your-username)) - *Psst, that's you! The amazing developer reading this right now* - Code enhancements and brilliant ideas
 
 We are always looking for new contributors to join us to improve the framework. If you are interested in contributing, please feel free to submit a pull request or contact us in the [SmartFlow GitHub Issues](https://github.com/soaringxmc/SmartFlow/issues) or [SmartRedis-MPI GitHub Issues](https://github.com/soaringxmc/smartredis-mpi).
