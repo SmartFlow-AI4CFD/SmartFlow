@@ -195,10 +195,8 @@ We are always looking for new contributors to join us to improve the framework. 
 
 ## Acknowledgements
 
-SmartFlow has benefited from the expertise and support of many individuals in the computational fluid dynamics and high-performance computing communities.
+SmartFlow has benefited from the expertise and support of many individuals in the computational fluid dynamics and high-performance computing communities. We are grateful for the valuable discussions with:
 
-### Research Collaborators
-We are grateful for the valuable discussions with:
 - Francisco Alcántara Ávila
 - Di Zhou
 - Pol Suárez Morales
