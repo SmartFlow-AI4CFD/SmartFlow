@@ -27,7 +27,7 @@ dependencies = [
   "numpy",
   "matplotlib",
 ]
-license = {file = "LICENSE.txt"}
+license = {file = "LICENSE"}
 readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",

@@ -27,7 +27,7 @@ def train(conf, runtime, run, **ignored_kwargs):
 
     if conf.runner.restart:
         model = PPO.load(
-            path=f"{conf.runner.previous_run_id}",
+            path=conf.runner.model_load_path,
             env=env,
             custom_objects=None,
         )
@@ -45,7 +45,7 @@ def train(conf, runtime, run, **ignored_kwargs):
     # Definition of the learning callback
     checkpoint_callback = CheckpointCallback(
         save_freq=conf.runner.steps_per_episode,
-        save_path='models/checkpoints/',
+        save_path=os.path.join(conf.runner.model_save_dir, "checkpoints"),
         name_prefix=f"{run.id}",
     )
 
@@ -56,6 +56,6 @@ def train(conf, runtime, run, **ignored_kwargs):
         reset_num_timesteps=conf.runner.reset_num_timesteps,
     )
 
-    model.save(path=f"models/final/{run.id}")
+    model.save(path=os.path.join(conf.runner.model_save_dir, "final", run.id))
 
     print("Training finished.")

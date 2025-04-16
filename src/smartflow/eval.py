@@ -27,7 +27,7 @@ def eval(conf, runtime, run, **ignored_kwargs):
     env = ChannelEnv(conf, runtime=runtime)
 
     model = PPO.load(
-        path=f"models/final/{conf.runner.previous_run_id}",
+        path=conf.runner.model_load_path,
         custom_objects=None,
     )
 

@@ -1,6 +1,6 @@
 wandb:
   project: "channel"
-  run_name: "train-retau-5200"
+  run_name: "train-retau-05200"
   mode: "online"
   sync_tensorboard: true
   # group: null  # Optional
@@ -12,8 +12,8 @@ environment:
   agents_per_cfd: 48
   tasks_per_cfd: 4
   cfd_state_dim: 2
-  cfd_reward_dim: 2
   cfd_action_dim: 1
+  cfd_reward_dim: 2
   agent_state_dim: 2
   agent_action_dim: 1
   cfd_steps_per_action: 10
@@ -25,7 +25,6 @@ environment:
   trajectory_path: "trajectories"
   cfd_dtype: "float64"
   action_bounds: [-1.0, 1.0]
-  reward_scale: 1
   reward_beta: 0.2
   case_names: ["retau_05200"]
   executable_path: "/scratch/maochao/code/CaLES/build/cales"
@@ -36,7 +35,7 @@ runner:
   restart: false
   policy: "MlpPolicy"
   reset_num_timesteps: true
-  total_cfd_episodes: 200
+  total_cfd_episodes: 3200
   steps_per_episode: 120
   hidden_layers: [128, 128]
   learning_rate: 5e-4
@@ -46,7 +45,6 @@ runner:
   ckpt_num: 1000000
   ckpt_interval: 1
   batch_size: 1
-  previous_run_id: "6fc75ig6"
 
 logging:
   save_dir: '../runs'
@@ -59,3 +57,8 @@ smartsim:
 
 extras:
   n_cells: 16
+  tauw_min_percent: 0.8
+  tauw_max_percent: 1.2
+  hwm_min: 0.075
+  hwm_max: 0.150
+  kap_log: 0.41

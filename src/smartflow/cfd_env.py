@@ -79,7 +79,7 @@ class CFDEnv(VecEnv):
         self.poll_time = conf.environment.poll_time
         self.save_trajectories = conf.environment.save_trajectories
         self.trajectory_path = conf.environment.trajectory_path
-        self.total_iterations = conf.runner.n_iterations
+        self.total_iterations = conf.runner.total_iterations
         self.cfd_state_dim = conf.environment.cfd_state_dim
         self.cfd_action_dim = conf.environment.cfd_action_dim
         self.cfd_reward_dim = conf.environment.cfd_reward_dim
@@ -118,9 +118,6 @@ class CFDEnv(VecEnv):
 
         self._scaled_agent_actions = np.zeros((self.n_total_agents, self.agent_action_dim))
 
-        self.dones = {agent: False for agent in self.possible_agents}
-        self.rewards = {agent: 0.0 for agent in self.possible_agents}
-        self.infos = {agent: {} for agent in self.possible_agents}
         self.models = [None for _ in range(self.n_cfds)]
 
         self.state_key = [None for _ in range(self.n_cfds)]
@@ -128,13 +125,13 @@ class CFDEnv(VecEnv):
         self.reward_key = [None for _ in range(self.n_cfds)]
         
         # Initialize step_async required variables
-        self._actions = None
         self._waiting = False
 
         # Initialize random number generators
-        seeds = self.seed(self.conf.runner.seed)[::self.agents_per_cfd]
-        self.case_selector = random.Random(seeds[0])
-        self.restart_selectors = [random.Random(seed) for seed in seeds]
+        self._seeds = self.seed(self.conf.runner.seed)
+        self.seeds = self._seeds[::self.agents_per_cfd]
+        self.case_selector = random.Random(self.seeds[0])
+        self.restart_selectors = [random.Random(seed) for seed in self.seeds]
 
         # Initialize trajectory saving
         if self.save_trajectories:
@@ -172,15 +169,13 @@ class CFDEnv(VecEnv):
             self.action_key[i] = f"env_{(self.iteration * self.n_cfds + i):03d}.action"
             self.reward_key[i] = f"env_{(self.iteration * self.n_cfds + i):03d}.reward"
 
-        # Reset dones and rewards
-        self.dones = {agent: False for agent in self.agents}
-        self.rewards = {agent: 0.0 for agent in self.agents}
-        self.infos = {agent: {} for agent in self.agents}
+        self.reset_infos = [{} for _ in range(self.n_total_agents)]
 
         self.episode_steps = 0
         self.episode_rewards = np.zeros(self.n_total_agents)
         self._global_step += self.steps_per_batch
         self._cfd_episode += self.n_cfds
+        self.iteration += 1
 
         # Close the current CFD simulations
         self._stop_envs()
@@ -188,8 +183,11 @@ class CFDEnv(VecEnv):
         # Start the simulation with new models
         self._create_envs()
         self.models = self._start_envs()
-        self._get_state()
-        self._recalculate_state()
+        
+        # Get states and process them
+        cfd_states = self._get_state()
+        self._cfd_states = cfd_states
+        self._agent_states = self._redistribute_state(cfd_states)
         
         if self.save_trajectories:
             self._save_trajectories(state_only=True)
@@ -200,7 +198,7 @@ class CFDEnv(VecEnv):
             observations[i] = self._agent_states[i]
         
         return observations
-    
+
 
     def step_async(self, actions: np.ndarray) -> None:
         """
@@ -218,8 +216,9 @@ class CFDEnv(VecEnv):
         self._waiting = True
 
         # Set actions in the CFD environment
-        self._recalculate_action()
-        self._set_action(self._actions)
+        scaled_agent_actions = self._rescale_action(actions)
+        self._scaled_agent_actions = scaled_agent_actions
+        self._set_action(scaled_agent_actions)
 
 
     def step_wait(self) -> VecEnvStepReturn:
@@ -232,12 +231,15 @@ class CFDEnv(VecEnv):
             raise ValueError("No async step in progress")
 
         # Poll new state and reward
-        self._get_state()
-        self._recalculate_state()
-        self._get_reward()
-        self._recalculate_reward()
+        cfd_states = self._get_state()
+        self._cfd_states = cfd_states
+        self._agent_states = self._redistribute_state(cfd_states)
         
-        # Format VecEnv return values - observations, rewards, dones, infos
+        cfd_rewards = self._get_reward()
+        self._cfd_rewards = cfd_rewards
+        self._agent_rewards = self._recalculate_reward(cfd_rewards)
+        
+        # Format observations, rewards, dones, infos
         observations = np.zeros((self.n_total_agents, self.agent_state_dim))
         rewards = np.zeros(self.n_total_agents)
         dones = np.zeros(self.n_total_agents, dtype=bool)
@@ -267,14 +269,109 @@ class CFDEnv(VecEnv):
                     r=self.episode_rewards[i],
                     l=self.episode_steps
                 )
-            self.iteration += 1
             if self.iteration >= self.total_iterations:
                 self.close()
             else:
                 observations = self.reset()
 
         return observations, rewards, dones, infos
+        
 
+    def _get_state(self):
+        """
+        Get current flow state from the database.
+        
+        Returns:
+            numpy.ndarray: The CFD states array
+        """
+        cfd_states = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_state_dim))
+        for i in range(self.n_cfds):
+            self.client.poll_tensor(self.state_key[i], 100, self.poll_time)
+            try:
+                cfd_states[i, :] = self.client.get_tensor(self.state_key[i])
+                self.client.delete_tensor(self.state_key[i])
+            except Exception as exc:
+                raise Warning(f"Could not read state from key: {self.state_key[i]}") from exc
+        return cfd_states
+            
+    
+    def _get_reward(self):
+        """
+        Obtain the local reward from each CFD environment and compute the local/global reward for the problem at hand
+        
+        Returns:
+            numpy.ndarray: The CFD rewards array
+        """
+        cfd_rewards = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_reward_dim))
+        for i in range(self.n_cfds):
+            self.client.poll_tensor(self.reward_key[i], 100, self.poll_time)
+            try:
+                cfd_rewards[i, :] = self.client.get_tensor(self.reward_key[i])
+                self.client.delete_tensor(self.reward_key[i])
+            except Exception as exc:
+                raise Warning(f"Could not read reward from key: {self.reward_key[i]}") from exc
+        return cfd_rewards
+            
+
+    def _set_action(self, scaled_actions: np.ndarray):
+        """
+        Write actions for each environment to be polled by the CFD simulations.
+        
+        Args:
+            scaled_actions (numpy.ndarray): The scaled agent actions array
+        """
+        agents_per_cfd = self.agents_per_cfd
+        cfd_actions = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_action_dim))
+        
+        for i in range(self.n_cfds):
+            for j in range(agents_per_cfd):
+                for k in range(self.cfd_action_dim):
+                    n = (i * agents_per_cfd + j) * self.cfd_action_dim
+                    cfd_actions[i, j * self.cfd_action_dim + k] = scaled_actions[n, k]     
+            self.client.put_tensor(self.action_key[i], cfd_actions[i, :].astype(self.cfd_dtype))
+            
+            
+    @abstractmethod    
+    def _redistribute_state(self, cfd_states):
+        """
+        Redistribute state.
+        
+        Args:
+            cfd_states (numpy.ndarray): The CFD states array
+            
+        Returns:
+            numpy.ndarray: The agent states array
+        """
+        raise NotImplementedError
+    
+
+    @abstractmethod
+    def _recalculate_reward(self, cfd_rewards):
+        """
+        Recalculate reward.
+        
+        Args:
+            cfd_rewards (numpy.ndarray): The CFD rewards array
+            
+        Returns:
+            numpy.ndarray: The agent rewards array
+        """
+        raise NotImplementedError
+    
+
+    @abstractmethod
+    def _rescale_action(self, agent_actions):
+        """
+        Rescale action.
+        
+        Args:
+            agent_actions (numpy.ndarray): The agent actions array
+            
+        Returns:
+            numpy.ndarray: The scaled agent actions array
+        """
+        raise NotImplementedError
+    
 
     def close(self) -> None:
         """
@@ -350,41 +447,6 @@ class CFDEnv(VecEnv):
 
     # Internal methods below
     
-    def _get_state(self):
-        """
-        Get current flow state from the database.
-        """
-        for i in range(self.n_cfds):
-            self.client.poll_tensor(self.state_key[i], 100, self.poll_time)
-            try:
-                self._cfd_states[i, :] = self.client.get_tensor(self.state_key[i])
-                self.client.delete_tensor(self.state_key[i])
-            except Exception as exc:
-                raise Warning(f"Could not read state from key: {self.state_key[i]}") from exc
-            
-    
-    def _get_reward(self):
-        """
-        Obtain the local reward from each CFD environment and compute the local/global reward for the problem at hand
-        It is better to compute the global reward in python
-        """
-        for i in range(self.n_cfds):
-            self.client.poll_tensor(self.reward_key[i], 100, self.poll_time)
-            try:
-                self._cfd_rewards[i, :] = self.client.get_tensor(self.reward_key[i])
-                self.client.delete_tensor(self.reward_key[i])
-            except Exception as exc:
-                raise Warning(f"Could not read reward from key: {self.reward_key[i]}") from exc
-            
-
-    def _set_action(self, action):
-        """
-        Write actions for each environment to be polled by the corresponding SOD2D environments.
-        """
-        for i in range(self.n_cfds):
-            self.client.put_tensor(self.action_key[i], self._cfd_actions[i, :].astype(self.cfd_dtype))
-            
-    
     @abstractmethod    
     def _create_envs(self):
         """Create CFD instances within runtime environment.
@@ -429,30 +491,6 @@ class CFDEnv(VecEnv):
 
         self.models = [None for _ in range(self.n_cfds)]
 
-
-    @abstractmethod
-    def _recalculate_state(self):
-        """
-        Redistribute state.
-        """
-        raise NotImplementedError
-    
-
-    @abstractmethod
-    def _recalculate_reward(self):
-        """
-        Recalculate reward.
-        """
-        raise NotImplementedError
-    
-
-    @abstractmethod
-    def _recalculate_action(self):
-        """
-        Rescale action.
-        """
-        raise NotImplementedError
-    
 
     def _save_trajectories(self, state_only=False):
         """Write RL trajectory data into disk following the conventional order: state, action, reward.

@@ -167,7 +167,7 @@ if len(filtered_x) > 0 and len(filtered_x_095) > 0:
     # Increase font size for specific elements
     plt.xlabel(r'$s_1 = \left(1/\kappa_{wm} - 1/\kappa\right) \ln(h^+_{wm})$', fontsize=16)
     plt.ylabel(r'$s_2 = B_{wm}$', fontsize=16)
-    plt.title(r'Joint PDF of States: Red for Action > 1.05, Blue for Action < 0.95, $Re_{\tau} = 05200$', fontsize=18)
+    # plt.title(r'Joint PDF of States: Red for Action > 1.05, Blue for Action < 0.95$', fontsize=18)
     plt.xticks(fontsize=14)
     plt.yticks(fontsize=14)
     plt.grid(True)

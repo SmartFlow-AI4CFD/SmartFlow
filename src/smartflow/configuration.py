@@ -39,7 +39,6 @@ class Environment:
     agent_interval: Optional[int] = None  # set dynamically after initialization
     cfd_dtype: str = "float64"
     action_bounds: tuple = (-1.0, 1.0)
-    reward_scale: int = 1
     reward_beta: float = 0.2  # reward = beta * reward_global + (1.0 - beta) * reward_local
     case_names: Optional[List[str]] = None
     executable_path: Optional[str] = None
@@ -65,9 +64,10 @@ class Runner:
     ckpt_interval: int = 1
     steps_per_episode: Optional[int] = None
     steps_per_batch: Optional[int] = None
-    n_iterations: Optional[int] = None
+    total_iterations: Optional[int] = None
     batch_size: int = 1
-    previous_run_id: Optional[str] = None
+    model_load_path: Optional[str] = None
+    model_save_dir: str = "models/"
 
 
 @dataclass
@@ -88,6 +88,11 @@ class SmartSim:
 @dataclass
 class Extras:
     n_cells: int
+    tauw_min_percent: Optional[float] = None
+    tauw_max_percent: Optional[float] = None
+    hwm_min: Optional[float] = None
+    hwm_max: Optional[float] = None
+    kap_log: Optional[float] = None
 
 
 @dataclass
@@ -140,9 +145,9 @@ def compute_derived_parameters(conf):
                 if conf.runner.steps_per_batch is None:
                     conf.runner.steps_per_batch = conf.runner.steps_per_episode * n_total_agents
                 
-                # Set n_iterations if not explicitly set
-                if conf.runner.n_iterations is None:
-                    conf.runner.n_iterations = conf.runner.total_steps // conf.runner.steps_per_batch
+                # Set total_iterations if not explicitly set
+                if conf.runner.total_iterations is None:
+                    conf.runner.total_iterations = conf.runner.total_steps // conf.runner.steps_per_batch
                 
                 # Override batch_size to match steps_per_batch
                 conf.runner.batch_size = conf.runner.steps_per_batch

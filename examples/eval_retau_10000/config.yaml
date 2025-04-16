@@ -25,7 +25,6 @@ environment:
   trajectory_path: "trajectories"
   cfd_dtype: "float64"
   action_bounds: [-1.0, 1.0]
-  reward_scale: 1
   reward_beta: 0.2
   case_names: ["retau_10000"]
   executable_path: "/scratch/maochao/code/CaLES/build/cales"
@@ -46,7 +45,6 @@ runner:
   ckpt_num: 1000000
   ckpt_interval: 1
   batch_size: 1
-  previous_run_id: "00000000"
 
 logging:
   save_dir: '../runs'
@@ -59,3 +57,8 @@ smartsim:
 
 extras:
   n_cells: 16
+  tauw_min_percent: 0.8
+  tauw_max_percent: 1.2
+  hwm_min: 0.075
+  hwm_max: 0.150
+  kap_log: 0.41
