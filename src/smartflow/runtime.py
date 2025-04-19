@@ -254,11 +254,12 @@ class Runtime():
                     }
                 elif launcher == 'srun':
                     run_args = {
-                        # 'mpi': 'pmix',
+                        # 'mpi': 'pmix_v3',
                         'nodelist': ','.join(self.launch_config.hosts_per_exe[i]),
                         'distribution': 'block:block:block,Pack',
-                        'cpu-bind': 'verbose',
+                        'cpu-bind': 'cores,verbose',
                         'exclusive': None,
+                        'gres': 'gpu:0',
                     }
                 run_settings = self.exp.create_run_settings(
                     exe=exe[i],
