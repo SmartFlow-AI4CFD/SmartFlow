@@ -36,9 +36,9 @@ def read_file_to_2d_array(file_path, delimiter=None, dtype=float):
         return data
 
 
-state = read_file_to_2d_array('trajectories/state/env_000.dat')
-action = read_file_to_2d_array('trajectories/scaled_action/env_000.dat')
-reward = read_file_to_2d_array('trajectories/reward/env_000.dat')
+state = read_file_to_2d_array('trajectories/state/env_00000.dat')
+action = read_file_to_2d_array('trajectories/scaled_action/env_00000.dat')
+reward = read_file_to_2d_array('trajectories/reward/env_00000.dat')
 
 # Reshape state into a 3D array with first dimension as number of rows and third dimension as 2
 rows, cols = state.shape
@@ -148,8 +148,14 @@ if len(filtered_x) > 0 and len(filtered_x_095) > 0:
     
     # Add the neutral line
     x_range = np.linspace(-120, 120, 100)  # Updated to match the fixed range
-    y_line = 5.2 - x_range
-    plt.plot(x_range, y_line, 'k--', linewidth=2, label=r'$\text{Neutral line: } s_2 = 5.2 - s_1$')
+    # y_line = 5.2 - x_range
+    hwm_plus = 01E10 * 0.075
+    y_line = -x_range * np.log(hwm_plus) + 1/0.41 * np.log(hwm_plus) + 5.2
+    # plt.plot(x_range, y_line, 'k--', linewidth=2, label=r'$\text{Neutral line: } s_2 = 5.2 - s_1$')
+    plt.plot(x_range, y_line, 'k--', linewidth=2, label=r'$\text{Neutral line: }$')
+    hwm_plus = 01E10 * 0.15
+    y_line = -x_range * np.log(hwm_plus) + 1/0.41 * np.log(hwm_plus) + 5.2
+    plt.plot(x_range, y_line, 'r--', linewidth=2, label=r'$\text{Neutral line: }$')
     
     # Create custom legend elements for the contour plots
     red_line = plt.Line2D([0], [0], color=red_cmap(0.8), linewidth=2, label='Action > 1.05')
@@ -161,11 +167,12 @@ if len(filtered_x) > 0 and len(filtered_x_095) > 0:
     handles.extend([red_line, blue_line])
     
     # Set the plot limits explicitly
-    plt.xlim(-120, 120)
-    plt.ylim(-120, 120)
+    plt.xlim(-5, 10)
+    plt.ylim(-100, 100)
     
     # Increase font size for specific elements
-    plt.xlabel(r'$s_1 = \left(1/\kappa_{wm} - 1/\kappa\right) \ln(h^+_{wm})$', fontsize=16)
+    # plt.xlabel(r'$s_1 = \left(1/\kappa_{wm} - 1/\kappa\right) \ln(h^+_{wm})$', fontsize=16)
+    plt.xlabel(r'$s_1 = 1/\kappa_{wm}$', fontsize=16)
     plt.ylabel(r'$s_2 = B_{wm}$', fontsize=16)
     # plt.title(r'Joint PDF of States: Red for Action > 1.05, Blue for Action < 0.95$', fontsize=18)
     plt.xticks(fontsize=14)

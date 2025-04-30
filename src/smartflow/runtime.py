@@ -25,7 +25,6 @@
 
 import os
 import socket
-import subprocess
 from typing import List, Optional, Union
 
 import numpy as np

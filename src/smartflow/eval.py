@@ -1,26 +1,7 @@
 #!/usr/bin/env python3
 
-import os
-import random
-import time
-import contextlib
-import numpy as np
-
 from stable_baselines3 import PPO
-from stable_baselines3.ppo import CnnPolicy
-from stable_baselines3.common.callbacks import CheckpointCallback
-from stable_baselines3.common import env_checker
-
-from smartsim.log import get_logger
 from smartflow.channel_env import ChannelEnv
-import absl.logging
-
-import sys
-
-from smartflow.cfd_env import CFDEnv
-
-import wandb
-from wandb.integration.sb3 import WandbCallback
 
 def eval(conf, runtime, run, **ignored_kwargs):
 

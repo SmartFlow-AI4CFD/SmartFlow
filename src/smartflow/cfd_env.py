@@ -1,28 +1,18 @@
 #!/usr/bin/env python3
 
 import os
-import glob
 import shutil
 import random
-import numpy as np
 from typing import Any, List, Dict, Union, Optional, Tuple, Sequence
 
+import numpy as np
 from smartredis import Client
-from smartsim.log import get_logger
-
 import gymnasium as gym
 from gymnasium import spaces
 
-import time
-import subprocess
-
 from stable_baselines3.common.vec_env import VecEnv
 from stable_baselines3.common.vec_env.base_vec_env import VecEnvObs, VecEnvStepReturn, VecEnvIndices
-
 from abc import abstractmethod
-
-logger = get_logger(__name__)
-
 
 class CFDEnv(VecEnv):
     """
@@ -34,10 +24,42 @@ class CFDEnv(VecEnv):
     """
     def __init__(self, conf, runtime):
 
-        self.n_total_agents = conf.environment.n_total_agents
+        # Initialize parameters from the configuration
+        self.cfds_per_case = conf.environment.cfds_per_case
+        self.agents_per_cfd = conf.environment.agents_per_cfd
         self.agent_state_dim = conf.environment.agent_state_dim
         self.agent_action_dim = conf.environment.agent_action_dim
         self.action_bounds = conf.environment.action_bounds
+        self.action_scale_min = conf.environment.action_scale_min
+        self.action_scale_max = conf.environment.action_scale_max
+        self.tasks_per_cfd = conf.environment.tasks_per_cfd
+        self.cfd_dtype = conf.environment.cfd_dtype
+        self.poll_time = conf.environment.poll_time
+        self.save_trajectories = conf.environment.save_trajectories
+        self.trajectory_dir = conf.environment.trajectory_dir
+        self.cfd_state_dim = conf.environment.cfd_state_dim
+        self.cfd_action_dim = conf.environment.cfd_action_dim
+        self.cfd_reward_dim = conf.environment.cfd_reward_dim
+        self.exe = conf.environment.executable_path
+        self.cfd_steps_per_action = conf.environment.cfd_steps_per_action
+        self.agent_interval = conf.environment.agent_interval
+        self.reward_beta = conf.environment.reward_beta
+        self.cfd_state_indices = conf.environment.cfd_state_indices
+        self.learning_strategy = conf.environment.learning_strategy
+        self.cwd = os.getcwd()
+
+        self.mode = conf.runner.mode
+        self.steps_per_episode = conf.runner.steps_per_episode
+        self.total_cfd_episodes = conf.runner.total_cfd_episodes
+
+        # Use derived parameters
+        self.steps_per_batch = conf.runner.steps_per_batch
+        self.total_agent_episodes = conf.runner.total_agent_episodes
+        self.total_steps = conf.runner.total_steps
+        self.total_iterations = conf.runner.total_iterations
+        self.cases_per_batch = conf.environment.cases_per_batch
+        self.n_cfds = conf.environment.n_cfds
+        self.n_agents = conf.environment.n_agents
 
         observation_space = spaces.Box(
             low=-np.inf,
@@ -54,48 +76,34 @@ class CFDEnv(VecEnv):
         )
 
         super().__init__(
-            num_envs=self.n_total_agents,
+            num_envs=self.n_agents,
             observation_space=observation_space,
             action_space=action_space
         )
 
         # Define agents before using in dones/rewards dicts, and one pseudo-env has one agent
-        self.possible_agents = [f"agent_{i}" for i in range(self.n_total_agents)]
+        self.possible_agents = [f"agent_{i}" for i in range(self.n_agents)]
         self.agents = self.possible_agents[:]
         
         # Set render_mode early to avoid warnings from VecEnv
         self.render_mode = None
         self.conf = conf
         self.runtime = runtime
-        
-        # Initialize required parameters from config
-        self.mode = conf.runner.mode
-        self.steps_per_episode = conf.runner.steps_per_episode
-        self.steps_per_batch = conf.runner.steps_per_batch
-        self.n_cfds = conf.environment.n_cfds
-        self.agents_per_cfd = conf.environment.agents_per_cfd
-        self.tasks_per_cfd = conf.environment.tasks_per_cfd
-        self.cfd_dtype = conf.environment.cfd_dtype
-        self.poll_time = conf.environment.poll_time
-        self.save_trajectories = conf.environment.save_trajectories
-        self.trajectory_path = conf.environment.trajectory_path
-        self.total_iterations = conf.runner.total_iterations
-        self.cfd_state_dim = conf.environment.cfd_state_dim
-        self.cfd_action_dim = conf.environment.cfd_action_dim
-        self.cfd_reward_dim = conf.environment.cfd_reward_dim
-        self.exe = conf.environment.executable_path
-        self.cfd_steps_per_action = conf.environment.cfd_steps_per_action
-        self.agent_interval = conf.environment.agent_interval
-        self.reward_beta = conf.environment.reward_beta
-        self.cwd = os.getcwd()
 
-        # Initialize parameters applicable to all cases
+        # Initialize case parameters
         self.n_cases = len(conf.environment.case_names)
         self.cases = [{} for _ in range(self.n_cases)]
         for i in range(self.n_cases):
             self.cases[i]["name"] = conf.environment.case_names[i]
-            case_path = os.path.join(self.cwd, conf.environment.case_folder, conf.environment.case_names[i])
+            case_path = os.path.join(self.cwd, conf.environment.cases_dir, conf.environment.case_names[i])
             self.cases[i]["path"] = case_path
+
+        # Initialize random number generators
+        self.agent_seeds = self.seed(self.conf.runner.seed)
+        self.cfd_seeds = self.agent_seeds[::self.agents_per_cfd]
+        self.case_seeds = self.cfd_seeds[::self.cfds_per_case]
+        self.case_selectors = [random.Random(seed) for seed in self.case_seeds]
+        self.cfd_selectors = [random.Random(seed) for seed in self.cfd_seeds]
 
         # Initialize counters
         self.iteration = 0
@@ -112,33 +120,23 @@ class CFDEnv(VecEnv):
         self._cfd_states = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_state_dim))
         self._cfd_actions = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_action_dim))
         self._cfd_rewards = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_reward_dim))
-        self._agent_states = np.zeros((self.n_total_agents, self.agent_state_dim))
-        self._agent_actions = np.zeros((self.n_total_agents, self.agent_action_dim))
-        self._agent_rewards = np.zeros(self.n_total_agents)
+        self._agent_states = np.zeros((self.n_agents, self.agent_state_dim))
+        self._agent_actions = np.zeros((self.n_agents, self.agent_action_dim))
+        self._agent_rewards = np.zeros(self.n_agents)
 
-        self._scaled_agent_actions = np.zeros((self.n_total_agents, self.agent_action_dim))
+        self._scaled_agent_actions = np.zeros((self.n_agents, self.agent_action_dim))
 
         self.models = [None for _ in range(self.n_cfds)]
-
-        self.state_key = [None for _ in range(self.n_cfds)]
-        self.action_key = [None for _ in range(self.n_cfds)]
-        self.reward_key = [None for _ in range(self.n_cfds)]
         
         # Initialize step_async required variables
         self._waiting = False
 
-        # Initialize random number generators
-        self._seeds = self.seed(self.conf.runner.seed)
-        self.seeds = self._seeds[::self.agents_per_cfd]
-        self.case_selector = random.Random(self.seeds[0])
-        self.restart_selectors = [random.Random(seed) for seed in self.seeds]
-
         # Initialize trajectory saving
         if self.save_trajectories:
-            os.makedirs(os.path.join(self.trajectory_path, "state" ))
-            os.makedirs(os.path.join(self.trajectory_path, "action"))
-            os.makedirs(os.path.join(self.trajectory_path, "reward"))
-            os.makedirs(os.path.join(self.trajectory_path, "scaled_action"))
+            os.makedirs(os.path.join(self.trajectory_dir, "state"), exist_ok=True)
+            os.makedirs(os.path.join(self.trajectory_dir, "action"), exist_ok=True)
+            os.makedirs(os.path.join(self.trajectory_dir, "reward"), exist_ok=True)
+            os.makedirs(os.path.join(self.trajectory_dir, "scaled_action"), exist_ok=True)
 
 
     def reset(self) -> VecEnvObs:
@@ -152,27 +150,34 @@ class CFDEnv(VecEnv):
 
         :return: observations
         """
-        # Update keys for the current iteration
         self.envs = [{} for _ in range(self.n_cfds)]
-        for i in range(self.n_cfds):
-            env_idx = self.iteration * self.n_cfds + i
-            self.envs[i]["env_idx"] = env_idx
-            self.envs[i]["exe"] = self.conf.environment.executable_path
-            self.envs[i]["n_tasks"] = self.tasks_per_cfd
-            self.envs[i]["exe_name"] = f"env_{env_idx}"
-            exe_path = os.path.join("envs", f"env_{env_idx:03d}")
-            if os.path.exists(exe_path):
-                shutil.rmtree(exe_path)
-            os.makedirs(exe_path)
-            self.envs[i]["exe_path"] = exe_path
-            self.state_key[i]  = f"env_{(self.iteration * self.n_cfds + i):03d}.state"
-            self.action_key[i] = f"env_{(self.iteration * self.n_cfds + i):03d}.action"
-            self.reward_key[i] = f"env_{(self.iteration * self.n_cfds + i):03d}.reward"
+        for i in range(self.cases_per_batch):
+            if self.cases_per_batch == 1: # Sequential or multi-task with one case 
+                case_idx = self.case_selectors[i].randint(0, self.n_cases-1)
+            else: # Multi-task with multiple cases
+                case_idx = i
+            for j in range(self.cfds_per_case):
+                k = i * self.cfds_per_case + j
+                env_idx = self.iteration * self.n_cfds + k
+                env_name = f"env_{env_idx:05d}"
+                self.envs[k]["case_idx"] = case_idx
+                self.envs[k]["env_name"] = env_name
+                self.envs[k]["exe"] = self.conf.environment.executable_path
+                self.envs[k]["n_tasks"] = self.tasks_per_cfd
+                self.envs[k]["exe_name"] = env_name
+                exe_path = os.path.join("envs", env_name)
+                if os.path.exists(exe_path):
+                    shutil.rmtree(exe_path)
+                os.makedirs(exe_path)
+                self.envs[k]["exe_path"] = exe_path
+                self.envs[k]["state_key"] = f"{env_name}.state"
+                self.envs[k]["action_key"] = f"{env_name}.action"
+                self.envs[k]["reward_key"] = f"{env_name}.reward"
 
-        self.reset_infos = [{} for _ in range(self.n_total_agents)]
+        self.reset_infos = [{} for _ in range(self.n_agents)]
 
         self.episode_steps = 0
-        self.episode_rewards = np.zeros(self.n_total_agents)
+        self.episode_rewards = np.zeros(self.n_agents)
         self._global_step += self.steps_per_batch
         self._cfd_episode += self.n_cfds
         self.iteration += 1
@@ -193,8 +198,8 @@ class CFDEnv(VecEnv):
             self._save_trajectories(state_only=True)
 
         # Return numpy array observations instead of dict for VecEnv compatibility
-        observations = np.zeros((self.n_total_agents, self.agent_state_dim))
-        for i in range(self.n_total_agents):
+        observations = np.zeros((self.n_agents, self.agent_state_dim))
+        for i in range(self.n_agents):
             observations[i] = self._agent_states[i]
         
         return observations
@@ -216,7 +221,7 @@ class CFDEnv(VecEnv):
         self._waiting = True
 
         # Set actions in the CFD environment
-        scaled_agent_actions = self._rescale_action(actions)
+        scaled_agent_actions = self._scale_action(actions)
         self._scaled_agent_actions = scaled_agent_actions
         self._set_action(scaled_agent_actions)
 
@@ -240,12 +245,12 @@ class CFDEnv(VecEnv):
         self._agent_rewards = self._recalculate_reward(cfd_rewards)
         
         # Format observations, rewards, dones, infos
-        observations = np.zeros((self.n_total_agents, self.agent_state_dim))
-        rewards = np.zeros(self.n_total_agents)
-        dones = np.zeros(self.n_total_agents, dtype=bool)
-        infos = [{} for _ in range(self.n_total_agents)]
+        observations = np.zeros((self.n_agents, self.agent_state_dim))
+        rewards = np.zeros(self.n_agents)
+        dones = np.zeros(self.n_agents, dtype=bool)
+        infos = [{} for _ in range(self.n_agents)]
         
-        for i in range(self.n_total_agents):
+        for i in range(self.n_agents):
             observations[i] = self._agent_states[i]
             rewards[i] = self._agent_rewards[i]
 
@@ -261,9 +266,9 @@ class CFDEnv(VecEnv):
             self._save_trajectories()
         
         self._waiting = False
-
+        
         if all(dones):
-            for i in range(self.n_total_agents):
+            for i in range(self.n_agents):
                 infos[i]["terminal_observation"] = observations[i]
                 infos[i]["episode"] = dict(
                     r=self.episode_rewards[i],
@@ -286,12 +291,13 @@ class CFDEnv(VecEnv):
         """
         cfd_states = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_state_dim))
         for i in range(self.n_cfds):
-            self.client.poll_tensor(self.state_key[i], 100, self.poll_time)
+            state_key = self.envs[i]["state_key"]
+            self.client.poll_tensor(state_key, 10, self.poll_time)
             try:
-                cfd_states[i, :] = self.client.get_tensor(self.state_key[i])
-                self.client.delete_tensor(self.state_key[i])
+                cfd_states[i, :] = self.client.get_tensor(state_key)
+                self.client.delete_tensor(state_key)
             except Exception as exc:
-                raise Warning(f"Could not read state from key: {self.state_key[i]}") from exc
+                raise Warning(f"Could not read state from key: {state_key}") from exc
         return cfd_states
             
     
@@ -304,12 +310,13 @@ class CFDEnv(VecEnv):
         """
         cfd_rewards = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_reward_dim))
         for i in range(self.n_cfds):
-            self.client.poll_tensor(self.reward_key[i], 100, self.poll_time)
+            reward_key = self.envs[i]["reward_key"]
+            self.client.poll_tensor(reward_key, 10, self.poll_time)
             try:
-                cfd_rewards[i, :] = self.client.get_tensor(self.reward_key[i])
-                self.client.delete_tensor(self.reward_key[i])
+                cfd_rewards[i, :] = self.client.get_tensor(reward_key)
+                self.client.delete_tensor(reward_key)
             except Exception as exc:
-                raise Warning(f"Could not read reward from key: {self.reward_key[i]}") from exc
+                raise Warning(f"Could not read reward from key: {reward_key}") from exc
         return cfd_rewards
             
 
@@ -324,11 +331,12 @@ class CFDEnv(VecEnv):
         cfd_actions = np.zeros((self.n_cfds, self.agents_per_cfd * self.cfd_action_dim))
         
         for i in range(self.n_cfds):
+            action_key = self.envs[i]["action_key"]
             for j in range(agents_per_cfd):
                 for k in range(self.cfd_action_dim):
                     n = (i * agents_per_cfd + j) * self.cfd_action_dim
-                    cfd_actions[i, j * self.cfd_action_dim + k] = scaled_actions[n, k]     
-            self.client.put_tensor(self.action_key[i], cfd_actions[i, :].astype(self.cfd_dtype))
+                    cfd_actions[i, j * self.cfd_action_dim + k] = scaled_actions[n, k]
+            self.client.put_tensor(action_key, cfd_actions[i, :].astype(self.cfd_dtype))
             
             
     @abstractmethod    
@@ -360,9 +368,9 @@ class CFDEnv(VecEnv):
     
 
     @abstractmethod
-    def _rescale_action(self, agent_actions):
+    def _scale_action(self, agent_actions):
         """
-        Rescale action.
+        Scale action.
         
         Args:
             agent_actions (numpy.ndarray): The agent actions array
@@ -389,7 +397,7 @@ class CFDEnv(VecEnv):
         :return: List of values of 'attr_name' in all environments
         """
         if indices is None:
-            indices = range(self.n_total_agents)
+            indices = range(self.n_agents)
         return [getattr(self, attr_name) for _ in indices]
 
 
@@ -403,7 +411,7 @@ class CFDEnv(VecEnv):
         :return:
         """
         if indices is None:
-            indices = range(self.n_total_agents)
+            indices = range(self.n_agents)
         for _ in indices:
             setattr(self, attr_name, value)
 
@@ -419,7 +427,7 @@ class CFDEnv(VecEnv):
         :return: List of items returned by the environment's method call
         """
         if indices is None:
-            indices = range(self.n_total_agents)
+            indices = range(self.n_agents)
         return [getattr(self, method_name)(*method_args, **method_kwargs) for _ in indices]
 
 
@@ -434,7 +442,7 @@ class CFDEnv(VecEnv):
         :return: True if the env is wrapped, False otherwise, for each env queried.
         """
         if indices is None:
-            indices = range(self.n_total_agents)
+            indices = range(self.n_agents)
         return [False for _ in indices]  # No wrappers used in this environment
         
 
@@ -442,7 +450,7 @@ class CFDEnv(VecEnv):
         """
         Return RGB images from each environment
         """
-        return [None for _ in range(self.n_total_agents)]  # No rendering support
+        return [None for _ in range(self.n_agents)]  # No rendering support
     
 
     # Internal methods below
@@ -500,19 +508,19 @@ class CFDEnv(VecEnv):
         """
         agents_per_cfd = self.agents_per_cfd
         for i in range(self.n_cfds):
-            env_idx = self.envs[i]["env_idx"]
+            env_name = self.envs[i]["env_name"]
             agent_indices = slice(i * agents_per_cfd, (i + 1) * agents_per_cfd)
-            with open(os.path.join(self.trajectory_path, f"state/env_{env_idx:03d}.dat"),'a') as f:
+            with open(os.path.join(self.trajectory_dir, f"state/{env_name}.dat"),'a') as f:
                 flattened_state = self._agent_states[agent_indices].flatten()
                 np.savetxt(f, flattened_state.reshape(1, -1), fmt='%13.6e', delimiter=' ')
             
             if not state_only:
-                with open(os.path.join(self.trajectory_path, f"action/env_{env_idx:03d}.dat"),'a') as f:
+                with open(os.path.join(self.trajectory_dir, f"action/{env_name}.dat"),'a') as f:
                     flattened_action = self._agent_actions[agent_indices].flatten()
                     np.savetxt(f, flattened_action.reshape(1, -1), fmt='%13.6e', delimiter=' ')
-                with open(os.path.join(self.trajectory_path, f"reward/env_{env_idx:03d}.dat"),'a') as f:
+                with open(os.path.join(self.trajectory_dir, f"reward/{env_name}.dat"),'a') as f:
                     flattened_reward = self._agent_rewards[agent_indices].flatten()
                     np.savetxt(f, flattened_reward.reshape(1, -1), fmt='%13.6e', delimiter=' ')
-                with open(os.path.join(self.trajectory_path, f"scaled_action/env_{env_idx:03d}.dat"),'a') as f:
+                with open(os.path.join(self.trajectory_dir, f"scaled_action/{env_name}.dat"),'a') as f:
                     flattened_scaled_action = self._scaled_agent_actions[agent_indices].flatten()
                     np.savetxt(f, flattened_scaled_action.reshape(1, -1), fmt='%13.6e', delimiter=' ')

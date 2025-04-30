@@ -1,39 +1,47 @@
 #!/usr/bin/env python3
 
 from omegaconf import OmegaConf
-from smartflow.configuration import Config, compute_derived_parameters
+import argparse
+import wandb
+
+from smartflow.configuration import Config, calculate_derived_parameters
 from smartflow.train import train
 from smartflow.eval import eval
 from smartflow.runtime import Runtime
-import wandb
-from wandb.integration.sb3 import WandbCallback
 
 def main():
+
+    # Merge default config with CLI args to extract the path to config.yaml
+    conf = OmegaConf.merge(
+        OmegaConf.structured(Config()),
+        OmegaConf.from_cli(),
+    )
+    config_file = conf.wandb.config_file
 
     # Load configuration
     conf = OmegaConf.merge(
         OmegaConf.structured(Config()),
-        OmegaConf.load("config.yaml"),
+        OmegaConf.load(config_file),
         OmegaConf.from_cli(),
     )
-
-    conf = compute_derived_parameters(conf)
-
-    print("Configuration:")
+    
+    conf = calculate_derived_parameters(conf)
+    
     print(OmegaConf.to_yaml(conf))
 
     wandb_config = OmegaConf.to_container(conf, resolve=True)
 
-    # Initialize wandb
     run = wandb.init(
         project=conf.wandb.project,
         name=conf.wandb.run_name,
         config=wandb_config,
         mode=conf.wandb.mode,
+        resume="allow",
         sync_tensorboard=conf.wandb.sync_tensorboard,
         group=conf.wandb.group if hasattr(conf.wandb, 'group') else None,
         tags=conf.wandb.tags if hasattr(conf.wandb, 'tags') else None,
         save_code=conf.wandb.save_code if hasattr(conf.wandb, 'save_code') else True,
+        id=conf.wandb.run_id
     )
     
     # Define metrics organization
