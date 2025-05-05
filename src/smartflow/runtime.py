@@ -96,7 +96,7 @@ class Runtime():
             self,
             type_: Optional[str] = 'auto',
             db_network_interface: Optional[str] = 'lo',
-            db_port: Optional[int] = 6790,
+            db_port: Optional[int] = 6379,
             do_launch_orchestrator: Optional[bool] = True
             ):
         """Initialize the Runtime.
@@ -108,7 +108,7 @@ class Runtime():
             db_network_interface (str, optional): Network interface to use for
                 the Orchestrator. Defaults to `'lo'`.
             db_port (int, optional): Port to start the Orchestrator on.
-                Defaults to `6790`.
+                Defaults to `6379`.
             do_launch_orchestrator (bool, optional): Whether to launch the
                 `Orchestrator` immediately. Defaults to `True`.
         """
@@ -184,7 +184,8 @@ class Runtime():
             exe_name: Union[str, List[str]],
             n_procs: Union[int, List[int]],
             n_exe: Optional[int] = 1,
-            launcher: Optional[str] = 'local'
+            launcher: Optional[str] = 'local', 
+            use_explicit_placement: Optional[bool] = True
             ) -> List[smartsim.entity.model.Model]:
         """Launch the models on the available nodes.
 
@@ -192,6 +193,8 @@ class Runtime():
             exe (str, List(str)): Path to the executable to launch. Can either
                 be a single path or a list of length `n_exe`. If only a single
                 path is provided, it is used for all executables.
+            exe_path (str, List(str)): Working directory for the executable. Can
+                either be a single path or a list of length `n_exe`.
             exe_args (str, List(str)): Arguments to pass to the executable. Can
                 either be a single string or a list of length `n_exe`. If only
                 a single string is provided, it is used for all executables.
@@ -205,6 +208,8 @@ class Runtime():
             n_exe (int): Number of executables to launch. Defaults to `1`.
             launcher (str): Launcher to use for the executable. Must be one of
                 `'mpirun'`, `'srun'`, or `'local'`.
+            use_explicit_placement (bool): Whether to use explicit placement
+                options (rankfile for mpirun or nodelist for srun).
         """
         def _validate_args(arg, n):
             """Validate the length of the arguments."""
@@ -248,18 +253,21 @@ class Runtime():
             else:
                 if launcher == 'mpirun':
                     run_args = {
-                        'rankfile': self.launch_config.rankfiles[i],
-                        'report-bindings': None
+                        'report-bindings': None,
                     }
+                    if use_explicit_placement:
+                        run_args['rankfile'] = self.launch_config.rankfiles[i]
                 elif launcher == 'srun':
                     run_args = {
                         # 'mpi': 'pmix_v3',
-                        'nodelist': ','.join(self.launch_config.hosts_per_exe[i]),
                         'distribution': 'block:block:block,Pack',
                         'cpu-bind': 'cores,verbose',
                         'exclusive': None,
                         'gres': 'gpu:0',
                     }
+                    if use_explicit_placement:
+                        run_args['nodelist'] = ','.join(self.launch_config.hosts_per_exe[i])
+                        
                 run_settings = self.exp.create_run_settings(
                     exe=exe[i],
                     exe_args=exe_args[i],

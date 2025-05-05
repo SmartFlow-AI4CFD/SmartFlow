@@ -40,12 +40,7 @@ class CFDEnv(VecEnv):
         self.cfd_state_dim = conf.environment.cfd_state_dim
         self.cfd_action_dim = conf.environment.cfd_action_dim
         self.cfd_reward_dim = conf.environment.cfd_reward_dim
-        self.exe = conf.environment.executable_path
-        self.cfd_steps_per_action = conf.environment.cfd_steps_per_action
-        self.agent_interval = conf.environment.agent_interval
-        self.reward_beta = conf.environment.reward_beta
-        self.cfd_state_indices = conf.environment.cfd_state_indices
-        self.learning_strategy = conf.environment.learning_strategy
+        self.executable_path = conf.environment.executable_path
         self.cwd = os.getcwd()
 
         self.mode = conf.runner.mode
@@ -152,17 +147,20 @@ class CFDEnv(VecEnv):
         """
         self.envs = [{} for _ in range(self.n_cfds)]
         for i in range(self.cases_per_batch):
-            if self.cases_per_batch == 1: # Sequential or multi-task with one case 
+            if self.cases_per_batch == 1: # Sequential or multi-task with a single case 
                 case_idx = self.case_selectors[i].randint(0, self.n_cases-1)
             else: # Multi-task with multiple cases
                 case_idx = i
             for j in range(self.cfds_per_case):
                 k = i * self.cfds_per_case + j
+                # Each env has a unique id, env_{env_idx:05d}, which is highly preferred 
+                # to avoid possible conflicts
                 env_idx = self.iteration * self.n_cfds + k
                 env_name = f"env_{env_idx:05d}"
                 self.envs[k]["case_idx"] = case_idx
+                self.envs[k]["env_idx"] = env_idx
                 self.envs[k]["env_name"] = env_name
-                self.envs[k]["exe"] = self.conf.environment.executable_path
+                self.envs[k]["exe"] = self.executable_path
                 self.envs[k]["n_tasks"] = self.tasks_per_cfd
                 self.envs[k]["exe_name"] = env_name
                 exe_path = os.path.join("envs", env_name)
@@ -189,7 +187,7 @@ class CFDEnv(VecEnv):
         self._create_envs()
         self.models = self._start_envs()
         
-        # Get states and process them
+        # Get states of env_{env_idx:05d}
         cfd_states = self._get_state()
         self._cfd_states = cfd_states
         self._agent_states = self._redistribute_state(cfd_states)
@@ -481,6 +479,7 @@ class CFDEnv(VecEnv):
             n_procs=[env["n_tasks"] for env in self.envs],
             n_exe=self.n_cfds,
             launcher=self.conf.smartsim.run_command,
+            use_explicit_placement=self.conf.smartsim.use_explicit_placement,
         )    
 
 
@@ -498,6 +497,10 @@ class CFDEnv(VecEnv):
                 self.runtime.exp.stop(self.models[i])
 
         self.models = [None for _ in range(self.n_cfds)]
+
+        # Clear the database，which is not strictly necessary, 
+        # but it helps to avoid issues in future developments
+        self.client.flush_db([self.runtime.db_entry])
 
 
     def _save_trajectories(self, state_only=False):

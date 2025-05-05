@@ -12,6 +12,12 @@ class ChannelEnv(CFDEnv):
     def __init__(self, conf, runtime):
         super().__init__(conf=conf, runtime=runtime)
 
+        self.cfd_steps_per_action = conf.environment.cfd_steps_per_action
+        self.agent_interval = conf.environment.agent_interval
+        self.reward_beta = conf.environment.reward_beta
+        self.cfd_state_indices = conf.environment.cfd_state_indices
+        self.reward_definition = conf.environment.reward_definition
+
         for i in range(self.n_cases):
             case_path = self.cases[i]["path"]
             self.cases[i]["input.nml"] = os.path.join(case_path, "input.nml")
@@ -43,6 +49,7 @@ class ChannelEnv(CFDEnv):
         # TODO: Move basic key-value pairs of envs to the parent class
 
         for i in range(self.n_cfds):
+            env_idx = self.envs[i]["env_idx"]
             case_idx = self.envs[i]["case_idx"]
             tauw_ref = self.cases[case_idx]["tauw_ref"]
             tauw_min_percent = self.cases[case_idx]["tauw_min_percent"]
@@ -61,7 +68,7 @@ class ChannelEnv(CFDEnv):
                 "--tauw_ref_max": tauw_ref * tauw_max_percent,
                 "--hwm_min": hwm_min,
                 "--hwm_max": hwm_max,
-                "--cfd_seed": self.cfd_seeds[i],
+                "--cfd_seed": self.cfd_seeds[i] + env_idx, # Each CFD instance has a different seed
                 "--kap_log": kap_log,
             }
             this_exe_args = [f"{k}={v}" for k, v in this_exe_args.items()]
@@ -124,8 +131,22 @@ class ChannelEnv(CFDEnv):
             tauw1 = rewards[:, 0]
             tauw1_prev = rewards[:, 1]
 
-            bonus = np.where(abs(tauw_ref - tauw1) / tauw_ref < 0.01, 1.0, 0.0)
-            local_rewards = -1.0 / tauw_ref * (abs(tauw_ref - tauw1) - abs(tauw_ref - tauw1_prev)) + bonus
+            if self.reward_definition == "default":
+                bonus = np.where(abs(tauw_ref - tauw1) / tauw_ref < 0.01, 1.0, 0.0)
+                local_rewards = -1.0 / tauw_ref * (abs(tauw_ref - tauw1) - abs(tauw_ref - tauw1_prev)) + bonus
+            
+            elif self.reward_definition == "bonus_off":
+                local_rewards = -1.0 / tauw_ref * (abs(tauw_ref - tauw1) - abs(tauw_ref - tauw1_prev))
+
+            elif self.reward_definition == "improvement_off":
+                local_rewards = np.where(abs(tauw_ref - tauw1) / tauw_ref < 0.01, 1.0, 0.0)
+
+            elif self.reward_definition == "simple_reward":
+                local_rewards = -abs(tauw_ref - tauw1) / tauw_ref
+            
+            else:
+                raise ValueError(f"Unknown reward definition: {self.reward_definition}.")
+
             global_reward = 0.0
 
             agent_indices = slice(i * agents_per_cfd, (i + 1) * agents_per_cfd)

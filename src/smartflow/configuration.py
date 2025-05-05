@@ -28,7 +28,7 @@ class Environment:
     agent_action_dim: int
     cfds_per_case: int = 1
     tasks_per_cfd: int = 1
-    poll_time: int = 10000
+    poll_time: int = 200000
     save_trajectories: bool = True
     trajectory_dir: str = "trajectories"
     cfd_steps_per_action: int = 10
@@ -36,6 +36,7 @@ class Environment:
     cfd_dtype: str = "float64"
     action_bounds: tuple = (-1.0, 1.0)
     reward_beta: float = 0.0
+    reward_definition: str = "default"
     executable_path: Optional[str] = None
     action_scale_min: float = 0.9
     action_scale_max: float = 1.1
@@ -76,6 +77,7 @@ class SmartSim:
     network_interface: str = "lo"  # "lo", "ib0"
     run_command: str = "mpirun"
     launcher: str = "local"  # "local", "slurm", "slurm-split"
+    use_explicit_placement: Optional[bool] = None
 
 
 @dataclass
@@ -124,5 +126,9 @@ def calculate_derived_parameters(conf):
         
     if conf.runner.batch_size is None:
         conf.runner.batch_size = conf.runner.steps_per_batch
+    
+    # Set default for SmartSim use_explicit_placement based on runner mode
+    if conf.smartsim.use_explicit_placement is None:
+        conf.smartsim.use_explicit_placement = (conf.runner.mode == "train")
         
     return conf

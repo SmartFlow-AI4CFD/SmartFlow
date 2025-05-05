@@ -41,7 +41,10 @@ def main():
         group=conf.wandb.group if hasattr(conf.wandb, 'group') else None,
         tags=conf.wandb.tags if hasattr(conf.wandb, 'tags') else None,
         save_code=conf.wandb.save_code if hasattr(conf.wandb, 'save_code') else True,
-        id=conf.wandb.run_id
+        id=conf.wandb.run_id,
+        settings={
+            "_service_wait": 300,
+        }
     )
     
     # Define metrics organization

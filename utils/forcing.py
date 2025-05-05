@@ -5,15 +5,15 @@ import scienceplots
 from scipy.interpolate import interp1d
 
 folders = [
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01000_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU05200_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU10000_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E05_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E06_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E07_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E08_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E09_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E10_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01000_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU05200_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU10000_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E05_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E06_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E07_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E08_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E09_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E10_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
   'eval_retau_01000/envs/env_00000/',
   'eval_retau_05200/envs/env_00000/',
   'eval_retau_10000/envs/env_00000/',
@@ -59,7 +59,7 @@ for i, folder in enumerate(folders):
         forcing_file = folder + 'forcing.out'
         data = np.loadtxt(forcing_file)
         
-        # Extract first and second columns
+        # Extract columns
         x = data[:, 0]  # First column
         y = data[:, 4]  # Second column
         

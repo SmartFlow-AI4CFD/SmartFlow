@@ -20,15 +20,15 @@ plt.rc('legend', fontsize=SMALL_SIZE)     # legend fontsize
 plt.rc('figure', titlesize=BIGGER_SIZE)   # fontsize of the figure title
 
 folders = [
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01000_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU05200_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU10000_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E05_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E06_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E07_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E08_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E09_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
-  '/leonardo/home/userexternal/mxiao000/run/CHA_CPG_RETAU01E10_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01000_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU05200_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU10000_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E05_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E06_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E07_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E08_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E09_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
+  '/leonardo_scratch/fast/EUHPC_R03_087/run/CHA_CPG_RETAU01E10_H0.1_SMAG_AR1_NX128_NY48_NZ32_MINIMAL/',
   'eval_retau_01000/envs/env_00000/',
   'eval_retau_05200/envs/env_00000/',
   'eval_retau_10000/envs/env_00000/',
@@ -98,12 +98,6 @@ for i in range(len(folders)):
   label = labels[i]
   
   plt.plot(les.zc*retau, les.u/utau, linestyle=linestyle, color=color, label=label)
-
-  if i == 12:
-    print(les.reb)
-    print(les.retau)
-    print(les.u)
-    print(les.u/utau)
 
 plt.xscale('log')
 # Place legend outside of the plot area
