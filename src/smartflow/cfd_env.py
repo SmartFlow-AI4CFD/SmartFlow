@@ -46,6 +46,7 @@ class CFDEnv(VecEnv):
         self.mode = conf.runner.mode
         self.steps_per_episode = conf.runner.steps_per_episode
         self.total_cfd_episodes = conf.runner.total_cfd_episodes
+        self.restart_step = conf.runner.restart_step
 
         # Use derived parameters
         self.steps_per_batch = conf.runner.steps_per_batch
@@ -100,10 +101,9 @@ class CFDEnv(VecEnv):
         self.case_selectors = [random.Random(seed) for seed in self.case_seeds]
         self.cfd_selectors = [random.Random(seed) for seed in self.cfd_seeds]
 
-        # Initialize counters
-        self.iteration = 0
-        self._global_step = 0
-        self._cfd_episode = 0
+        # Initialize training progress counters (supports restart from checkpoint)
+        self.restart_iteration = self.restart_step // self.steps_per_batch
+        self.iteration = self.restart_iteration
 
         # Initialize smartredis client
         self.client = Client(
@@ -124,14 +124,15 @@ class CFDEnv(VecEnv):
         self.models = [None for _ in range(self.n_cfds)]
         
         # Initialize step_async required variables
-        self._waiting = False
+        self.waiting = False
 
         # Initialize trajectory saving
         if self.save_trajectories:
-            os.makedirs(os.path.join(self.trajectory_dir, "state"), exist_ok=True)
-            os.makedirs(os.path.join(self.trajectory_dir, "action"), exist_ok=True)
-            os.makedirs(os.path.join(self.trajectory_dir, "reward"), exist_ok=True)
-            os.makedirs(os.path.join(self.trajectory_dir, "scaled_action"), exist_ok=True)
+            traj_dir = self.trajectory_dir
+            os.makedirs(os.path.join(traj_dir, "state"), exist_ok=True)
+            os.makedirs(os.path.join(traj_dir, "action"), exist_ok=True)
+            os.makedirs(os.path.join(traj_dir, "reward"), exist_ok=True)
+            os.makedirs(os.path.join(traj_dir, "scaled_action"), exist_ok=True)
 
 
     def reset(self) -> VecEnvObs:
@@ -153,8 +154,7 @@ class CFDEnv(VecEnv):
                 case_idx = i
             for j in range(self.cfds_per_case):
                 k = i * self.cfds_per_case + j
-                # Each env has a unique id, env_{env_idx:05d}, which is highly preferred 
-                # to avoid possible conflicts
+                # Each env has a unique env_idx to avoid possible conflicts
                 env_idx = self.iteration * self.n_cfds + k
                 env_name = f"env_{env_idx:05d}"
                 self.envs[k]["case_idx"] = case_idx
@@ -171,13 +171,30 @@ class CFDEnv(VecEnv):
                 self.envs[k]["state_key"] = f"{env_name}.state"
                 self.envs[k]["action_key"] = f"{env_name}.action"
                 self.envs[k]["reward_key"] = f"{env_name}.reward"
+                traj_dir = self.trajectory_dir
+                state_path = os.path.join(traj_dir, "state", f"{env_name}.dat")
+                action_path = os.path.join(traj_dir, "action", f"{env_name}.dat")
+                reward_path = os.path.join(traj_dir, "reward", f"{env_name}.dat")
+                scaled_action_path = os.path.join(traj_dir, "scaled_action", f"{env_name}.dat")
+                if self.save_trajectories:
+                    if os.path.isfile(state_path):
+                        os.remove(state_path)
+                    if os.path.isfile(action_path):
+                        os.remove(action_path)
+                    if os.path.isfile(reward_path):
+                        os.remove(reward_path)
+                    if os.path.isfile(scaled_action_path):
+                        os.remove(scaled_action_path)
+                self.envs[k]["state_path"] = state_path
+                self.envs[k]["action_path"] = action_path
+                self.envs[k]["reward_path"] = reward_path
+                self.envs[k]["scaled_action_path"] = scaled_action_path
+
 
         self.reset_infos = [{} for _ in range(self.n_agents)]
 
         self.episode_steps = 0
         self.episode_rewards = np.zeros(self.n_agents)
-        self._global_step += self.steps_per_batch
-        self._cfd_episode += self.n_cfds
         self.iteration += 1
 
         # Close the current CFD simulations
@@ -187,10 +204,10 @@ class CFDEnv(VecEnv):
         self._create_envs()
         self.models = self._start_envs()
         
-        # Get states of env_{env_idx:05d}
+        # Get states of env_idx
         cfd_states = self._get_state()
         self._cfd_states = cfd_states
-        self._agent_states = self._redistribute_state(cfd_states)
+        self._agent_states = self._recalculate_state(cfd_states)
         
         if self.save_trajectories:
             self._save_trajectories(state_only=True)
@@ -212,11 +229,11 @@ class CFDEnv(VecEnv):
         You should not call this if a step_async run is
         already pending.
         """
-        if self._waiting:
+        if self.waiting:
             raise ValueError("Async step already in progress")
             
         self._agent_actions = actions
-        self._waiting = True
+        self.waiting = True
 
         # Set actions in the CFD environment
         scaled_agent_actions = self._scale_action(actions)
@@ -230,13 +247,13 @@ class CFDEnv(VecEnv):
 
         :return: observation, reward, done, information
         """
-        if not self._waiting:
+        if not self.waiting:
             raise ValueError("No async step in progress")
 
         # Poll new state and reward
         cfd_states = self._get_state()
         self._cfd_states = cfd_states
-        self._agent_states = self._redistribute_state(cfd_states)
+        self._agent_states = self._recalculate_state(cfd_states)
         
         cfd_rewards = self._get_reward()
         self._cfd_rewards = cfd_rewards
@@ -263,7 +280,7 @@ class CFDEnv(VecEnv):
         if self.save_trajectories:
             self._save_trajectories()
         
-        self._waiting = False
+        self.waiting = False
         
         if all(dones):
             for i in range(self.n_agents):
@@ -272,7 +289,7 @@ class CFDEnv(VecEnv):
                     r=self.episode_rewards[i],
                     l=self.episode_steps
                 )
-            if self.iteration >= self.total_iterations:
+            if self.iteration >= self.total_iterations + self.restart_iteration:
                 self.close()
             else:
                 observations = self.reset()
@@ -338,9 +355,9 @@ class CFDEnv(VecEnv):
             
             
     @abstractmethod    
-    def _redistribute_state(self, cfd_states):
+    def _recalculate_state(self, cfd_states):
         """
-        Redistribute state.
+        Recalculate state.
         
         Args:
             cfd_states (numpy.ndarray): The CFD states array
@@ -511,19 +528,18 @@ class CFDEnv(VecEnv):
         """
         agents_per_cfd = self.agents_per_cfd
         for i in range(self.n_cfds):
-            env_name = self.envs[i]["env_name"]
             agent_indices = slice(i * agents_per_cfd, (i + 1) * agents_per_cfd)
-            with open(os.path.join(self.trajectory_dir, f"state/{env_name}.dat"),'a') as f:
+            with open(self.envs[i]["state_path"] ,'a') as f:
                 flattened_state = self._agent_states[agent_indices].flatten()
                 np.savetxt(f, flattened_state.reshape(1, -1), fmt='%13.6e', delimiter=' ')
             
             if not state_only:
-                with open(os.path.join(self.trajectory_dir, f"action/{env_name}.dat"),'a') as f:
+                with open(self.envs[i]["action_path"],'a') as f:
                     flattened_action = self._agent_actions[agent_indices].flatten()
                     np.savetxt(f, flattened_action.reshape(1, -1), fmt='%13.6e', delimiter=' ')
-                with open(os.path.join(self.trajectory_dir, f"reward/{env_name}.dat"),'a') as f:
+                with open(self.envs[i]["reward_path"],'a') as f:
                     flattened_reward = self._agent_rewards[agent_indices].flatten()
                     np.savetxt(f, flattened_reward.reshape(1, -1), fmt='%13.6e', delimiter=' ')
-                with open(os.path.join(self.trajectory_dir, f"scaled_action/{env_name}.dat"),'a') as f:
+                with open(self.envs[i]["scaled_action_path"],'a') as f:
                     flattened_scaled_action = self._scaled_agent_actions[agent_indices].flatten()
                     np.savetxt(f, flattened_scaled_action.reshape(1, -1), fmt='%13.6e', delimiter=' ')

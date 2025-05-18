@@ -31,16 +31,19 @@ class Environment:
     poll_time: int = 200000
     save_trajectories: bool = True
     trajectory_dir: str = "trajectories"
-    cfd_steps_per_action: int = 10
+    action_start_step: Optional[int] = 0
+    action_start_time: Optional[float] = 0.0
+    cfd_steps_per_action: Optional[int] = 10
+    time_duration_per_action: Optional[float] = 0.4
     agent_interval: int = 4
     cfd_dtype: str = "float64"
     action_bounds: tuple = (-1.0, 1.0)
+    state_definition: str = "default"
     reward_beta: float = 0.0
     reward_definition: str = "default"
     executable_path: Optional[str] = None
     action_scale_min: float = 0.9
     action_scale_max: float = 1.1
-    cfd_state_indices: Optional[List[int]] = None
     learning_strategy: str = "sequential"
     # Derived parameters
     n_cfds: Optional[int] = None
@@ -55,7 +58,6 @@ class Runner:
     policy: str = "MlpPolicy"
     reset_num_timesteps: bool = True
     total_cfd_episodes: int = 1
-    hidden_layers: tuple = (128, 128)
     learning_rate: float = 3e-4
     seed: Optional[int] = 16
     steps_per_episode: int = 120
@@ -63,6 +65,7 @@ class Runner:
     model_load_path: Optional[str] = None
     model_save_dir: str = "models/"
     save_freq: Optional[int] = None
+    restart_step: Optional[int] = 0
     # Derived parameters
     steps_per_batch: Optional[int] = None
     total_agent_episodes: Optional[int] = None
@@ -110,8 +113,18 @@ def calculate_derived_parameters(conf):
     conf.environment.n_cfds = conf.environment.cases_per_batch * conf.environment.cfds_per_case
     conf.environment.n_agents = conf.environment.n_cfds * conf.environment.agents_per_cfd
 
-    if conf.environment.cfd_state_indices is None:
-        conf.environment.cfd_state_indices = list(range(conf.environment.cfd_state_dim))
+    state_dims = {
+        "default": 3,
+        "hwm+vel": 2,
+        "log(hwm)+vel": 2,
+        "kap+b": 2,
+        "kap_corrected+b": 2,
+    }
+    state_definition = conf.environment.state_definition
+    if state_definition in state_dims:
+        conf.environment.agent_state_dim = state_dims[state_definition]
+    else:
+        raise ValueError(f"Unknown state definition: {state_definition}.")
     
     # Runner derived parameters
     conf.runner.reset_num_timesteps = not conf.runner.restart

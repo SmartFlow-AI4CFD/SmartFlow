@@ -10,6 +10,16 @@ from smartflow.channel_env import ChannelEnv
 
 def train(conf, runtime, run, **ignored_kwargs):
 
+    # Read restart step from the loaded model
+    conf.runner.restart_step = 0
+    if conf.runner.restart:
+        model = PPO.load(
+            path=conf.runner.model_load_path,
+            custom_objects=None,
+        )
+        conf.runner.restart_step = model.num_timesteps
+
+    # Start training
     env = ChannelEnv(conf, runtime=runtime)
 
     if conf.runner.restart:

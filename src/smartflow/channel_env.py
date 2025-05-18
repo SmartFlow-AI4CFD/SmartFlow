@@ -10,13 +10,17 @@ class ChannelEnv(CFDEnv):
     Channel environment.
     """
     def __init__(self, conf, runtime):
+
         super().__init__(conf=conf, runtime=runtime)
 
+        self.action_start_step = conf.environment.action_start_step
+        self.action_start_time = conf.environment.action_start_time
         self.cfd_steps_per_action = conf.environment.cfd_steps_per_action
+        self.time_duration_per_action = conf.environment.time_duration_per_action
         self.agent_interval = conf.environment.agent_interval
         self.reward_beta = conf.environment.reward_beta
-        self.cfd_state_indices = conf.environment.cfd_state_indices
         self.reward_definition = conf.environment.reward_definition
+        self.state_definition = conf.environment.state_definition
 
         for i in range(self.n_cases):
             case_path = self.cases[i]["path"]
@@ -62,7 +66,10 @@ class ChannelEnv(CFDEnv):
             env_name = self.envs[i]["env_name"]
             this_exe_args = {
                 "--tag": env_name,
-                "--action_interval": self.cfd_steps_per_action,
+                "--action_start_step": self.action_start_step,
+                "--action_start_time": self.action_start_time,
+                "--cfd_steps_per_action": self.cfd_steps_per_action,
+                "--time_duration_per_action": self.time_duration_per_action,
                 "--agent_interval": self.agent_interval,
                 "--tauw_ref_min": tauw_ref * tauw_min_percent,
                 "--tauw_ref_max": tauw_ref * tauw_max_percent,
@@ -86,11 +93,11 @@ class ChannelEnv(CFDEnv):
                 os.remove(fld_bin_path)
             os.symlink(restart_file, fld_bin_path)
             print(f"Restart file: {restart_file} for env {i}.")
+    
 
-
-    def _redistribute_state(self, cfd_states):
+    def _recalculate_state(self, cfd_states):
         """
-        Redistribute state.
+        Recalculate state.
         
         Args:
             cfd_states (numpy.ndarray): The CFD states array
@@ -100,12 +107,44 @@ class ChannelEnv(CFDEnv):
         """
         agents_per_cfd = self.agents_per_cfd
         agent_states = np.zeros((self.n_agents, self.agent_state_dim))
-        
+
         for i in range(self.n_cfds):
-            for j in range(agents_per_cfd):
-                for k in range(self.agent_state_dim):
-                    kk = self.cfd_state_indices[k]
-                    agent_states[i * agents_per_cfd + j, k] = cfd_states[i, j * self.cfd_state_dim + kk]
+            case_idx = self.envs[i]["case_idx"]
+            states = cfd_states[i, :].reshape(agents_per_cfd, self.cfd_state_dim)
+
+            hwm_plus = states[:, 0]
+            vel_h_plus = states[:, 1]
+            dveldz_plus = states[:, 2]
+
+            agent_indices = slice(i * agents_per_cfd, (i + 1) * agents_per_cfd)
+            if self.state_definition == "default":
+                agent_states[agent_indices, 0] = hwm_plus
+                agent_states[agent_indices, 1] = vel_h_plus
+                agent_states[agent_indices, 2] = dveldz_plus
+            
+            elif self.state_definition == "hwm+vel":
+                agent_states[agent_indices, 0] = hwm_plus
+                agent_states[agent_indices, 1] = vel_h_plus
+
+            elif self.state_definition == "log(hwm)+vel":
+                agent_states[agent_indices, 0] = np.log(hwm_plus)
+                agent_states[agent_indices, 1] = vel_h_plus
+                
+            elif self.state_definition == "kap+b":
+                kap = 1.0 / (hwm_plus * dveldz_plus)
+                b = vel_h_plus - 1.0 / kap * np.log(hwm_plus)
+                agent_states[agent_indices, 0] = 1.0 / kap
+                agent_states[agent_indices, 1] = b
+
+            elif self.state_definition == "kap_corrected+b":
+                kap = 1.0 / (hwm_plus * dveldz_plus)
+                b = vel_h_plus - 1.0 / kap * np.log(hwm_plus)
+                kap_log = self.cases[case_idx]["kap_log"]
+                agent_states[agent_indices, 0] = (1.0 / kap - 1.0 / kap_log) * np.log(hwm_plus)
+                agent_states[agent_indices, 1] = b
+            
+            else:
+                raise ValueError(f"Unknown state definition: {self.state_definition}.")
         
         return agent_states
 
