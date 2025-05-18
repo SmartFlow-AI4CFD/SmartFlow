@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "smartflow"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
     {name="Maochao Xiao", email="maochao.xiao@uniroma1.it"},
     {name="Francisco Alcántara Ávila", email="fraa@kth.se"},
@@ -17,24 +17,26 @@ authors = [
     {name="Johan Larsson", email="jola@umd.edu"},
     {name="Sergio Pirozzoli", email="sergio.pirozzoli@uniroma1.it"},
 ]
-description = "A ML framework for CFD solvers using SmartSim"
+description = "Multi-agent deep reinforcement learning framework for turbulence modeling, flow control, and numerical algorithm development"
 keywords = ["reinforcement learning", "computational fluid dynamics"]
-requires-python = ">=3.10"
+requires-python = ">=3.10, <3.12"
 dependencies = [
-  "smartsim==0.7.0",
-  "smartredis==0.5.3",
+  "smartsim",
+  "smartredis",
   "stable-baselines3",
   "numpy",
-  "matplotlib",
+  "omegaconf",
+  "wandb",
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
 ]
 
 [project.urls]
-Homepage = "https://github.com/b-fg/SmartSOD2D"
-Issues = "https://github.com/b-fg/SmartSOD2D/issues"
+Homepage = "https://github.com/soaringxmc/SmartFlow"
+Issues = "https://github.com/soaringxmc/SmartFlow/issues"
+Documentation = "https://smartflow.readthedocs.io/en/latest/"
