@@ -92,7 +92,7 @@ class ChannelEnv(CFDEnv):
             if os.path.lexists(fld_bin_path):
                 os.remove(fld_bin_path)
             os.symlink(restart_file, fld_bin_path)
-            print(f"Restart file: {restart_file} for env {i}.")
+            print(f"Restart file: {restart_file} for {env_name}.")
     
 
     def _recalculate_state(self, cfd_states):

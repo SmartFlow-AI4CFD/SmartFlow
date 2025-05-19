@@ -72,7 +72,7 @@ class Runtime():
             **Local Mode**).
         n_worker_slots (int): Total number of slots available on workers.
         db (Orchestrator): The launched `Orchestrator` database from the
-            `smartsim` packagev.
+            `smartsim` package.
         db_entry (str): IP address and port of the host of the database.
             Takes the form `IP_ADDRESS:PORT`.
         exp (Experiment): The `Experiment` object the `Orchestrator` is
@@ -183,7 +183,7 @@ class Runtime():
             exe_args: Union[str, List[str]],
             exe_name: Union[str, List[str]],
             n_procs: Union[int, List[int]],
-            n_gpus: Optional[int] = 0,
+            n_gpus: Union[int, List[int]],
             n_exe: Optional[int] = 1,
             run_command: Optional[str] = 'local', 
             use_explicit_placement: Optional[bool] = True
@@ -234,8 +234,8 @@ class Runtime():
         # Check compatibility of run command and scheduler type
         if (run_command == 'local') and (max(n_procs) > 1):
             raise ValueError('Local run command only supports single process execution!')
-        if (run_command == 'srun') and (self.type != 'slurm'):
-            raise ValueError('srun run command only supported for SLURM scheduler!')
+        # if (run_command == 'srun') and (self.type != 'slurm'):
+        #     raise ValueError('srun run command only supported for SLURM scheduler!')
 
         # Check if launch config is up-to-date and create or update if required
         config_dict = {'type': run_command,
@@ -248,7 +248,8 @@ class Runtime():
             if not self.launch_config.is_compatible(config_dict):
                 self.launch_config.config = config_dict
         
-        idle_gpu = 0
+        next_gpu_index = 0
+        env_args={}
         models = []
         for i in range(n_exe):
             if run_command == 'local':
@@ -263,10 +264,10 @@ class Runtime():
                     }
                     if use_explicit_placement:
                         run_args['rankfile'] = self.launch_config.rankfiles[i]
-                    env_args={}
-                    if n_gpus[i] != 0:
-                        env_args["CUDA_VISIBLE_DEVICES"]=f"{idle_gpu}"
-                        idle_gpu += 1
+                    if n_gpus[i] > 0:
+                        gpu_indices = ','.join(str(g) for g in range(next_gpu_index, next_gpu_index + n_gpus[i]))
+                        env_args["CUDA_VISIBLE_DEVICES"] = gpu_indices
+                        next_gpu_index += n_gpus[i]
                 elif run_command == 'srun':
                     run_args = {
                         # 'mpi': 'pmix_v3',
@@ -274,15 +275,11 @@ class Runtime():
                         'cpu-bind': 'cores,verbose',
                         'exclusive': None,
                     }
-                    # Configure GPUs for srun run command
                     # if n_gpus[i] > 0:
                     #     run_args['gres'] = f'gpu:{n_gpus[i]}'
-                    #     env_args = {"CUDA_VISIBLE_DEVICES": f"{idle_gpu}"}
-                    #     idle_gpu += n_gpus[i]
                     # else:
                     #     run_args['gres'] = 'gpu:0'
-                    #     env_args = {}
-                        
+
                     # if use_explicit_placement:
                     #     run_args['nodelist'] = ','.join(self.launch_config.hosts_per_exe[i])
                         
@@ -291,7 +288,7 @@ class Runtime():
                     exe_args=exe_args[i],
                     run_command=run_command,
                     run_args=run_args,
-                    # env_vars=env_args,
+                    env_vars=env_args,
                 )
                 run_settings.set_tasks(n_procs[i])
 
@@ -416,7 +413,7 @@ class Runtime():
             tuple: The `Experiment` instance, the `Orchestrator` instance and
                 the IP address of the host of the database.
         """
-        # Generate relexi experiment
+        # Initialize the cfd experiment
         exp = Experiment('envs', launcher=self.type)
 
         # Initialize the orchestrator based on the orchestrator_type
@@ -491,6 +488,12 @@ class Runtime():
                 expanded_list.extend([num_cpus] * count)
             else:
                 expanded_list.append(int(entry))
+        
+        expanded_list = []
+        ntasks_per_node = os.getenv('SLURM_NTASKS_PER_NODE')
+        num_nodes = os.getenv('SLURM_JOB_NUM_NODES')
+        expanded_list = [int(ntasks_per_node)] * int(num_nodes)
+        print(f"expanded_list: {expanded_list}")
         return expanded_list
 
     def _get_slots_per_node_pbs(self) -> List[int]:

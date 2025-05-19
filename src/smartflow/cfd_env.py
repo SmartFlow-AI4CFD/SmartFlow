@@ -163,7 +163,7 @@ class CFDEnv(VecEnv):
                 self.envs[k]["env_name"] = env_name
                 self.envs[k]["exe"] = self.executable_path
                 self.envs[k]["n_tasks"] = self.tasks_per_cfd
-                self.envs[k]["n_gpus"] = self.gpus_per_cfd  # Changed index from i to k
+                self.envs[k]["n_gpus"] = self.gpus_per_cfd
                 self.envs[k]["exe_name"] = env_name
                 exe_path = os.path.join("envs", env_name)
                 if os.path.exists(exe_path):
