@@ -118,7 +118,7 @@ class LaunchConfig():
 
     @property
     def rankfiles(self) -> List[str]:
-        """Return paths to rankfiles for `mpirun` launcher."""
+        """Return paths to rankfiles for `mpirun` run command."""
         if self._rankfiles is None:
             raise ValueError('Rankfiles not yet generated!')
         return self._rankfiles

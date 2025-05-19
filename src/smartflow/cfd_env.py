@@ -33,6 +33,7 @@ class CFDEnv(VecEnv):
         self.action_scale_min = conf.environment.action_scale_min
         self.action_scale_max = conf.environment.action_scale_max
         self.tasks_per_cfd = conf.environment.tasks_per_cfd
+        self.gpus_per_cfd = conf.environment.gpus_per_cfd
         self.cfd_dtype = conf.environment.cfd_dtype
         self.poll_time = conf.environment.poll_time
         self.save_trajectories = conf.environment.save_trajectories
@@ -162,6 +163,7 @@ class CFDEnv(VecEnv):
                 self.envs[k]["env_name"] = env_name
                 self.envs[k]["exe"] = self.executable_path
                 self.envs[k]["n_tasks"] = self.tasks_per_cfd
+                self.envs[k]["n_gpus"] = self.gpus_per_cfd  # Changed index from i to k
                 self.envs[k]["exe_name"] = env_name
                 exe_path = os.path.join("envs", env_name)
                 if os.path.exists(exe_path):
@@ -494,8 +496,9 @@ class CFDEnv(VecEnv):
             exe_args=[env["exe_args"] for env in self.envs],
             exe_name=[env["exe_name"] for env in self.envs],
             n_procs=[env["n_tasks"] for env in self.envs],
+            n_gpus=[env["n_gpus"] for env in self.envs],
             n_exe=self.n_cfds,
-            launcher=self.conf.smartsim.run_command,
+            run_command=self.conf.smartsim.run_command,
             use_explicit_placement=self.conf.smartsim.use_explicit_placement,
         )    
 

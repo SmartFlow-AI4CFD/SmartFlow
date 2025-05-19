@@ -28,6 +28,7 @@ class Environment:
     agent_action_dim: int
     cfds_per_case: int = 1
     tasks_per_cfd: int = 1
+    gpus_per_cfd: int = 0
     poll_time: int = 200000
     save_trajectories: bool = True
     trajectory_dir: str = "trajectories"
@@ -79,7 +80,7 @@ class SmartSim:
     n_dbs: int = 1
     network_interface: str = "lo"  # "lo", "ib0"
     run_command: str = "mpirun"
-    launcher: str = "local"  # "local", "slurm", "slurm-split"
+    launcher: str = "local"  # "local", "slurm"
     use_explicit_placement: Optional[bool] = None
 
 

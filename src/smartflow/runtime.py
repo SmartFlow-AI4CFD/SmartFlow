@@ -183,8 +183,9 @@ class Runtime():
             exe_args: Union[str, List[str]],
             exe_name: Union[str, List[str]],
             n_procs: Union[int, List[int]],
+            n_gpus: Optional[int] = 0,
             n_exe: Optional[int] = 1,
-            launcher: Optional[str] = 'local', 
+            run_command: Optional[str] = 'local', 
             use_explicit_placement: Optional[bool] = True
             ) -> List[smartsim.entity.model.Model]:
         """Launch the models on the available nodes.
@@ -205,8 +206,11 @@ class Runtime():
             n_procs (int, List(int)): Number of processes to launch. Can either
                 be a single integer or a list of length `n_exe`. If only a
                 single integer is provided, it is used for all executables.
+            n_gpus (int, List(int)): Number of GPUs to use per executable. Can either
+                be a single integer or a list of length `n_exe`. If only a
+                single integer is provided, it is used for all executables.
             n_exe (int): Number of executables to launch. Defaults to `1`.
-            launcher (str): Launcher to use for the executable. Must be one of
+            run_command (str): Run command to use for the executable. Must be one of
                 `'mpirun'`, `'srun'`, or `'local'`.
             use_explicit_placement (bool): Whether to use explicit placement
                 options (rankfile for mpirun or nodelist for srun).
@@ -225,15 +229,16 @@ class Runtime():
         exe_args = _validate_args(exe_args, n_exe)
         exe_name = _validate_args(exe_name, n_exe)
         n_procs = _validate_args(n_procs, n_exe)
+        n_gpus = _validate_args(n_gpus, n_exe)
 
-        # Check compatibility of launcher and scheduler type
-        if (launcher == 'local') and (max(n_procs) > 1):
-            raise ValueError('Local launcher only supports single process execution!')
-        if (launcher == 'srun') and (self.type != 'slurm'):
-            raise ValueError('srun launcher only supported for SLURM scheduler!')
+        # Check compatibility of run command and scheduler type
+        if (run_command == 'local') and (max(n_procs) > 1):
+            raise ValueError('Local run command only supports single process execution!')
+        if (run_command == 'srun') and (self.type != 'slurm'):
+            raise ValueError('srun run command only supported for SLURM scheduler!')
 
         # Check if launch config is up-to-date and create or update if required
-        config_dict = {'type': launcher,
+        config_dict = {'type': run_command,
                        'n_exe': n_exe,
                        'n_procs': n_procs,
                        'workers': self.workers}
@@ -242,37 +247,51 @@ class Runtime():
         else:
             if not self.launch_config.is_compatible(config_dict):
                 self.launch_config.config = config_dict
-
+        
+        idle_gpu = 0
         models = []
         for i in range(n_exe):
-            if launcher == 'local':
+            if run_command == 'local':
                 run_settings = self.exp.create_run_settings(
                     exe=exe[i],
                     exe_args=exe_args[i],
                 )
             else:
-                if launcher == 'mpirun':
+                if run_command == 'mpirun':
                     run_args = {
                         'report-bindings': None,
                     }
                     if use_explicit_placement:
                         run_args['rankfile'] = self.launch_config.rankfiles[i]
-                elif launcher == 'srun':
+                    env_args={}
+                    if n_gpus[i] != 0:
+                        env_args["CUDA_VISIBLE_DEVICES"]=f"{idle_gpu}"
+                        idle_gpu += 1
+                elif run_command == 'srun':
                     run_args = {
                         # 'mpi': 'pmix_v3',
                         'distribution': 'block:block:block,Pack',
                         'cpu-bind': 'cores,verbose',
                         'exclusive': None,
-                        'gres': 'gpu:0',
                     }
-                    if use_explicit_placement:
-                        run_args['nodelist'] = ','.join(self.launch_config.hosts_per_exe[i])
+                    # Configure GPUs for srun run command
+                    # if n_gpus[i] > 0:
+                    #     run_args['gres'] = f'gpu:{n_gpus[i]}'
+                    #     env_args = {"CUDA_VISIBLE_DEVICES": f"{idle_gpu}"}
+                    #     idle_gpu += n_gpus[i]
+                    # else:
+                    #     run_args['gres'] = 'gpu:0'
+                    #     env_args = {}
+                        
+                    # if use_explicit_placement:
+                    #     run_args['nodelist'] = ','.join(self.launch_config.hosts_per_exe[i])
                         
                 run_settings = self.exp.create_run_settings(
                     exe=exe[i],
                     exe_args=exe_args[i],
-                    run_command=launcher,
-                    run_args=run_args
+                    run_command=run_command,
+                    run_args=run_args,
+                    # env_vars=env_args,
                 )
                 run_settings.set_tasks(n_procs[i])
 
