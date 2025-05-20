@@ -264,10 +264,10 @@ class Runtime():
                     }
                     if use_explicit_placement:
                         run_args['rankfile'] = self.launch_config.rankfiles[i]
-                    if n_gpus[i] > 0:
-                        gpu_indices = ','.join(str(g) for g in range(next_gpu_index, next_gpu_index + n_gpus[i]))
-                        env_args["CUDA_VISIBLE_DEVICES"] = gpu_indices
-                        next_gpu_index += n_gpus[i]
+                        if n_gpus[i] > 0:
+                            gpu_indices = ','.join(str(g) for g in range(next_gpu_index, next_gpu_index + n_gpus[i]))
+                            env_args["CUDA_VISIBLE_DEVICES"] = gpu_indices
+                            next_gpu_index += n_gpus[i]
                 elif run_command == 'srun':
                     run_args = {
                         # 'mpi': 'pmix_v3',

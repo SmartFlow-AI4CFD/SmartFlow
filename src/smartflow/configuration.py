@@ -113,19 +113,6 @@ def calculate_derived_parameters(conf):
         
     conf.environment.n_cfds = conf.environment.cases_per_batch * conf.environment.cfds_per_case
     conf.environment.n_agents = conf.environment.n_cfds * conf.environment.agents_per_cfd
-
-    state_dims = {
-        "default": 3,
-        "hwm+vel": 2,
-        "log(hwm)+vel": 2,
-        "kap+b": 2,
-        "kap_corrected+b": 2,
-    }
-    state_definition = conf.environment.state_definition
-    if state_definition in state_dims:
-        conf.environment.agent_state_dim = state_dims[state_definition]
-    else:
-        raise ValueError(f"Unknown state definition: {state_definition}.")
     
     # Runner derived parameters
     conf.runner.reset_num_timesteps = not conf.runner.restart
