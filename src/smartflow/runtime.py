@@ -274,14 +274,11 @@ class Runtime():
                         'distribution': 'block:block:block,Pack',
                         'cpu-bind': 'cores,verbose',
                         'exclusive': None,
+                        'gres': f'gpu:{n_gpus[i]}'
                     }
-                    # if n_gpus[i] > 0:
-                    #     run_args['gres'] = f'gpu:{n_gpus[i]}'
-                    # else:
-                    #     run_args['gres'] = 'gpu:0'
 
-                    # if use_explicit_placement:
-                    #     run_args['nodelist'] = ','.join(self.launch_config.hosts_per_exe[i])
+                    if use_explicit_placement:
+                        run_args['nodelist'] = ','.join(self.launch_config.hosts_per_exe[i])
                         
                 run_settings = self.exp.create_run_settings(
                     exe=exe[i],
@@ -493,7 +490,6 @@ class Runtime():
         ntasks_per_node = os.getenv('SLURM_NTASKS_PER_NODE')
         num_nodes = os.getenv('SLURM_JOB_NUM_NODES')
         expanded_list = [int(ntasks_per_node)] * int(num_nodes)
-        print(f"expanded_list: {expanded_list}")
         return expanded_list
 
     def _get_slots_per_node_pbs(self) -> List[int]:
