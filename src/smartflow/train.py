@@ -46,8 +46,9 @@ def train(conf, runtime, run, **ignored_kwargs):
         name_prefix=f"{run.id}",
     )
 
+    total_steps = conf.runner.total_steps - conf.runner.restart_step
     model.learn(
-        total_timesteps=conf.runner.total_steps,
+        total_timesteps=total_steps,
         callback=checkpoint_callback,
         reset_num_timesteps=conf.runner.reset_num_timesteps,
     )

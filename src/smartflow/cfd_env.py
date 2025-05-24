@@ -291,7 +291,7 @@ class CFDEnv(VecEnv):
                     r=self.episode_rewards[i],
                     l=self.episode_steps
                 )
-            if self.iteration >= self.total_iterations + self.restart_iteration:
+            if self.iteration >= self.total_iterations:
                 self.close()
             else:
                 observations = self.reset()

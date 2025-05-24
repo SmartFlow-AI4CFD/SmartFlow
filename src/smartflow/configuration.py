@@ -36,7 +36,7 @@ class Environment:
     action_start_time: Optional[float] = 0.0
     cfd_steps_per_action: Optional[int] = 10
     time_duration_per_action: Optional[float] = 0.4
-    agent_interval: int = 4
+    agent_interval: int = 1
     cfd_dtype: str = "float64"
     action_bounds: tuple = (-1.0, 1.0)
     state_definition: str = "default"
