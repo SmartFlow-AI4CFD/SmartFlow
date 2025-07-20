@@ -1,0 +1,2516 @@
+CUDECOMP: Running transpose autotuning...
+CUDECOMP:	grid: 1 x 1, backend: MPI_P2P 
+CUDECOMP:	Total time min/max/avg/std [ms]: 0.052224/0.061440/0.054682/0.003463
+CUDECOMP:	           min/max/avg/std [ms]: 0.052224/0.061440/0.054682/0.003463 (weighted)
+CUDECOMP:	TransposeXY time min/max/avg/std [ms]: 0.016384/0.024576/0.018432/0.003173
+CUDECOMP:	TransposeYZ time min/max/avg/std [ms]: 0.011264/0.011264/0.011264/0.000000
+CUDECOMP:	TransposeZY time min/max/avg/std [ms]: 0.013312/0.014336/0.013517/0.000410
+CUDECOMP:	TransposeYX time min/max/avg/std [ms]: 0.011264/0.012288/0.011469/0.000410
+CUDECOMP:	grid: 1 x 1, backend: MPI_P2P (pipelined) 
+CUDECOMP:	Total time min/max/avg/std [ms]: 0.053248/0.054272/0.053862/0.000502
+CUDECOMP:	           min/max/avg/std [ms]: 0.053248/0.054272/0.053862/0.000502 (weighted)
+CUDECOMP:	TransposeXY time min/max/avg/std [ms]: 0.016384/0.018432/0.017408/0.000648
+CUDECOMP:	TransposeYZ time min/max/avg/std [ms]: 0.010240/0.011264/0.011059/0.000410
+CUDECOMP:	TransposeZY time min/max/avg/std [ms]: 0.013312/0.014336/0.013926/0.000502
+CUDECOMP:	TransposeYX time min/max/avg/std [ms]: 0.011264/0.012288/0.011469/0.000410
+CUDECOMP:	grid: 1 x 1, backend: MPI_A2A 
+CUDECOMP:	Total time min/max/avg/std [ms]: 0.053248/0.054272/0.053862/0.000502
+CUDECOMP:	           min/max/avg/std [ms]: 0.053248/0.054272/0.053862/0.000502 (weighted)
+CUDECOMP:	TransposeXY time min/max/avg/std [ms]: 0.016384/0.017408/0.017203/0.000410
+CUDECOMP:	TransposeYZ time min/max/avg/std [ms]: 0.011264/0.012288/0.011469/0.000410
+CUDECOMP:	TransposeZY time min/max/avg/std [ms]: 0.013312/0.014336/0.013722/0.000502
+CUDECOMP:	TransposeYX time min/max/avg/std [ms]: 0.011264/0.012288/0.011469/0.000410
+CUDECOMP:	grid: 1 x 1, backend: NCCL 
+CUDECOMP:	Total time min/max/avg/std [ms]: 0.053248/0.055296/0.053862/0.000819
+CUDECOMP:	           min/max/avg/std [ms]: 0.053248/0.055296/0.053862/0.000819 (weighted)
+CUDECOMP:	TransposeXY time min/max/avg/std [ms]: 0.017408/0.018432/0.017613/0.000410
+CUDECOMP:	TransposeYZ time min/max/avg/std [ms]: 0.011264/0.011264/0.011264/0.000000
+CUDECOMP:	TransposeZY time min/max/avg/std [ms]: 0.013312/0.014336/0.013517/0.000410
+CUDECOMP:	TransposeYX time min/max/avg/std [ms]: 0.011264/0.012288/0.011469/0.000410
+CUDECOMP:	grid: 1 x 1, backend: NCCL (pipelined) 
+CUDECOMP:	Total time min/max/avg/std [ms]: 0.053248/0.054272/0.054067/0.000410
+CUDECOMP:	           min/max/avg/std [ms]: 0.053248/0.054272/0.054067/0.000410 (weighted)
+CUDECOMP:	TransposeXY time min/max/avg/std [ms]: 0.016384/0.017408/0.017203/0.000410
+CUDECOMP:	TransposeYZ time min/max/avg/std [ms]: 0.011264/0.012288/0.011674/0.000502
+CUDECOMP:	TransposeZY time min/max/avg/std [ms]: 0.013312/0.014336/0.013722/0.000502
+CUDECOMP:	TransposeYX time min/max/avg/std [ms]: 0.011264/0.012288/0.011469/0.000410
+CUDECOMP: SELECTED: grid: 1 x 1, backend: MPI_P2P (pipelined), Avg. time (weighted) [ms]: 0.053862
+CUDECOMP: transpose autotuning time [s]: 0.008530
+CUDECOMP: Running halo autotuning...
+CUDECOMP: Autotune halo axis: x
+CUDECOMP:	grid: 1 x 1, halo backend: MPI 
+CUDECOMP:	Total time min/max/avg/std [ms]: 0.019133/0.031525/0.023893/0.004594
+CUDECOMP:	grid: 1 x 1, halo backend: MPI (blocking) 
+CUDECOMP:	Total time min/max/avg/std [ms]: 0.019066/0.020144/0.019586/0.000371
+CUDECOMP:	grid: 1 x 1, halo backend: NCCL 
+CUDECOMP:	Total time min/max/avg/std [ms]: 0.019025/0.019883/0.019448/0.000336
+CUDECOMP: SELECTED: grid: 1 x 1, halo backend: NCCL, Avg. time [ms]: 0.019448
+CUDECOMP: halo autotuning time [s]: 0.005108
+ This executable of CaLES was built with compiler: nvfortran 24.3-0
+ Using the options: 
+ src/main.f90 -fPIC -acc -cuda -Minfo=accel -gpu=cc80 -O3 -Mvect=simd -Mflushz -Mcache_align -Mrecip-div -Mfactorize -Mno-signed-zeros -Minline_cpu_f -fast -Mvect=simd -Mflushz -Mcache_align -Mno-signed-zeros -Minline_cpu_f -cpp -Mpreprocess -D_DEBUG -D_TIMING -D_DECOMP_X -I./dependencies/2decomp-fft/mod -I./dependencies/cuDecomp/build/include -I/leonardo/home/userexternal/mxiao000/code/smartredis-nvidia/install/include -I/leonardo/home/userexternal/mxiao000/code/smartredis-mpi/build/include -module ./build -c -o build/main.f90.o -I/leonardo/prod/opt/libraries/openmpi/4.1.6/nvhpc--24.3/include -I/leonardo/prod/opt/libraries/openmpi/4.1.6/nvhpc--24.3/lib
+ MPI Version: 
+ Open MPI v4.1.6, package: Open MPI propro01@hpcsupport02.leonardo.local Distribution, ident: 4.1.6, repo rev: v4.1.6, Sep 30, 2023
+ 
+ *******************************
+ *** Beginning of simulation ***
+ *******************************
+ 
+ *** Checkpoint loaded at time =     12800.01831748285      time step =  
+       271445 . ***
+SmartRedis Library@17-01-39:WARNING: Environment variable SR_LOG_FILE is not set. Defaulting to stdout
+SmartRedis Library@17-01-39:WARNING: Environment variable SR_LOG_LEVEL is not set. Defaulting to INFO
+ putting state tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ dt_cfl =    4.9642263917676267E-002 dt =    4.7160150721792450E-002
+ *** Calculation loop starts now ***
+ Time step #       271446 Time =     12800.06547763358     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   8.7195795999999937E-002   8.7195795999999937E-002   8.7195795999999937E-002
+ Time step #       271447 Time =     12800.11263778430     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   8.4620238000000070E-002   8.4620238000000070E-002   8.4620238000000070E-002
+ Time step #       271448 Time =     12800.15979793502     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4113112999999879E-002   5.4113112999999879E-002   5.4113112999999879E-002
+ Time step #       271449 Time =     12800.20695808574     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4162374999999985E-002   5.4162374999999985E-002   5.4162374999999985E-002
+ Time step #       271450 Time =     12800.25411823646     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.9370154955338148E-002 dt =    4.6901647207571236E-002
+ Total divergence =    3.8764564475046726E-015 | Maximum divergence =  
+   4.6629367034256575E-015
+ Avrg, min & max elapsed time: 
+   5.8253870000000041E-002   5.8253870000000041E-002   5.8253870000000041E-002
+ Time step #       271451 Time =     12800.30101988367     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4012583999999975E-002   5.4012583999999975E-002   5.4012583999999975E-002
+ Time step #       271452 Time =     12800.34792153088     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4520991000000083E-002   6.4520991000000083E-002   6.4520991000000083E-002
+ Time step #       271453 Time =     12800.39482317808     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4376872999999946E-002   6.4376872999999946E-002   6.4376872999999946E-002
+ Time step #       271454 Time =     12800.44172482529     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3977418999999971E-002   5.3977418999999971E-002   5.3977418999999971E-002
+ Time step #       271455 Time =     12800.48862647250     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4401790999999875E-002   6.4401790999999875E-002   6.4401790999999875E-002
+ Time step #       271456 Time =     12800.53552811970     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4173194999999961E-002   6.4173194999999961E-002   6.4173194999999961E-002
+ Time step #       271457 Time =     12800.58242976691     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4662334999999960E-002   6.4662334999999960E-002   6.4662334999999960E-002
+ Time step #       271458 Time =     12800.62933141412     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.3927459999999936E-002   6.3927459999999936E-002   6.3927459999999936E-002
+ Time step #       271459 Time =     12800.67623306133     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5317953999999947E-002   5.5317953999999947E-002   5.5317953999999947E-002
+ Time step #       271460 Time =     12800.72313470853     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.8136758463090200E-002 dt =    4.5729920539935687E-002
+ Total divergence =   -7.1447296863536014E-014 | Maximum divergence =  
+   4.7739590058881731E-015
+ Avrg, min & max elapsed time: 
+   5.5308083999999980E-002   5.5308083999999980E-002   5.5308083999999980E-002
+ Time step #       271461 Time =     12800.76886462907     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4019099999999876E-002   5.4019099999999876E-002   5.4019099999999876E-002
+ Time step #       271462 Time =     12800.81459454961     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4377913000000166E-002   5.4377913000000166E-002   5.4377913000000166E-002
+ Time step #       271463 Time =     12800.86032447015     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3767662000000049E-002   5.3767662000000049E-002   5.3767662000000049E-002
+ Time step #       271464 Time =     12800.90605439069     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4189107000000014E-002   5.4189107000000014E-002   5.4189107000000014E-002
+ Time step #       271465 Time =     12800.95178431123     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3849583999999950E-002   5.3849583999999950E-002   5.3849583999999950E-002
+ Time step #       271466 Time =     12800.99751423177     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3767887000000014E-002   5.3767887000000014E-002   5.3767887000000014E-002
+ Time step #       271467 Time =     12801.04324415231     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3992311000000015E-002   5.3992311000000015E-002   5.3992311000000015E-002
+ Time step #       271468 Time =     12801.08897407285     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4054307999999995E-002   5.4054307999999995E-002   5.4054307999999995E-002
+ Time step #       271469 Time =     12801.13470399338     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3762917000000021E-002   5.3762917000000021E-002   5.3762917000000021E-002
+ Time step #       271470 Time =     12801.18043391392     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.9314602264738806E-002 dt =    4.6848872151501866E-002
+ Total divergence =   -1.4882290278600552E-013 | Maximum divergence =  
+   4.8849813083506888E-015
+ Avrg, min & max elapsed time: 
+   6.5425851999999951E-002   6.5425851999999951E-002   6.5425851999999951E-002
+ Time step #       271471 Time =     12801.22728278607     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4369459999999989E-002   6.4369459999999989E-002   6.4369459999999989E-002
+ Time step #       271472 Time =     12801.27413165823     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4817247999999985E-002   5.4817247999999985E-002   5.4817247999999985E-002
+ Time step #       271473 Time =     12801.32098053038     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4066186000000016E-002   5.4066186000000016E-002   5.4066186000000016E-002
+ Time step #       271474 Time =     12801.36782940253     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4166539000000125E-002   5.4166539000000125E-002   5.4166539000000125E-002
+ Time step #       271475 Time =     12801.41467827468     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3987792999999673E-002   5.3987792999999673E-002   5.3987792999999673E-002
+ Time step #       271476 Time =     12801.46152714683     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4282594999999656E-002   5.4282594999999656E-002   5.4282594999999656E-002
+ Time step #       271477 Time =     12801.50837601898     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5267792999999852E-002   6.5267792999999852E-002   6.5267792999999852E-002
+ Time step #       271478 Time =     12801.55522489113     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4197270000000195E-002   6.4197270000000195E-002   6.4197270000000195E-002
+ Time step #       271479 Time =     12801.60207376328     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4846908000000028E-002   5.4846908000000028E-002   5.4846908000000028E-002
+ Time step #       271480 Time =     12801.64892263543     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.2090620663139076E-002 dt =    4.9486089629982119E-002
+ Total divergence =    8.8818384071098766E-015 | Maximum divergence =  
+   4.6629367034256575E-015
+ Avrg, min & max elapsed time: 
+   6.5171217000000059E-002   6.5171217000000059E-002   6.5171217000000059E-002
+ Time step #       271481 Time =     12801.69840872506     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4454422999999927E-002   6.4454422999999927E-002   6.4454422999999927E-002
+ Time step #       271482 Time =     12801.74789481469     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4542466000000012E-002   5.4542466000000012E-002   5.4542466000000012E-002
+ Time step #       271483 Time =     12801.79738090432     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4423402000000287E-002   5.4423402000000287E-002   5.4423402000000287E-002
+ Time step #       271484 Time =     12801.84686699395     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4723042000000000E-002   5.4723042000000000E-002   5.4723042000000000E-002
+ Time step #       271485 Time =     12801.89635308358     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4500473000000049E-002   5.4500473000000049E-002   5.4500473000000049E-002
+ Time step #       271486 Time =     12801.94583917322     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4210212000000091E-002   5.4210212000000091E-002   5.4210212000000091E-002
+ Time step #       271487 Time =     12801.99532526285     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4513948999999950E-002   5.4513948999999950E-002   5.4513948999999950E-002
+ Time step #       271488 Time =     12802.04481135248     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5079929000000138E-002   5.5079929000000138E-002   5.5079929000000138E-002
+ Time step #       271489 Time =     12802.09429744211     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4627112999999792E-002   6.4627112999999792E-002   6.4627112999999792E-002
+ Time step #       271490 Time =     12802.14378353174     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.9530316890687064E-002 dt =    4.7053801046152706E-002
+ Total divergence =   -3.9672909055155081E-014 | Maximum divergence =  
+   5.3290705182007514E-015
+ Avrg, min & max elapsed time: 
+   6.5713721000000280E-002   6.5713721000000280E-002   6.5713721000000280E-002
+ Time step #       271491 Time =     12802.19083733278     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4619710999999747E-002   6.4619710999999747E-002   6.4619710999999747E-002
+ Time step #       271492 Time =     12802.23789113383     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4331854000000188E-002   6.4331854000000188E-002   6.4331854000000188E-002
+ Time step #       271493 Time =     12802.28494493488     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4352426000000129E-002   6.4352426000000129E-002   6.4352426000000129E-002
+ Time step #       271494 Time =     12802.33199873592     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.3982541999999754E-002   6.3982541999999754E-002   6.3982541999999754E-002
+ Time step #       271495 Time =     12802.37905253697     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4808972000000242E-002   6.4808972000000242E-002   6.4808972000000242E-002
+ Time step #       271496 Time =     12802.42610633802     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.3999933000000286E-002   6.3999933000000286E-002   6.3999933000000286E-002
+ Time step #       271497 Time =     12802.47316013906     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4521376000000075E-002   6.4521376000000075E-002   6.4521376000000075E-002
+ Time step #       271498 Time =     12802.52021394011     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3889349999999947E-002   5.3889349999999947E-002   5.3889349999999947E-002
+ Time step #       271499 Time =     12802.56726774116     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4187709999999676E-002   6.4187709999999676E-002   6.4187709999999676E-002
+ Time step #       271500 Time =     12802.61432154221     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.6915614631342334E-002 dt =    4.4569833899775216E-002
+ Total divergence =   -8.1792211892306455E-016 | Maximum divergence =  
+   4.8849813083506888E-015
+ Avrg, min & max elapsed time: 
+   6.6295526999999854E-002   6.6295526999999854E-002   6.6295526999999854E-002
+ Time step #       271501 Time =     12802.65889137610     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4113990000000278E-002   5.4113990000000278E-002   5.4113990000000278E-002
+ Time step #       271502 Time =     12802.70346121000     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4023890000000296E-002   5.4023890000000296E-002   5.4023890000000296E-002
+ Time step #       271503 Time =     12802.74803104390     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4030691000000353E-002   5.4030691000000353E-002   5.4030691000000353E-002
+ Time step #       271504 Time =     12802.79260087780     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4256633999999693E-002   5.4256633999999693E-002   5.4256633999999693E-002
+ Time step #       271505 Time =     12802.83717071170     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4434588000000339E-002   5.4434588000000339E-002   5.4434588000000339E-002
+ Time step #       271506 Time =     12802.88174054560     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4485570999999844E-002   5.4485570999999844E-002   5.4485570999999844E-002
+ Time step #       271507 Time =     12802.92631037950     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4527063999999967E-002   6.4527063999999967E-002   6.4527063999999967E-002
+ Time step #       271508 Time =     12802.97088021340     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4211792000000045E-002   6.4211792000000045E-002   6.4211792000000045E-002
+ Time step #       271509 Time =     12803.01545004730     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4858738999999943E-002   6.4858738999999943E-002   6.4858738999999943E-002
+ Time step #       271510 Time =     12803.06001988120     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.7120760748926648E-002 dt =    4.4764722711480312E-002
+ Total divergence =    1.8655975202175323E-014 | Maximum divergence =  
+   5.5511151231257827E-015
+ Avrg, min & max elapsed time: 
+   6.5330901000000274E-002   6.5330901000000274E-002   6.5330901000000274E-002
+ Time step #       271511 Time =     12803.10478460391     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4003648999999321E-002   5.4003648999999321E-002   5.4003648999999321E-002
+ Time step #       271512 Time =     12803.14954932662     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4200516999999948E-002   5.4200516999999948E-002   5.4200516999999948E-002
+ Time step #       271513 Time =     12803.19431404933     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4375811999999968E-002   5.4375811999999968E-002   5.4375811999999968E-002
+ Time step #       271514 Time =     12803.23907877204     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4251829000000029E-002   5.4251829000000029E-002   5.4251829000000029E-002
+ Time step #       271515 Time =     12803.28384349476     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4556263000000271E-002   5.4556263000000271E-002   5.4556263000000271E-002
+ Time step #       271516 Time =     12803.32860821747     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4649084000000023E-002   6.4649084000000023E-002   6.4649084000000023E-002
+ Time step #       271517 Time =     12803.37337294018     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4730484000000246E-002   5.4730484000000246E-002   5.4730484000000246E-002
+ Time step #       271518 Time =     12803.41813766289     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4012762999999353E-002   5.4012762999999353E-002   5.4012762999999353E-002
+ Time step #       271519 Time =     12803.46290238560     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4312869000000319E-002   5.4312869000000319E-002   5.4312869000000319E-002
+ Time step #       271520 Time =     12803.50766710832     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.7892051569079129E-002 dt =    4.5497448990625168E-002
+ Total divergence =   -2.3825017479717214E-014 | Maximum divergence =  
+   4.6629367034256575E-015
+ Avrg, min & max elapsed time: 
+   5.4782850999999688E-002   5.4782850999999688E-002   5.4782850999999688E-002
+ Time step #       271521 Time =     12803.55316455731     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4582974999999543E-002   6.4582974999999543E-002   6.4582974999999543E-002
+ Time step #       271522 Time =     12803.59866200630     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4355756000000532E-002   5.4355756000000532E-002   5.4355756000000532E-002
+ Time step #       271523 Time =     12803.64415945529     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4573210000000039E-002   5.4573210000000039E-002   5.4573210000000039E-002
+ Time step #       271524 Time =     12803.68965690428     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4744962999999878E-002   6.4744962999999878E-002   6.4744962999999878E-002
+ Time step #       271525 Time =     12803.73515435327     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4876865000000450E-002   6.4876865000000450E-002   6.4876865000000450E-002
+ Time step #       271526 Time =     12803.78065180226     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5207884999999521E-002   6.5207884999999521E-002   6.5207884999999521E-002
+ Time step #       271527 Time =     12803.82614925125     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4549311999999581E-002   6.4549311999999581E-002   6.4549311999999581E-002
+ Time step #       271528 Time =     12803.87164670025     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4922038999999820E-002   6.4922038999999820E-002   6.4922038999999820E-002
+ Time step #       271529 Time =     12803.91714414924     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5070425000000043E-002   6.5070425000000043E-002   6.5070425000000043E-002
+ Time step #       271530 Time =     12803.96264159823     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.1140889494181413E-002 dt =    4.8583845019472341E-002
+ Total divergence =   -7.5967904926768637E-014 | Maximum divergence =  
+   4.8849813083506888E-015
+ Avrg, min & max elapsed time: 
+   6.5386579000000111E-002   6.5386579000000111E-002   6.5386579000000111E-002
+ Time step #       271531 Time =     12804.01122544325     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4181734000000148E-002   5.4181734000000148E-002   5.4181734000000148E-002
+ Time step #       271532 Time =     12804.05980928826     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3947396999999953E-002   5.3947396999999953E-002   5.3947396999999953E-002
+ Time step #       271533 Time =     12804.10839313328     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3947489000000459E-002   5.3947489000000459E-002   5.3947489000000459E-002
+ Time step #       271534 Time =     12804.15697697830     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3995076999999725E-002   5.3995076999999725E-002   5.3995076999999725E-002
+ Time step #       271535 Time =     12804.20556082332     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3949070999999904E-002   5.3949070999999904E-002   5.3949070999999904E-002
+ Time step #       271536 Time =     12804.25414466834     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3966653000000697E-002   5.3966653000000697E-002   5.3966653000000697E-002
+ Time step #       271537 Time =     12804.30272851336     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3974331000000042E-002   5.3974331000000042E-002   5.3974331000000042E-002
+ Time step #       271538 Time =     12804.35131235838     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4312583999999831E-002   5.4312583999999831E-002   5.4312583999999831E-002
+ Time step #       271539 Time =     12804.39989620339     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3889772999999863E-002   5.3889772999999863E-002   5.3889772999999863E-002
+ Time step #       271540 Time =     12804.44848004841     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.8511368088187887E-002 dt =    4.6085799683778489E-002
+ Total divergence =   -4.6311153696632079E-014 | Maximum divergence =  
+   4.7739590058881731E-015
+ Avrg, min & max elapsed time: 
+   5.4866016000000073E-002   5.4866016000000073E-002   5.4866016000000073E-002
+ Time step #       271541 Time =     12804.49456584810     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4212092000000212E-002   5.4212092000000212E-002   5.4212092000000212E-002
+ Time step #       271542 Time =     12804.54065164778     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4349424000000646E-002   5.4349424000000646E-002   5.4349424000000646E-002
+ Time step #       271543 Time =     12804.58673744747     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4336749999999832E-002   6.4336749999999832E-002   6.4336749999999832E-002
+ Time step #       271544 Time =     12804.63282324715     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4272214000000716E-002   6.4272214000000716E-002   6.4272214000000716E-002
+ Time step #       271545 Time =     12804.67890904683     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4051644000000074E-002   6.4051644000000074E-002   6.4051644000000074E-002
+ Time step #       271546 Time =     12804.72499484652     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4271812000000317E-002   6.4271812000000317E-002   6.4271812000000317E-002
+ Time step #       271547 Time =     12804.77108064620     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4291970000000198E-002   6.4291970000000198E-002   6.4291970000000198E-002
+ Time step #       271548 Time =     12804.81716644589     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   7.4902962999999545E-002   7.4902962999999545E-002   7.4902962999999545E-002
+ Time step #       271549 Time =     12804.86325224557     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5455191999999940E-002   6.5455191999999940E-002   6.5455191999999940E-002
+ Time step #       271550 Time =     12804.90933804525     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.0586883273174954E-002 dt =    4.8057539109516205E-002
+ Total divergence =   -1.2317512461390567E-013 | Maximum divergence =  
+   4.6629367034256575E-015
+ Avrg, min & max elapsed time: 
+   6.5638932999999788E-002   6.5638932999999788E-002   6.5638932999999788E-002
+ Time step #       271551 Time =     12804.95739558436     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4673620999999848E-002   6.4673620999999848E-002   6.4673620999999848E-002
+ Time step #       271552 Time =     12805.00545312347     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5021540000000257E-002   5.5021540000000257E-002   5.5021540000000257E-002
+ Time step #       271553 Time =     12805.05351066258     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4322705000000582E-002   5.4322705000000582E-002   5.4322705000000582E-002
+ Time step #       271554 Time =     12805.10156820170     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4425186999999653E-002   5.4425186999999653E-002   5.4425186999999653E-002
+ Time step #       271555 Time =     12805.14962574081     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   7.4893487999999842E-002   7.4893487999999842E-002   7.4893487999999842E-002
+ Time step #       271556 Time =     12805.19768327992     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4662855000000121E-002   5.4662855000000121E-002   5.4662855000000121E-002
+ Time step #       271557 Time =     12805.24574081903     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4244380999999962E-002   6.4244380999999962E-002   6.4244380999999962E-002
+ Time step #       271558 Time =     12805.29379835814     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4404523000000538E-002   5.4404523000000538E-002   5.4404523000000538E-002
+ Time step #       271559 Time =     12805.34185589725     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4365229999999940E-002   6.4365229999999940E-002   6.4365229999999940E-002
+ Time step #       271560 Time =     12805.38991343636     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.9519356781196837E-002 dt =    4.7043388942136992E-002
+ Total divergence =    1.0937323095816520E-014 | Maximum divergence =  
+   4.8849813083506888E-015
+ Avrg, min & max elapsed time: 
+   6.4878571000000385E-002   6.4878571000000385E-002   6.4878571000000385E-002
+ Time step #       271561 Time =     12805.43695682530     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4167062000000321E-002   5.4167062000000321E-002   5.4167062000000321E-002
+ Time step #       271562 Time =     12805.48400021424     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3925419000000474E-002   5.3925419000000474E-002   5.3925419000000474E-002
+ Time step #       271563 Time =     12805.53104360318     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3965183999999944E-002   5.3965183999999944E-002   5.3965183999999944E-002
+ Time step #       271564 Time =     12805.57808699213     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3973141999999363E-002   5.3973141999999363E-002   5.3973141999999363E-002
+ Time step #       271565 Time =     12805.62513038107     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3967440000000089E-002   5.3967440000000089E-002   5.3967440000000089E-002
+ Time step #       271566 Time =     12805.67217377001     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3959401999999379E-002   5.3959401999999379E-002   5.3959401999999379E-002
+ Time step #       271567 Time =     12805.71921715895     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3924199999999978E-002   5.3924199999999978E-002   5.3924199999999978E-002
+ Time step #       271568 Time =     12805.76626054789     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3935673999999878E-002   5.3935673999999878E-002   5.3935673999999878E-002
+ Time step #       271569 Time =     12805.81330393684     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4006030000000038E-002   5.4006030000000038E-002   5.4006030000000038E-002
+ Time step #       271570 Time =     12805.86034732578     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.0675269122758174E-002 dt =    4.8141505666620260E-002
+ Total divergence =    1.3368321206963518E-014 | Maximum divergence =  
+   4.6074255521943996E-015
+ Avrg, min & max elapsed time: 
+   5.4978271000000412E-002   5.4978271000000412E-002   5.4978271000000412E-002
+ Time step #       271571 Time =     12805.90848883145     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.3812099000000622E-002   6.3812099000000622E-002   6.3812099000000622E-002
+ Time step #       271572 Time =     12805.95663033711     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4334044999999840E-002   6.4334044999999840E-002   6.4334044999999840E-002
+ Time step #       271573 Time =     12806.00477184278     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4192894999999695E-002   6.4192894999999695E-002   6.4192894999999695E-002
+ Time step #       271574 Time =     12806.05291334845     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4581457999999472E-002   5.4581457999999472E-002   5.4581457999999472E-002
+ Time step #       271575 Time =     12806.10105485412     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4447080000000767E-002   6.4447080000000767E-002   6.4447080000000767E-002
+ Time step #       271576 Time =     12806.14919635978     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5003844999999671E-002   6.5003844999999671E-002   6.5003844999999671E-002
+ Time step #       271577 Time =     12806.19733786545     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5448535999999891E-002   6.5448535999999891E-002   6.5448535999999891E-002
+ Time step #       271578 Time =     12806.24547937112     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5280333999998774E-002   6.5280333999998774E-002   6.5280333999998774E-002
+ Time step #       271579 Time =     12806.29362087679     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4745887000000835E-002   6.4745887000000835E-002   6.4745887000000835E-002
+ Time step #       271580 Time =     12806.34176238245     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.1629952798681412E-002 dt =    4.9048455158747339E-002
+ Total divergence =   -3.7481099495785541E-014 | Maximum divergence =  
+   4.8849813083506888E-015
+ Avrg, min & max elapsed time: 
+   6.6304228999999992E-002   6.6304228999999992E-002   6.6304228999999992E-002
+ Time step #       271581 Time =     12806.39081083761     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4543407000000386E-002   6.4543407000000386E-002   6.4543407000000386E-002
+ Time step #       271582 Time =     12806.43985929277     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4990428000001543E-002   6.4990428000001543E-002   6.4990428000001543E-002
+ Time step #       271583 Time =     12806.48890774793     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4424646999999169E-002   6.4424646999999169E-002   6.4424646999999169E-002
+ Time step #       271584 Time =     12806.53795620309     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4726856000000055E-002   6.4726856000000055E-002   6.4726856000000055E-002
+ Time step #       271585 Time =     12806.58700465825     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5160077999999899E-002   6.5160077999999899E-002   6.5160077999999899E-002
+ Time step #       271586 Time =     12806.63605311341     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5043523000000150E-002   5.5043523000000150E-002   5.5043523000000150E-002
+ Time step #       271587 Time =     12806.68510156857     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4588680000000167E-002   5.4588680000000167E-002   5.4588680000000167E-002
+ Time step #       271588 Time =     12806.73415002373     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4310379000000353E-002   5.4310379000000353E-002   5.4310379000000353E-002
+ Time step #       271589 Time =     12806.78319847889     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4616161000000218E-002   5.4616161000000218E-002   5.4616161000000218E-002
+ Time step #       271590 Time =     12806.83224693405     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.6855307036266433E-002 dt =    4.4512541684453108E-002
+ Total divergence =    4.0318768289304696E-014 | Maximum divergence =  
+   4.8849813083506888E-015
+ Avrg, min & max elapsed time: 
+   5.5812267999998610E-002   5.5812267999998610E-002   5.5812267999998610E-002
+ Time step #       271591 Time =     12806.87675947573     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4520763999999389E-002   5.4520763999999389E-002   5.4520763999999389E-002
+ Time step #       271592 Time =     12806.92127201741     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4665034999999307E-002   5.4665034999999307E-002   5.4665034999999307E-002
+ Time step #       271593 Time =     12806.96578455910     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   7.5240988999999203E-002   7.5240988999999203E-002   7.5240988999999203E-002
+ Time step #       271594 Time =     12807.01029710078     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   7.4687724000000344E-002   7.4687724000000344E-002   7.4687724000000344E-002
+ Time step #       271595 Time =     12807.05480964247     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4331244999999981E-002   6.4331244999999981E-002   6.4331244999999981E-002
+ Time step #       271596 Time =     12807.09932218415     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4043284000000256E-002   6.4043284000000256E-002   6.4043284000000256E-002
+ Time step #       271597 Time =     12807.14383472584     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   7.5766678999999115E-002   7.5766678999999115E-002   7.5766678999999115E-002
+ Time step #       271598 Time =     12807.18834726752     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4149906000000811E-002   6.4149906000000811E-002   6.4149906000000811E-002
+ Time step #       271599 Time =     12807.23285980921     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4262555999999407E-002   5.4262555999999407E-002   5.4262555999999407E-002
+ Time step #       271600 Time =     12807.27737235089     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.9177261163236917E-002 dt =    4.6718398105075068E-002
+ Total divergence =   -3.9525674400131550E-015 | Maximum divergence =  
+   4.8849813083506888E-015
+ Avrg, min & max elapsed time: 
+   6.4299431999998546E-002   6.4299431999998546E-002   6.4299431999998546E-002
+ Time step #       271601 Time =     12807.32409074900     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4127870000000087E-002   6.4127870000000087E-002   6.4127870000000087E-002
+ Time step #       271602 Time =     12807.37080914710     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   8.4605158000000458E-002   8.4605158000000458E-002   8.4605158000000458E-002
+ Time step #       271603 Time =     12807.41752754521     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3992106999999123E-002   5.3992106999999123E-002   5.3992106999999123E-002
+ Time step #       271604 Time =     12807.46424594331     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3999820999999670E-002   5.3999820999999670E-002   5.3999820999999670E-002
+ Time step #       271605 Time =     12807.51096434142     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3924584000000664E-002   5.3924584000000664E-002   5.3924584000000664E-002
+ Time step #       271606 Time =     12807.55768273952     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4166371000000879E-002   5.4166371000000879E-002   5.4166371000000879E-002
+ Time step #       271607 Time =     12807.60440113763     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4227994999999751E-002   5.4227994999999751E-002   5.4227994999999751E-002
+ Time step #       271608 Time =     12807.65111953573     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4423455000000232E-002   5.4423455000000232E-002   5.4423455000000232E-002
+ Time step #       271609 Time =     12807.69783793384     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4608049000000491E-002   5.4608049000000491E-002   5.4608049000000491E-002
+ Time step #       271610 Time =     12807.74455633195     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.8859897766734044E-002 dt =    4.6416902878397337E-002
+ Total divergence =   -3.5513909521500686E-014 | Maximum divergence =  
+   5.7731597280508140E-015
+ Avrg, min & max elapsed time: 
+   5.4712235000000220E-002   5.4712235000000220E-002   5.4712235000000220E-002
+ Time step #       271611 Time =     12807.79097323482     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4063192999999075E-002   6.4063192999999075E-002   6.4063192999999075E-002
+ Time step #       271612 Time =     12807.83739013770     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4401905999998732E-002   6.4401905999998732E-002   6.4401905999998732E-002
+ Time step #       271613 Time =     12807.88380704058     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4936124999999336E-002   5.4936124999999336E-002   5.4936124999999336E-002
+ Time step #       271614 Time =     12807.93022394346     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4682676000000541E-002   5.4682676000000541E-002   5.4682676000000541E-002
+ Time step #       271615 Time =     12807.97664084634     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4892968999999070E-002   5.4892968999999070E-002   5.4892968999999070E-002
+ Time step #       271616 Time =     12808.02305774921     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4885942000000085E-002   6.4885942000000085E-002   6.4885942000000085E-002
+ Time step #       271617 Time =     12808.06947465209     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5004411000000530E-002   5.5004411000000530E-002   5.5004411000000530E-002
+ Time step #       271618 Time =     12808.11589155497     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4505323999999078E-002   5.4505323999999078E-002   5.4505323999999078E-002
+ Time step #       271619 Time =     12808.16230845785     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4181601999999884E-002   5.4181601999999884E-002   5.4181601999999884E-002
+ Time step #       271620 Time =     12808.20872536073     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.3298765919943793E-002 dt =    5.0633827623946602E-002
+ Total divergence =   -8.5500373057587065E-014 | Maximum divergence =  
+   4.6629367034256575E-015
+ Avrg, min & max elapsed time: 
+   5.6027635000001297E-002   5.6027635000001297E-002   5.6027635000001297E-002
+ Time step #       271621 Time =     12808.25935918835     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4155086999999824E-002   5.4155086999999824E-002   5.4155086999999824E-002
+ Time step #       271622 Time =     12808.30999301598     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5241550999999944E-002   5.5241550999999944E-002   5.5241550999999944E-002
+ Time step #       271623 Time =     12808.36062684360     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4805416000000662E-002   5.4805416000000662E-002   5.4805416000000662E-002
+ Time step #       271624 Time =     12808.41126067123     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5038227000000717E-002   5.5038227000000717E-002   5.5038227000000717E-002
+ Time step #       271625 Time =     12808.46189449885     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4540695999999897E-002   6.4540695999999897E-002   6.4540695999999897E-002
+ Time step #       271626 Time =     12808.51252832648     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4925374000001312E-002   6.4925374000001312E-002   6.4925374000001312E-002
+ Time step #       271627 Time =     12808.56316215410     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4662136000000814E-002   6.4662136000000814E-002   6.4662136000000814E-002
+ Time step #       271628 Time =     12808.61379598172     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4593020000000436E-002   5.4593020000000436E-002   5.4593020000000436E-002
+ Time step #       271629 Time =     12808.66442980935     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4722779000000230E-002   6.4722779000000230E-002   6.4722779000000230E-002
+ Time step #       271630 Time =     12808.71506363697     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.3876764273135522E-002 dt =    5.1182926059478745E-002
+ Total divergence =   -6.7008898430032104E-014 | Maximum divergence =  
+   4.9960036108132044E-015
+ Avrg, min & max elapsed time: 
+   5.5299688999999930E-002   5.5299688999999930E-002   5.5299688999999930E-002
+ Time step #       271631 Time =     12808.76624656303     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4163454000001110E-002   5.4163454000001110E-002   5.4163454000001110E-002
+ Time step #       271632 Time =     12808.81742948909     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4684854999999644E-002   5.4684854999999644E-002   5.4684854999999644E-002
+ Time step #       271633 Time =     12808.86861241515     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4413007999999152E-002   5.4413007999999152E-002   5.4413007999999152E-002
+ Time step #       271634 Time =     12808.91979534121     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5356314999998943E-002   6.5356314999998943E-002   6.5356314999998943E-002
+ Time step #       271635 Time =     12808.97097826727     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4554539999999605E-002   6.4554539999999605E-002   6.4554539999999605E-002
+ Time step #       271636 Time =     12809.02216119333     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4899776000000742E-002   6.4899776000000742E-002   6.4899776000000742E-002
+ Time step #       271637 Time =     12809.07334411939     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5033337999999432E-002   5.5033337999999432E-002   5.5033337999999432E-002
+ Time step #       271638 Time =     12809.12452704545     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4137827999999999E-002   5.4137827999999999E-002   5.4137827999999999E-002
+ Time step #       271639 Time =     12809.17570997151     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4640662000000617E-002   5.4640662000000617E-002   5.4640662000000617E-002
+ Time step #       271640 Time =     12809.22689289757     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.1389223267720899E-002 dt =    4.8819762104334849E-002
+ Total divergence =    2.5814474256119491E-014 | Maximum divergence =  
+   4.8849813083506888E-015
+ Avrg, min & max elapsed time: 
+   5.5430185000000520E-002   5.5430185000000520E-002   5.5430185000000520E-002
+ Time step #       271641 Time =     12809.27571265967     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5062661999999207E-002   5.5062661999999207E-002   5.5062661999999207E-002
+ Time step #       271642 Time =     12809.32453242178     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4752564000001058E-002   5.4752564000001058E-002   5.4752564000001058E-002
+ Time step #       271643 Time =     12809.37335218388     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5045579999999603E-002   6.5045579999999603E-002   6.5045579999999603E-002
+ Time step #       271644 Time =     12809.42217194598     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5103620000000362E-002   6.5103620000000362E-002   6.5103620000000362E-002
+ Time step #       271645 Time =     12809.47099170809     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4687789000000606E-002   6.4687789000000606E-002   6.4687789000000606E-002
+ Time step #       271646 Time =     12809.51981147019     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5239386000000010E-002   6.5239386000000010E-002   6.5239386000000010E-002
+ Time step #       271647 Time =     12809.56863123229     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4677574999999479E-002   5.4677574999999479E-002   5.4677574999999479E-002
+ Time step #       271648 Time =     12809.61745099440     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4598153000000593E-002   5.4598153000000593E-002   5.4598153000000593E-002
+ Time step #       271649 Time =     12809.66627075650     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4298020999999252E-002   5.4298020999999252E-002   5.4298020999999252E-002
+ Time step #       271650 Time =     12809.71509051860     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.2443267000425078E-002 dt =    4.9821103650403820E-002
+ Total divergence =   -3.6440577118324047E-014 | Maximum divergence =  
+   5.3290705182007514E-015
+ Avrg, min & max elapsed time: 
+   6.5454818999999276E-002   6.5454818999999276E-002   6.5454818999999276E-002
+ Time step #       271651 Time =     12809.76491162225     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4296578999998744E-002   6.4296578999998744E-002   6.4296578999998744E-002
+ Time step #       271652 Time =     12809.81473272590     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4483232000000612E-002   6.4483232000000612E-002   6.4483232000000612E-002
+ Time step #       271653 Time =     12809.86455382955     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4523225000000295E-002   6.4523225000000295E-002   6.4523225000000295E-002
+ Time step #       271654 Time =     12809.91437493320     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5016514000000072E-002   5.5016514000000072E-002   5.5016514000000072E-002
+ Time step #       271655 Time =     12809.96419603685     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4091255999999532E-002   5.4091255999999532E-002   5.4091255999999532E-002
+ Time step #       271656 Time =     12810.01401714050     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5024377000000513E-002   5.5024377000000513E-002   5.5024377000000513E-002
+ Time step #       271657 Time =     12810.06383824415     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4225476000000938E-002   5.4225476000000938E-002   5.4225476000000938E-002
+ Time step #       271658 Time =     12810.11365934780     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4732903999999536E-002   6.4732903999999536E-002   6.4732903999999536E-002
+ Time step #       271659 Time =     12810.16348045145     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4369086999999539E-002   5.4369086999999539E-002   5.4369086999999539E-002
+ Time step #       271660 Time =     12810.21330155510     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.4488094664055089E-002 dt =    5.1763689930852334E-002
+ Total divergence =    2.5345611026628134E-014 | Maximum divergence =  
+   4.7184478546569153E-015
+ Avrg, min & max elapsed time: 
+   5.5501151999999720E-002   5.5501151999999720E-002   5.5501151999999720E-002
+ Time step #       271661 Time =     12810.26506524504     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4887846999999823E-002   5.4887846999999823E-002   5.4887846999999823E-002
+ Time step #       271662 Time =     12810.31682893497     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4589305999998672E-002   5.4589305999998672E-002   5.4589305999998672E-002
+ Time step #       271663 Time =     12810.36859262490     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5147187000001097E-002   5.5147187000001097E-002   5.5147187000001097E-002
+ Time step #       271664 Time =     12810.42035631483     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4425317999999834E-002   5.4425317999999834E-002   5.4425317999999834E-002
+ Time step #       271665 Time =     12810.47212000476     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4709556000000390E-002   6.4709556000000390E-002   6.4709556000000390E-002
+ Time step #       271666 Time =     12810.52388369469     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4838658999999410E-002   6.4838658999999410E-002   6.4838658999999410E-002
+ Time step #       271667 Time =     12810.57564738462     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5015037999998526E-002   6.5015037999998526E-002   6.5015037999998526E-002
+ Time step #       271668 Time =     12810.62741107455     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.5009672000000620E-002   5.5009672000000620E-002   5.5009672000000620E-002
+ Time step #       271669 Time =     12810.67917476449     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4631270999999870E-002   5.4631270999999870E-002   5.4631270999999870E-002
+ Time step #       271670 Time =     12810.73093845442     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.9486369586263949E-002 dt =    4.7012051106950753E-002
+ Total divergence =   -4.6013865460936554E-014 | Maximum divergence =  
+   4.6629367034256575E-015
+ Avrg, min & max elapsed time: 
+   5.5573351999999687E-002   5.5573351999999687E-002   5.5573351999999687E-002
+ Time step #       271671 Time =     12810.77795050552     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4309120999999294E-002   5.4309120999999294E-002   5.4309120999999294E-002
+ Time step #       271672 Time =     12810.82496255663     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4569073999999773E-002   5.4569073999999773E-002   5.4569073999999773E-002
+ Time step #       271673 Time =     12810.87197460774     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.8354821999998308E-002   5.8354821999998308E-002   5.8354821999998308E-002
+ Time step #       271674 Time =     12810.91898665885     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4213590999999894E-002   5.4213590999999894E-002   5.4213590999999894E-002
+ Time step #       271675 Time =     12810.96599870995     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5080311000000890E-002   6.5080311000000890E-002   6.5080311000000890E-002
+ Time step #       271676 Time =     12811.01301076106     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4506680999999233E-002   6.4506680999999233E-002   6.4506680999999233E-002
+ Time step #       271677 Time =     12811.06002281217     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4647414999999810E-002   5.4647414999999810E-002   5.4647414999999810E-002
+ Time step #       271678 Time =     12811.10703486327     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4488622000000930E-002   5.4488622000000930E-002   5.4488622000000930E-002
+ Time step #       271679 Time =     12811.15404691438     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4632168999999564E-002   5.4632168999999564E-002   5.4632168999999564E-002
+ Time step #       271680 Time =     12811.20105896549     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.4414709287263913E-002 dt =    5.1693973822900717E-002
+ Total divergence =    7.1899951270548712E-015 | Maximum divergence =  
+   4.6629367034256575E-015
+ Avrg, min & max elapsed time: 
+   5.5834555999998869E-002   5.5834555999998869E-002   5.5834555999998869E-002
+ Time step #       271681 Time =     12811.25275293931     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4286911999998466E-002   5.4286911999998466E-002   5.4286911999998466E-002
+ Time step #       271682 Time =     12811.30444691313     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4853424000000714E-002   6.4853424000000714E-002   6.4853424000000714E-002
+ Time step #       271683 Time =     12811.35614088696     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4145330999998862E-002   6.4145330999998862E-002   6.4145330999998862E-002
+ Time step #       271684 Time =     12811.40783486078     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4754323000000724E-002   6.4754323000000724E-002   6.4754323000000724E-002
+ Time step #       271685 Time =     12811.45952883460     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4811433000000918E-002   6.4811433000000918E-002   6.4811433000000918E-002
+ Time step #       271686 Time =     12811.51122280843     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4434493999998779E-002   5.4434493999998779E-002   5.4434493999998779E-002
+ Time step #       271687 Time =     12811.56291678225     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4342769999999874E-002   5.4342769999999874E-002   5.4342769999999874E-002
+ Time step #       271688 Time =     12811.61461075607     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4612524999999579E-002   5.4612524999999579E-002   5.4612524999999579E-002
+ Time step #       271689 Time =     12811.66630472989     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4168291999999951E-002   5.4168291999999951E-002   5.4168291999999951E-002
+ Time step #       271690 Time =     12811.71799870372     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.3806125086885211E-002 dt =    5.1115818832540946E-002
+ Total divergence =   -2.4869429432472501E-014 | Maximum divergence =  
+   4.6629367034256575E-015
+ Avrg, min & max elapsed time: 
+   8.5723703999999401E-002   8.5723703999999401E-002   8.5723703999999401E-002
+ Time step #       271691 Time =     12811.76911452255     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4467455000000840E-002   6.4467455000000840E-002   6.4467455000000840E-002
+ Time step #       271692 Time =     12811.82023034138     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   7.4512313999999691E-002   7.4512313999999691E-002   7.4512313999999691E-002
+ Time step #       271693 Time =     12811.87134616021     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   7.4687023999999269E-002   7.4687023999999269E-002   7.4687023999999269E-002
+ Time step #       271694 Time =     12811.92246197905     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   7.4392084999999497E-002   7.4392084999999497E-002   7.4392084999999497E-002
+ Time step #       271695 Time =     12811.97357779788     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4738795000000238E-002   6.4738795000000238E-002   6.4738795000000238E-002
+ Time step #       271696 Time =     12812.02469361671     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   7.4760448999999340E-002   7.4760448999999340E-002   7.4760448999999340E-002
+ Time step #       271697 Time =     12812.07580943555     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4892838999998759E-002   6.4892838999998759E-002   6.4892838999998759E-002
+ Time step #       271698 Time =     12812.12692525438     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4449689000000134E-002   5.4449689000000134E-002   5.4449689000000134E-002
+ Time step #       271699 Time =     12812.17804107321     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5213179999998871E-002   6.5213179999998871E-002   6.5213179999998871E-002
+ Time step #       271700 Time =     12812.22915689204     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    5.0634873370895901E-002 dt =    4.8103129702351102E-002
+ Total divergence =   -6.0875756475661791E-014 | Maximum divergence =  
+   5.3290705182007514E-015
+ Avrg, min & max elapsed time: 
+   6.4960570000000217E-002   6.4960570000000217E-002   6.4960570000000217E-002
+ Time step #       271701 Time =     12812.27726002175     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4597292999998714E-002   5.4597292999998714E-002   5.4597292999998714E-002
+ Time step #       271702 Time =     12812.32536315145     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4933194000000185E-002   5.4933194000000185E-002   5.4933194000000185E-002
+ Time step #       271703 Time =     12812.37346628115     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4228095000000920E-002   5.4228095000000920E-002   5.4228095000000920E-002
+ Time step #       271704 Time =     12812.42156941085     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4082858999999317E-002   5.4082858999999317E-002   5.4082858999999317E-002
+ Time step #       271705 Time =     12812.46967254056     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4005429000000049E-002   5.4005429000000049E-002   5.4005429000000049E-002
+ Time step #       271706 Time =     12812.51777567026     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3852162000000092E-002   5.3852162000000092E-002   5.3852162000000092E-002
+ Time step #       271707 Time =     12812.56587879996     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3824666000000576E-002   5.3824666000000576E-002   5.3824666000000576E-002
+ Time step #       271708 Time =     12812.61398192966     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4429455999997600E-002   5.4429455999997600E-002   5.4429455999997600E-002
+ Time step #       271709 Time =     12812.66208505936     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3705624999999202E-002   5.3705624999999202E-002   5.3705624999999202E-002
+ Time step #       271710 Time =     12812.71018818907     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.9596508914449555E-002 dt =    4.7116683468727077E-002
+ Total divergence =    3.2607597177936043E-014 | Maximum divergence =  
+   5.3290705182007514E-015
+ Avrg, min & max elapsed time: 
+   5.5062705999997519E-002   5.5062705999997519E-002   5.5062705999997519E-002
+ Time step #       271711 Time =     12812.75730487254     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3699367000000109E-002   5.3699367000000109E-002   5.3699367000000109E-002
+ Time step #       271712 Time =     12812.80442155600     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4402569000000511E-002   5.4402569000000511E-002   5.4402569000000511E-002
+ Time step #       271713 Time =     12812.85153823947     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4054262999997604E-002   5.4054262999997604E-002   5.4054262999997604E-002
+ Time step #       271714 Time =     12812.89865492294     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4236257999997548E-002   6.4236257999997548E-002   6.4236257999997548E-002
+ Time step #       271715 Time =     12812.94577160641     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.3706314000000930E-002   6.3706314000000930E-002   6.3706314000000930E-002
+ Time step #       271716 Time =     12812.99288828988     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4423027000000133E-002   6.4423027000000133E-002   6.4423027000000133E-002
+ Time step #       271717 Time =     12813.04000497335     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4297339999999537E-002   6.4297339999999537E-002   6.4297339999999537E-002
+ Time step #       271718 Time =     12813.08712165682     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4367339000000356E-002   6.4367339000000356E-002   6.4367339000000356E-002
+ Time step #       271719 Time =     12813.13423834028     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4109546000000961E-002   6.4109546000000961E-002   6.4109546000000961E-002
+ Time step #       271720 Time =     12813.18135502375     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.7681044543605382E-002 dt =    4.5296992316425110E-002
+ Total divergence =   -1.3518700048287258E-014 | Maximum divergence =  
+   4.9960036108132044E-015
+ Avrg, min & max elapsed time: 
+   6.5493665000001755E-002   6.5493665000001755E-002   6.5493665000001755E-002
+ Time step #       271721 Time =     12813.22665201607     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4064638999999914E-002   5.4064638999999914E-002   5.4064638999999914E-002
+ Time step #       271722 Time =     12813.27194900839     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3959110999997506E-002   5.3959110999997506E-002   5.3959110999997506E-002
+ Time step #       271723 Time =     12813.31724600070     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3821045999999484E-002   5.3821045999999484E-002   5.3821045999999484E-002
+ Time step #       271724 Time =     12813.36254299302     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4504825000000210E-002   6.4504825000000210E-002   6.4504825000000210E-002
+ Time step #       271725 Time =     12813.40783998534     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5208842000000544E-002   6.5208842000000544E-002   6.5208842000000544E-002
+ Time step #       271726 Time =     12813.45313697766     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5026376999998803E-002   6.5026376999998803E-002   6.5026376999998803E-002
+ Time step #       271727 Time =     12813.49843396997     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4629618000001443E-002   6.4629618000001443E-002   6.4629618000001443E-002
+ Time step #       271728 Time =     12813.54373096229     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.5095986000002881E-002   6.5095986000002881E-002   6.5095986000002881E-002
+ Time step #       271729 Time =     12813.58902795461     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4605510000001800E-002   5.4605510000001800E-002   5.4605510000001800E-002
+ Time step #       271730 Time =     12813.63432494692     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Checking stability and divergence...
+ dt_cfl =    4.8372000396138003E-002 dt =    4.5953400376331104E-002
+ Total divergence =    2.5455223866266419E-014 | Maximum divergence =  
+   4.6629367034256575E-015
+ Avrg, min & max elapsed time: 
+   5.5519871000001331E-002   5.5519871000001331E-002   5.5519871000001331E-002
+ Time step #       271731 Time =     12813.68027834730     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3998456999998723E-002   5.3998456999998723E-002   5.3998456999998723E-002
+ Time step #       271732 Time =     12813.72623174768     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4229057000000580E-002   5.4229057000000580E-002   5.4229057000000580E-002
+ Time step #       271733 Time =     12813.77218514805     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4862157000002298E-002   5.4862157000002298E-002   5.4862157000002298E-002
+ Time step #       271734 Time =     12813.81813854843     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.3635610000000611E-002   5.3635610000000611E-002   5.3635610000000611E-002
+ Time step #       271735 Time =     12813.86409194881     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   5.4276083000001307E-002   5.4276083000001307E-002   5.4276083000001307E-002
+ Time step #       271736 Time =     12813.91004534918     
+ putting state tensor
+ putting reward tensor
+ polling action tensor
+ unpacking action tensor
+ deleting action tensor
+ Avrg, min & max elapsed time: 
+   6.4338831000000596E-002   6.4338831000000596E-002   6.4338831000000596E-002
+ Time step #       271737 Time =     12813.95599874956     
+ putting state tensor
+ putting reward tensor
+ polling action tensor

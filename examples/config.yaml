@@ -1,0 +1,35 @@
+wandb:
+  project: "channel"
+  mode: "offline"
+
+environment:
+  agents_per_cfd: 48
+  cfds_per_case: 1
+  tasks_per_cfd: 1
+  gpus_per_cfd: 1
+  cfd_state_dim: 2
+  cfd_action_dim: 1
+  cfd_reward_dim: 2
+  agent_state_dim: 2
+  agent_action_dim: 1
+  agent_interval: 1
+  executable_path: "/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales"
+
+runner:
+  mode: "train"
+  restart: false
+  reset_num_timesteps: true
+  steps_per_episode: 120
+  seed: 16
+
+smartsim:
+  network_interface: "lo"
+  run_command: "mpirun"
+  launcher: "local"
+
+extras:
+  n_cells: 16
+  tauw_min_percent: 0.8
+  tauw_max_percent: 1.2
+  hwm_min: 0.075
+  hwm_max: 0.150

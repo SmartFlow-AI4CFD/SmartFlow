@@ -1,0 +1,189 @@
+{
+  "schema info": {
+    "schema_name": "entity manifest",
+    "version": "0.0.4"
+  },
+  "experiment": {
+    "name": "envs",
+    "path": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu_cfd_solver/evals/eval_xijgz82i/eval_retau_05200/envs",
+    "launcher": "Local",
+    "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu_cfd_solver/evals/eval_xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/logs/smartsim.out",
+    "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu_cfd_solver/evals/eval_xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/logs/smartsim.err"
+  },
+  "runs": [
+    {
+      "run_id": "f93553d",
+      "timestamp": 1753020984962742359,
+      "model": [],
+      "orchestrator": [
+        {
+          "name": "orchestrator",
+          "type": "redis",
+          "interface": [
+            "lo"
+          ],
+          "shards": [
+            {
+              "name": "orchestrator_0",
+              "hostname": "127.0.0.1",
+              "port": 6500,
+              "cluster": false,
+              "conf_file": null,
+              "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu_cfd_solver/evals/eval_xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/f93553d/database/orchestrator/orchestrator_0/orchestrator_0.out",
+              "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu_cfd_solver/evals/eval_xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/f93553d/database/orchestrator/orchestrator_0/orchestrator_0.err",
+              "memory_file": "",
+              "client_file": "",
+              "client_count_file": "",
+              "telemetry_metadata": {
+                "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu_cfd_solver/evals/eval_xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/f93553d/database/orchestrator/orchestrator_0",
+                "step_id": null,
+                "task_id": "419634",
+                "managed": false
+              }
+            }
+          ]
+        }
+      ],
+      "ensemble": []
+    },
+    {
+      "run_id": "81ae4e9",
+      "timestamp": 1753020986032143739,
+      "model": [
+        {
+          "name": "env_00000",
+          "path": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu_cfd_solver/evals/eval_xijgz82i/eval_retau_05200/envs/env_00000",
+          "exe_args": [
+            "--tag=env_00000",
+            "--action_start_step=0",
+            "--action_start_time=0.0",
+            "--cfd_steps_per_action=10",
+            "--time_duration_per_action=0.0",
+            "--agent_interval=1",
+            "--tauw_ref_min=0.0013840000000000002",
+            "--tauw_ref_max=0.002076",
+            "--hwm_min=0.1",
+            "--hwm_max=0.1",
+            "--cfd_seed=16",
+            "--kap_log=0.41"
+          ],
+          "run_settings": {
+            "exe": [
+              "/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales"
+            ],
+            "run_command": "/leonardo/prod/opt/libraries/openmpi/4.1.6/nvhpc--24.3/bin/mpirun",
+            "run_args": {
+              "report-bindings": null,
+              "n": 1
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu_cfd_solver/evals/eval_xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/81ae4e9/model/env_00000",
+            "step_id": null,
+            "task_id": "419722",
+            "managed": false
+          },
+          "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu_cfd_solver/evals/eval_xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/81ae4e9/model/env_00000/env_00000.out",
+          "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu_cfd_solver/evals/eval_xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/81ae4e9/model/env_00000/env_00000.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    },
+    {
+      "run_id": "91c3777",
+      "timestamp": 1753023693779473209,
+      "model": [],
+      "orchestrator": [
+        {
+          "name": "orchestrator",
+          "type": "redis",
+          "interface": [
+            "lo"
+          ],
+          "shards": [
+            {
+              "name": "orchestrator_0",
+              "hostname": "127.0.0.1",
+              "port": 6500,
+              "cluster": false,
+              "conf_file": null,
+              "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu/evals/xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/91c3777/database/orchestrator/orchestrator_0/orchestrator_0.out",
+              "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu/evals/xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/91c3777/database/orchestrator/orchestrator_0/orchestrator_0.err",
+              "memory_file": "",
+              "client_file": "",
+              "client_count_file": "",
+              "telemetry_metadata": {
+                "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu/evals/xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/91c3777/database/orchestrator/orchestrator_0",
+                "step_id": null,
+                "task_id": "523200",
+                "managed": false
+              }
+            }
+          ]
+        }
+      ],
+      "ensemble": []
+    },
+    {
+      "run_id": "d42eab9",
+      "timestamp": 1753023695496528324,
+      "model": [
+        {
+          "name": "env_00000",
+          "path": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu/evals/xijgz82i/eval_retau_05200/envs/env_00000",
+          "exe_args": [
+            "--tag=env_00000",
+            "--action_start_step=0",
+            "--action_start_time=0.0",
+            "--cfd_steps_per_action=10",
+            "--time_duration_per_action=0.0",
+            "--agent_interval=1",
+            "--tauw_ref_min=0.0013840000000000002",
+            "--tauw_ref_max=0.002076",
+            "--hwm_min=0.1",
+            "--hwm_max=0.1",
+            "--cfd_seed=16",
+            "--kap_log=0.41"
+          ],
+          "run_settings": {
+            "exe": [
+              "/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales"
+            ],
+            "run_command": "/leonardo/prod/opt/libraries/openmpi/4.1.6/nvhpc--24.3/bin/mpirun",
+            "run_args": {
+              "report-bindings": null,
+              "n": 1
+            }
+          },
+          "batch_settings": {},
+          "params": {},
+          "files": {
+            "Symlink": [],
+            "Configure": [],
+            "Copy": []
+          },
+          "colocated_db": {},
+          "telemetry_metadata": {
+            "status_dir": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu/evals/xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/d42eab9/model/env_00000",
+            "step_id": null,
+            "task_id": "523262",
+            "managed": false
+          },
+          "out_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu/evals/xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/d42eab9/model/env_00000/env_00000.out",
+          "err_file": "/leonardo/home/userexternal/mxiao000/code/SmartFlow/examples/single_node_single_task_gpu/evals/xijgz82i/eval_retau_05200/envs/.smartsim/telemetry/envs/d42eab9/model/env_00000/env_00000.err"
+        }
+      ],
+      "orchestrator": [],
+      "ensemble": []
+    }
+  ]
+}

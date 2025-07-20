@@ -1,0 +1,40 @@
+----------- Running Command ----------
+COMMAND: /leonardo_scratch/fast/IscrB_SCORE/.venv/smartflow-nvidia/lib/python3.11/site-packages/smartsim/_core/bin/redis-server /leonardo_scratch/fast/IscrB_SCORE/.venv/smartflow-nvidia/lib/python3.11/site-packages/smartsim/_core/config/redis.conf --loadmodule /leonardo_scratch/fast/IscrB_SCORE/.venv/smartflow-nvidia/lib/python3.11/site-packages/smartsim/_core/lib/redisai.so --port 6500 --bind 127.0.0.1 --bind-source-addr 127.0.0.1
+IPADDRESS: 127.0.0.1
+NETWORK: lo
+SMARTSIM_ORC_SHARD_INFO: {"name": "orchestrator_0", "hostname": "127.0.0.1", "port": 6500, "cluster": false}
+--------------------------------------
+
+--------------- Output ---------------
+
+
+523233:C 20 Jul 2025 17:01:25.379 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+523233:C 20 Jul 2025 17:01:25.379 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+523233:C 20 Jul 2025 17:01:25.379 * Redis version=7.2.4, bits=64, commit=d2c8a4b9, modified=0, pid=523233, just started
+523233:C 20 Jul 2025 17:01:25.379 * Configuration loaded
+523233:M 20 Jul 2025 17:01:25.379 * monotonic clock: POSIX clock_gettime
+523233:M 20 Jul 2025 17:01:25.380 # Failed to write PID file: Permission denied
+                _._
+           _.-``__ ''-._
+      _.-``    `.  `_.  ''-._           Redis 7.2.4 (d2c8a4b9/0) 64 bit
+  .-`` .-```.  ```\/    _.,_ ''-._
+ (    '      ,       .-`  | `,    )     Running in standalone mode
+ |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6500
+ |    `-._   `._    /     _.-'    |     PID: 523233
+  `-._    `-._  `-./  _.-'    _.-'
+ |`-._`-._    `-.__.-'    _.-'_.-'|
+ |    `-._`-._        _.-'_.-'    |           https://redis.io
+  `-._    `-._`-.__.-'_.-'    _.-'
+ |`-._`-._    `-.__.-'    _.-'_.-'|
+ |    `-._`-._        _.-'_.-'    |
+  `-._    `-._`-.__.-'_.-'    _.-'
+      `-._    `-.__.-'    _.-'
+          `-._        _.-'
+              `-.__.-'
+
+523233:M 20 Jul 2025 17:01:25.380 # WARNING: The TCP backlog setting of 4096 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 2048.
+523233:M 20 Jul 2025 17:01:25.386 * <ai> Redis version found by RedisAI: 7.2.4 - oss
+523233:M 20 Jul 2025 17:01:25.386 * <ai> RedisAI version 10207, git_sha=unknown
+523233:M 20 Jul 2025 17:01:25.386 * Module 'ai' loaded from /leonardo_scratch/fast/IscrB_SCORE/.venv/smartflow-nvidia/lib/python3.11/site-packages/smartsim/_core/lib/redisai.so
+523233:M 20 Jul 2025 17:01:25.386 * Server initialized
+523233:M 20 Jul 2025 17:01:25.387 * Ready to accept connections tcp
