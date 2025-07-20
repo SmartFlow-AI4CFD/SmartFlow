@@ -4,21 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "smartflow"
-version = "1.0.1"
-authors = [
-    {name="Maochao Xiao", email="maochao.xiao@uniroma1.it"},
-    {name="Francisco Alcántara Ávila", email="fraa@kth.se"},
-    {name="Bernat Font", email="b.font@tudelft.nl"},
-    {name="Marius Kurz", email="Marius.Kurz@cwi.nl"},
-    {name="Di Zhou", email="dizhou@caltech.edu"},
-    {name="Yuning Wang", email="yuningw@kth.se"},
-    {name="Ting Zhu", email="Ting.Zhu@warwick.ac.uk"},
-    {name="Ricardo Vinuesa", email="rvinuesa@mech.kth.se"},
-    {name="Johan Larsson", email="jola@umd.edu"},
-    {name="Sergio Pirozzoli", email="sergio.pirozzoli@uniroma1.it"},
-]
-description = "Multi-agent deep reinforcement learning framework for turbulence modeling, flow control, and numerical algorithm development"
-keywords = ["reinforcement learning", "computational fluid dynamics"]
+version = "1.2.0"
 requires-python = ">=3.10, <3.12"
 dependencies = [
   "smartsim",
