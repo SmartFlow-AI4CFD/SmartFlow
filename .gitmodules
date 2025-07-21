@@ -1,0 +1,10 @@
+[submodule "dependencies/smartredis-mpi"]
+	path = dependencies/smartredis-mpi
+	url = https://github.com/soaringxmc/smartredis-mpi.git
+[submodule "dependencies/CaLES"]
+	path = dependencies/CaLES
+	url = https://github.com/CaNS-World/CaLES.git
+	branch = smartflow
+[submodule "dependencies/smartredis"]
+	path = dependencies/smartredis
+	url = https://github.com/CrayLabs/SmartRedis.git

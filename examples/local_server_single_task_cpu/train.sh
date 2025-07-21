@@ -12,7 +12,7 @@ python -u ~/code/SmartFlow/src/smartflow/main.py \
     environment.agent_state_dim=2 \
     environment.state_definition="log(hwm)+vel" \
     environment.learning_strategy="multi_task" \
-    environment.executable_path="/leonardo/home/userexternal/mxiao000/code/CaLES/build/cales" \
+    environment.executable_path="/leonardo/home/userexternal/mxiao000/code/SmartFlow/dependencies/CaLES/build/cales" \
     environment.action_start_time=96 \
     environment.time_duration_per_action=0.4 \
     environment.agent_interval=4 \
