@@ -1,6 +1,6 @@
 [submodule "dependencies/smartredis-mpi"]
 	path = dependencies/smartredis-mpi
-	url = https://github.com/soaringxmc/smartredis-mpi.git
+	url = https://github.com/SmartFlow-AI4CFD/smartredis-mpi.git
 [submodule "dependencies/CaLES"]
 	path = dependencies/CaLES
 	url = https://github.com/CaNS-World/CaLES.git
